@@ -23,7 +23,7 @@ export default function LandingPage() {
               <span className="font-semibold text-foreground">딱 990원.</span>
             </p>
 
-            <div className="mt-10 w-full max-w-xl">
+            <div className="mt-10 w-full max-w-[520px]">
               <LandingSearch />
             </div>
 
@@ -43,8 +43,16 @@ export default function LandingPage() {
       </section>
 
       {/* 3단 소개 */}
-      <section className="mx-auto max-w-5xl px-6 pb-24">
-        <div className="grid gap-4 sm:grid-cols-3">
+      <section className="mx-auto max-w-5xl px-6 pt-20 pb-24 sm:pt-24">
+        <div className="mb-10 text-center">
+          <span className="text-xs font-semibold uppercase tracking-wider text-primary">
+            WHY 입지990
+          </span>
+          <h2 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">
+            세 가지 방식으로, 가볍게.
+          </h2>
+        </div>
+        <div className="grid gap-5 sm:grid-cols-3">
           <FeatureCard
             icon={<Building2 className="h-5 w-5" />}
             title="내 가족 관점으로"
@@ -107,15 +115,21 @@ function FeatureCard({
   badgeColor: 'primary' | 'secondary' | 'accent';
 }) {
   const badgeClass = {
-    primary: 'bg-primary/15 text-primary',
-    secondary: 'bg-secondary/15 text-secondary',
-    accent: 'bg-accent/15 text-accent',
+    primary: 'bg-primary-soft text-primary',
+    secondary: 'bg-primary-soft text-primary',
+    accent: 'bg-success-soft text-success',
+  }[badgeColor];
+
+  const iconBgClass = {
+    primary: 'bg-primary-soft text-primary',
+    secondary: 'bg-primary-soft text-primary',
+    accent: 'bg-success-soft text-success',
   }[badgeColor];
 
   return (
-    <div className="group rounded-2xl border border-border bg-surface p-6 shadow-sm transition hover:border-foreground-sub/40">
+    <div className="group rounded-2xl border border-border bg-surface p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
       <div className="flex items-center justify-between">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-surface text-foreground-sub">
+        <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${iconBgClass}`}>
           {icon}
         </div>
         <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${badgeClass}`}>

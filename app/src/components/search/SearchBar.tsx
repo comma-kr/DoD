@@ -54,7 +54,7 @@ export default function SearchBar({
 
   return (
     <div className="relative w-full">
-      <div className="flex items-center gap-3 rounded-2xl border border-border bg-surface px-5 py-4">
+      <div className="flex items-center gap-3 rounded-2xl border border-border bg-surface px-5 py-3.5 shadow-sm transition focus-within:border-primary focus-within:shadow-md">
         <Search className="h-5 w-5 shrink-0 text-foreground-sub" />
         <input
           type="text"
