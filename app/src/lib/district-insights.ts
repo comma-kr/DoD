@@ -96,6 +96,34 @@ const DISTRICT: Record<string, DistrictInsight> = {
       { title: '목동 신시가지 재건축', status: '진행중', note: '목동 1~14단지 순차 추진' },
     ],
   },
+  성동구: {
+    schoolDistrictLabel: '성동·금호권 학군',
+    schoolNotes: ['금호고·경일고 등 인근 인기 고교', '한대부고·서울숲중 강세'],
+    academyCluster: '왕십리·성수 학원가 (대치 30분 접근)',
+    commercialArea: '성수동 카페거리 + 왕십리역 상권 + 서울숲',
+    majorStores: ['이마트 성수점', '왕십리역 비트플렉스', '아크로 서울포레스트 상가'],
+    parks: ['서울숲', '응봉산', '한강 뚝섬·성수지구'],
+    hospitals: ['한양대학교병원', '국립의료원'],
+    developments: [
+      { title: '서울숲 IT클러스터', status: '진행중', note: 'SM·무신사·크래프톤 등 IT기업 본사 집결' },
+      { title: '왕십리 광역환승센터', status: '진행중', note: '2·5·경의중앙·수인분당 4중 환승' },
+      { title: '성수 일대 재개발', status: '진행중', note: '준공업·노후 주거지 정비' },
+    ],
+  },
+  동작구: {
+    schoolDistrictLabel: '사당·상도·노량진권 학군',
+    schoolNotes: ['상도·사당·대방고 등', '노량진·대방 학구 변화 주시 (재개발 영향)'],
+    academyCluster: '노량진 학원가 (수험생 메카) + 사당·상도 일반 학원가',
+    commercialArea: '노량진역·사당역·이수역 상권',
+    majorStores: ['이마트 사당점', '롯데마트 서울역점 접근', '노량진 수산시장'],
+    parks: ['보라매공원', '서달산', '한강 노들섬'],
+    hospitals: ['중앙대학교병원', '보훈병원'],
+    developments: [
+      { title: '노량진뉴타운 8개 구역', status: '진행중', note: '한강벨트 19.8만 가구 신호탄, 2031년 전체 준공 목표' },
+      { title: '서부선 경전철', status: '예정', note: '노량진역에 서부선 신설 — 1·9·서부선 3중 환승' },
+      { title: '신림선 (개통)', status: '완료', note: '여의도~신림 연결, 9호선 환승' },
+    ],
+  },
 };
 
 // 동 단위 세부 (선택적 override)

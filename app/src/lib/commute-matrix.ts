@@ -91,6 +91,24 @@ const MATRIX: Record<string, Partial<Record<CommuteArea, CommuteEstimate>>> = {
     pangyo: { minMinutes: 50, maxMinutes: 70, transferCount: 2, verdict: '불편', description: '환승 2회' },
     seongsu: { minMinutes: 35, maxMinutes: 50, transferCount: 1, verdict: '보통', description: '환승 1회' },
   },
+  성동구: {
+    seongsu: { minMinutes: 5, maxMinutes: 15, transferCount: 0, verdict: '최적', description: '구 내부 이동' },
+    gangnam: { minMinutes: 15, maxMinutes: 30, transferCount: 0, verdict: '편리', description: '2호선/분당선 직결' },
+    jamsil: { minMinutes: 15, maxMinutes: 25, transferCount: 0, verdict: '편리', description: '2호선 직결' },
+    gwanghwamun: { minMinutes: 15, maxMinutes: 30, transferCount: 0, verdict: '편리', description: '5호선 또는 2호선 환승' },
+    yeouido: { minMinutes: 30, maxMinutes: 45, transferCount: 1, verdict: '보통', description: '5호선 환승' },
+    mapo: { minMinutes: 20, maxMinutes: 35, transferCount: 0, verdict: '편리', description: '6호선 직결' },
+    pangyo: { minMinutes: 35, maxMinutes: 55, transferCount: 1, verdict: '보통', description: '환승 1회' },
+  },
+  동작구: {
+    yeouido: { minMinutes: 3, maxMinutes: 10, transferCount: 0, verdict: '최적', description: '9호선 1정거장 (노량진→여의도)' },
+    gangnam: { minMinutes: 20, maxMinutes: 35, transferCount: 0, verdict: '편리', description: '9호선 급행 직결' },
+    gwanghwamun: { minMinutes: 15, maxMinutes: 30, transferCount: 0, verdict: '편리', description: '1호선 직결' },
+    jamsil: { minMinutes: 30, maxMinutes: 45, transferCount: 1, verdict: '보통', description: '2호선 환승' },
+    mapo: { minMinutes: 20, maxMinutes: 35, transferCount: 1, verdict: '편리', description: '환승 1회' },
+    pangyo: { minMinutes: 35, maxMinutes: 50, transferCount: 1, verdict: '보통', description: '신분당선 환승' },
+    seongsu: { minMinutes: 25, maxMinutes: 40, transferCount: 1, verdict: '보통', description: '2호선 환승' },
+  },
 };
 
 export function estimateCommute(
