@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import type { DistrictInsight } from '@/lib/district-insights';
 import type { NearbyApartment } from '@/lib/nearby-apartments';
+import { CARD_TINT, type TintTone } from '@/lib/card-tint';
 
 interface Props {
   apartment: {
@@ -29,6 +30,7 @@ export default function InsightCards({ apartment, insights, nearby }: Props) {
     icon: React.ReactNode;
     title: string;
     accent: string;
+    tone: TintTone;
     content: React.ReactNode;
   }> = [
     {
@@ -36,6 +38,7 @@ export default function InsightCards({ apartment, insights, nearby }: Props) {
       icon: <GraduationCap className="h-5 w-5" />,
       title: '학군',
       accent: 'text-accent bg-accent/15 border-accent/30',
+      tone: 'success',
       content: (
         <div className="space-y-2">
           {insights.schoolDistrictLabel ? (
@@ -68,6 +71,7 @@ export default function InsightCards({ apartment, insights, nearby }: Props) {
       icon: <Train className="h-5 w-5" />,
       title: '교통',
       accent: 'text-primary bg-primary-soft border-primary/30',
+      tone: 'primary',
       content: (
         <div className="space-y-2">
           {apartment.nearestStation ? (
@@ -96,6 +100,7 @@ export default function InsightCards({ apartment, insights, nearby }: Props) {
       icon: <ShoppingBag className="h-5 w-5" />,
       title: '상권·생활권',
       accent: 'text-secondary bg-secondary/15 border-secondary/30',
+      tone: 'primary',
       content: (
         <div className="space-y-2">
           {insights.commercialArea ? (
@@ -128,6 +133,7 @@ export default function InsightCards({ apartment, insights, nearby }: Props) {
       icon: <Hospital className="h-5 w-5" />,
       title: '인프라',
       accent: 'text-danger bg-danger-soft border-danger/30',
+      tone: 'danger',
       content: (
         <div className="space-y-2">
           {insights.hospitals && insights.hospitals.length > 0 ? (
@@ -163,6 +169,7 @@ export default function InsightCards({ apartment, insights, nearby }: Props) {
       icon: <Hammer className="h-5 w-5" />,
       title: '개발 호재',
       accent: 'text-warning bg-warning-soft border-warning/30',
+      tone: 'warning',
       content: (
         <div className="space-y-2">
           {insights.developments && insights.developments.length > 0 ? (
@@ -203,6 +210,7 @@ export default function InsightCards({ apartment, insights, nearby }: Props) {
       icon: <Building2 className="h-5 w-5" />,
       title: '주변 대단지',
       accent: 'text-primary bg-primary/15 border-primary/30',
+      tone: 'primary',
       content: (
         <div className="space-y-2">
           {nearby.length > 0 ? (
@@ -237,7 +245,7 @@ export default function InsightCards({ apartment, insights, nearby }: Props) {
       {cards.map((card) => (
         <div
           key={card.key}
-          className="rounded-2xl border border-border bg-surface p-5 shadow-sm"
+          className={`rounded-2xl border p-5 shadow-sm ${CARD_TINT[card.tone]}`}
         >
           <div className="mb-4 flex items-center gap-2">
             <span

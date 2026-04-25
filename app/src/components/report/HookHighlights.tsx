@@ -8,6 +8,7 @@ import {
   Train,
   GraduationCap,
 } from 'lucide-react';
+import { CARD_TINT, type TintTone } from '@/lib/card-tint';
 
 interface Props {
   // 시세
@@ -151,6 +152,14 @@ export default function HookHighlights({
     amber: 'border-warning/40 bg-warning-soft text-warning',
   };
 
+  // 카드별 accent를 공용 tint tone으로 매핑 (배경 tint용)
+  const toneMap: Record<'primary' | 'accent' | 'secondary' | 'amber', TintTone> = {
+    primary: 'primary',
+    accent: 'success',
+    secondary: 'primary',
+    amber: 'warning',
+  };
+
   return (
     <section className="space-y-3">
       {identity ? (
@@ -164,7 +173,7 @@ export default function HookHighlights({
         {cards.map((card) => (
           <div
             key={card.key}
-            className="relative overflow-hidden rounded-2xl border border-border bg-surface p-4 shadow-sm"
+            className={`relative overflow-hidden rounded-2xl border p-4 shadow-sm ${CARD_TINT[toneMap[card.accent]]}`}
           >
             <div className="flex items-center justify-between">
               <div

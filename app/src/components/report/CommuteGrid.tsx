@@ -1,19 +1,19 @@
 import { Clock, Briefcase } from 'lucide-react';
 import { getCommuteGrid, getVerdictColor } from '@/lib/commute-matrix';
 import { COMMUTE_LABELS, type CommuteArea } from '@/types/profile';
+import { CARD_TINT, type TintTone } from '@/lib/card-tint';
 
 interface Props {
   address: string;
   highlightArea?: CommuteArea | null;
 }
 
-// verdict별 카드 tint — 일괄 회색 대신 각 권역 특성을 옅게 반영
-// 매우 옅은 -50 톤으로 튀지 않게. 보더는 -200 톤으로 살짝 경계 주기.
-const tintByVerdict: Record<string, string> = {
-  최적: 'border-emerald-200 bg-emerald-50',
-  편리: 'border-rose-200 bg-rose-50',
-  보통: 'border-amber-200 bg-amber-50',
-  불편: 'border-red-200 bg-red-50',
+// verdict → 공용 tint tone 매핑
+const verdictTone: Record<string, TintTone> = {
+  최적: 'success',
+  편리: 'primary',
+  보통: 'warning',
+  불편: 'danger',
 };
 
 export default function CommuteGrid({ address, highlightArea }: Props) {
@@ -70,7 +70,7 @@ export default function CommuteGrid({ address, highlightArea }: Props) {
             );
           }
           const tint =
-            tintByVerdict[estimate.verdict] ?? 'border-border bg-surface-soft';
+            CARD_TINT[verdictTone[estimate.verdict] ?? 'neutral'];
           return (
             <div
               key={area}

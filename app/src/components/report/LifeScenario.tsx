@@ -2,6 +2,7 @@
 // 가상의 하루 흐름 + 주말 라이프스타일을 단지별 특성으로 자동 생성
 
 import { Sunrise, Coffee, Bike, Moon } from 'lucide-react';
+import { CARD_TINT, type TintTone } from '@/lib/card-tint';
 
 interface Props {
   apartmentName: string;
@@ -92,6 +93,14 @@ export default function LifeScenario({
     violet: 'border-primary/30 bg-primary-soft text-primary',
   };
 
+  // scenario accent → 공용 tint tone 매핑 (카드 배경용)
+  const toneMap: Record<Scenario['accent'], TintTone> = {
+    amber: 'warning',
+    orange: 'primary',
+    emerald: 'success',
+    violet: 'primary',
+  };
+
   return (
     <section className="rounded-3xl border border-border bg-surface p-6 shadow-sm">
       <div className="flex items-center gap-2">
@@ -106,7 +115,7 @@ export default function LifeScenario({
         {scenarios.map((s, i) => (
           <div
             key={i}
-            className="rounded-2xl border border-border bg-surface-soft p-4"
+            className={`rounded-2xl border p-4 ${CARD_TINT[toneMap[s.accent]]}`}
           >
             <div className="flex items-center gap-2">
               <div
