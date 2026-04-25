@@ -7,6 +7,15 @@ interface Props {
   highlightArea?: CommuteArea | null;
 }
 
+// verdict별 카드 tint — 일괄 회색 대신 각 권역 특성을 옅게 반영
+// 매우 옅은 -50 톤으로 튀지 않게. 보더는 -200 톤으로 살짝 경계 주기.
+const tintByVerdict: Record<string, string> = {
+  최적: 'border-emerald-200 bg-emerald-50',
+  편리: 'border-rose-200 bg-rose-50',
+  보통: 'border-amber-200 bg-amber-50',
+  불편: 'border-red-200 bg-red-50',
+};
+
 export default function CommuteGrid({ address, highlightArea }: Props) {
   const district = address.match(/서울(?:특별시)?\s+(\S+구)/)?.[1] ?? '';
 
@@ -60,20 +69,24 @@ export default function CommuteGrid({ address, highlightArea }: Props) {
               </div>
             );
           }
+          const tint =
+            tintByVerdict[estimate.verdict] ?? 'border-border bg-surface-soft';
           return (
             <div
               key={area}
               className={`rounded-2xl border p-3 transition ${
                 active
-                  ? 'border-primary/60 bg-primary/10'
-                  : 'border-border bg-surface-soft'
+                  ? 'border-primary bg-primary/15 shadow-sm ring-2 ring-primary/20'
+                  : tint
               }`}
             >
               <div className="flex items-center justify-between">
                 <div className="text-xs font-semibold text-foreground">
                   {label}
                   {active ? (
-                    <span className="ml-1 text-[10px] text-primary">내 출근지</span>
+                    <span className="ml-1 text-[10px] font-bold text-primary">
+                      · 내 출근지
+                    </span>
                   ) : null}
                 </div>
                 <span
