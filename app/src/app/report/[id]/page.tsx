@@ -130,8 +130,8 @@ export default async function ReportPage({ params }: PageProps) {
 
         {tldr ? (
           <div className="mb-8 rounded-2xl border-l-4 border-primary bg-primary-soft/50 px-5 py-4">
-            <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-primary-ink">
-              TL;DR · 한 줄 요약
+            <div className="text-[11px] font-semibold text-primary-ink">
+              ✨ 이 단지 한 줄로
             </div>
             <p className="mt-1.5 text-[15px] font-semibold leading-relaxed text-foreground">
               {tldr}
