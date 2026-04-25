@@ -4,6 +4,7 @@ import CommuteGrid from './CommuteGrid';
 import NeighborhoodMap from './NeighborhoodMap';
 import HookHighlights, { calcMonthlyMortgage } from './HookHighlights';
 import LifeScenario from './LifeScenario';
+import ShuttleCard from './ShuttleCard';
 import { getDistrictInsightsAsync, parseDistrictDong } from '@/lib/district-insights';
 import { findNearbyLargeApartments } from '@/lib/nearby-apartments';
 import {
@@ -187,6 +188,9 @@ export default async function LocationSection({
         address={primary.address}
         highlightArea={highlightCommuteArea ?? undefined}
       />
+
+      {/* 3.5. 🚌 통근버스 운행 회사 (재미 섹터) */}
+      <ShuttleCard shuttles={insights.shuttles} district={district} />
 
       {/* 4. 가구 형태별 라이프 시나리오 카드 */}
       <LifeScenario

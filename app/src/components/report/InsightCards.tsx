@@ -5,12 +5,16 @@ import {
   Hospital,
   Hammer,
   Building2,
+  Film,
+  Trees,
+  BookOpen,
+  Stethoscope,
 } from 'lucide-react';
 import type { DistrictInsight } from '@/lib/district-insights';
 import type { NearbyApartment } from '@/lib/nearby-apartments';
 import { CARD_TINT, type TintTone } from '@/lib/card-tint';
 import type { Priority, HouseholdType } from '@/types/profile';
-import { resolveInsightOrder, isCardWeakForHousehold, type InsightKey } from '@/lib/household-priorities';
+import { pickInsightCardsForHousehold, type InsightKey } from '@/lib/household-priorities';
 
 interface Props {
   apartment: {
@@ -231,27 +235,119 @@ export default function InsightCards({ apartment, insights, nearby, priorities, 
         </div>
       ),
     },
+    // ===== 신규 카드 4종 — 가구별 가변 슬롯에 들어감 =====
+    {
+      key: 'hobby',
+      icon: <Film className="h-5 w-5" />,
+      title: '취미·문화',
+      accent: 'text-primary bg-primary-soft border-primary/30',
+      tone: 'primary',
+      content: (
+        <div className="space-y-2">
+          {insights.hobbySpots && insights.hobbySpots.length > 0 ? (
+            <ul className="space-y-1.5 text-xs text-foreground-sub">
+              {insights.hobbySpots.slice(0, 4).map((s, i) => (
+                <li key={i}>· {s}</li>
+              ))}
+            </ul>
+          ) : (
+            <div className="text-xs text-foreground-sub">
+              영화관·서점·갤러리 정보 준비 중
+            </div>
+          )}
+        </div>
+      ),
+    },
+    {
+      key: 'parks',
+      icon: <Trees className="h-5 w-5" />,
+      title: '공원·산책',
+      accent: 'text-success bg-success-soft border-success/30',
+      tone: 'success',
+      content: (
+        <div className="space-y-2">
+          {insights.parks && insights.parks.length > 0 ? (
+            <ul className="space-y-1.5 text-xs text-foreground-sub">
+              {insights.parks.slice(0, 4).map((p, i) => (
+                <li key={i}>🌳 {p}</li>
+              ))}
+            </ul>
+          ) : (
+            <div className="text-xs text-foreground-sub">
+              근거리 공원·산책 코스 정보 준비 중
+            </div>
+          )}
+        </div>
+      ),
+    },
+    {
+      key: 'academy',
+      icon: <BookOpen className="h-5 w-5" />,
+      title: '학원가 심화',
+      accent: 'text-warning bg-warning-soft border-warning/30',
+      tone: 'warning',
+      content: (
+        <div className="space-y-2">
+          {insights.academyCluster ? (
+            <div className="text-sm font-semibold text-foreground">
+              {insights.academyCluster}
+            </div>
+          ) : null}
+          {insights.schoolNotes && insights.schoolNotes.length > 0 ? (
+            <ul className="space-y-1 text-xs text-foreground-sub">
+              {insights.schoolNotes.slice(0, 3).map((n, i) => (
+                <li key={i}>📚 {n}</li>
+              ))}
+            </ul>
+          ) : null}
+          {!insights.academyCluster ? (
+            <div className="text-xs text-foreground-sub">
+              학원가 정보 준비 중 — 학교알리미에서도 배정 확인
+            </div>
+          ) : null}
+        </div>
+      ),
+    },
+    {
+      key: 'medical',
+      icon: <Stethoscope className="h-5 w-5" />,
+      title: '의료 심화',
+      accent: 'text-danger bg-danger-soft border-danger/30',
+      tone: 'danger',
+      content: (
+        <div className="space-y-2">
+          {insights.hospitals && insights.hospitals.length > 0 ? (
+            <ul className="space-y-1.5 text-xs text-foreground-sub">
+              {insights.hospitals.slice(0, 4).map((h, i) => (
+                <li key={i}>🏥 {h}</li>
+              ))}
+            </ul>
+          ) : (
+            <div className="text-xs text-foreground-sub">
+              종합병원 정보 준비 중
+            </div>
+          )}
+        </div>
+      ),
+    },
   ];
 
-  // 가구 본질 우선순위 + 사용자 1순위로 카드 정렬
-  const order = resolveInsightOrder(householdType, priorities);
-  cards.sort((a, b) => {
-    const ai = order.indexOf(a.key as InsightKey);
-    const bi = order.indexOf(b.key as InsightKey);
-    return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
-  });
+  // 가구별 6개 카드 슬롯 결정 (학군은 모든 가구에 일반 톤 노출)
+  const slotKeys = pickInsightCardsForHousehold(householdType, priorities);
+  const visibleCards = slotKeys
+    .map((k) => cards.find((c) => c.key === k))
+    .filter((c): c is NonNullable<typeof c> => !!c);
 
   return (
     <div className="grid auto-rows-fr gap-3 break-keep sm:grid-cols-2 lg:grid-cols-3">
-      {cards.map((card, idx) => {
+      {visibleCards.map((card, idx) => {
         const isTop = idx === 0;
-        const isWeak = isCardWeakForHousehold(householdType, card.key as InsightKey);
         return (
         <div
           key={card.key}
           className={`flex flex-col rounded-2xl border border-border bg-surface p-5 shadow-sm ${CARD_TINT[card.tone]} ${
             isTop ? 'ring-2 ring-primary/30' : ''
-          } ${isWeak ? 'opacity-60' : ''}`}
+          }`}
         >
           <div className="mb-4 flex items-center gap-2">
             <span
@@ -263,11 +359,6 @@ export default function InsightCards({ apartment, insights, nearby, priorities, 
             {isTop ? (
               <span className="ml-auto rounded-full bg-primary-soft px-2 py-0.5 text-[10px] font-bold text-primary-ink">
                 ★ 가장 먼저 봐주세요
-              </span>
-            ) : null}
-            {isWeak ? (
-              <span className="ml-auto rounded-full bg-surface-soft px-2 py-0.5 text-[10px] text-foreground-sub">
-                참고용
               </span>
             ) : null}
           </div>

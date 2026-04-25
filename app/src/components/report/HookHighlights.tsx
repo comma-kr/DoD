@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import { CARD_TINT, type TintTone } from '@/lib/card-tint';
 import type { Priority, HouseholdType } from '@/types/profile';
-import { resolveHookOrder, isCardWeakForHousehold, type HookKey } from '@/lib/household-priorities';
+import { resolveHookOrder, type HookKey } from '@/lib/household-priorities';
 
 interface Props {
   // 시세
@@ -190,13 +190,12 @@ export default function HookHighlights({
       <div className="grid auto-rows-fr grid-cols-2 gap-3 break-keep lg:grid-cols-4">
         {cards.map((card, idx) => {
           const isTop = idx === 0;
-          const isWeak = isCardWeakForHousehold(householdType, card.key as HookKey);
           return (
           <div
             key={card.key}
             className={`relative flex flex-col overflow-hidden rounded-2xl border border-border bg-surface p-4 shadow-sm ${CARD_TINT[toneMap[card.accent]]} ${
               isTop ? 'ring-2 ring-primary/30' : ''
-            } ${isWeak ? 'opacity-60' : ''}`}
+            }`}
           >
             <div className="flex items-center justify-between">
               <div

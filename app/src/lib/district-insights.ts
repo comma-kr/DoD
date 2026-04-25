@@ -22,6 +22,14 @@ export interface DistrictInsight {
   parks?: string[]; // ["석촌호수", "올림픽공원"]
   hospitals?: string[]; // ["서울아산병원"]
   developments?: DevelopmentNews[]; // 개발 호재
+  hobbySpots?: string[]; // 카페·헬스장·도서관·공연장 등 (1인·취미 가구용)
+  shuttles?: ShuttleStop[]; // 회사 통근버스 정류장
+}
+
+export interface ShuttleStop {
+  company: string; // 'SK하이닉스' / '삼성전자'
+  destination: string; // '이천 본사' / '수원 사업장' 등
+  walkMin?: number; // 단지에서 정류장까지 도보 분 (선택)
 }
 
 // 구 단위 fallback
@@ -38,6 +46,11 @@ const DISTRICT: Record<string, DistrictInsight> = {
       { title: '8호선 연장 (잠실~성남)', status: '진행중', note: '잠실~판교 접근성 추가 개선 기대' },
       { title: '잠실 MICE 개발', status: '진행중', note: '국제교류복합지구 중심' },
     ],
+    hobbySpots: ['롯데월드몰 시네마·서점·아쿠아리움', '한강공원 산책로·자전거', '잠실종합운동장 헬스·수영장'],
+    shuttles: [
+      { company: 'SK하이닉스', destination: '이천 본사' },
+      { company: '삼성전자', destination: '수원 사업장' },
+    ],
   },
   강남구: {
     schoolDistrictLabel: '대치권 학군',
@@ -51,6 +64,11 @@ const DISTRICT: Record<string, DistrictInsight> = {
       { title: 'GTX-A 운행', status: '완료', note: '수서~동탄~파주 접근성 개선' },
       { title: '수서역세권 개발', status: '진행중', note: '복합환승센터 중심' },
     ],
+    hobbySpots: ['코엑스몰 영화관·서점·메가박스', '신논현·강남 카페거리·갤러리', '청담·압구정 갤러리·공연장'],
+    shuttles: [
+      { company: '삼성전자', destination: '수원·기흥 사업장' },
+      { company: 'SK하이닉스', destination: '이천 본사' },
+    ],
   },
   서초구: {
     schoolDistrictLabel: '서초·방배권 학군',
@@ -63,6 +81,11 @@ const DISTRICT: Record<string, DistrictInsight> = {
     developments: [
       { title: '신분당선 연장 (강남~용산)', status: '예정', note: '광화문·용산 접근성 개선' },
     ],
+    hobbySpots: ['예술의 전당 공연·전시', '서리풀공원 산책', '방배 카페거리'],
+    shuttles: [
+      { company: '삼성전자', destination: '수원·기흥 사업장' },
+      { company: 'SK하이닉스', destination: '이천 본사' },
+    ],
   },
   마포구: {
     schoolDistrictLabel: '마포·서강권 학군',
@@ -74,6 +97,11 @@ const DISTRICT: Record<string, DistrictInsight> = {
     hospitals: ['서울성모병원(여의도)', '강북삼성병원 접근'],
     developments: [
       { title: '마포로 일대 재개발', status: '진행중', note: '노후 주거지 정비 사업' },
+    ],
+    hobbySpots: ['연남·홍대 카페·공연장 밀집', '경의선숲길 산책·자전거', '서교동 책방·갤러리'],
+    shuttles: [
+      { company: '네이버', destination: '판교 본사' },
+      { company: '카카오', destination: '판교' },
     ],
   },
   영등포구: {
@@ -88,6 +116,11 @@ const DISTRICT: Record<string, DistrictInsight> = {
       { title: '여의도 금융중심지 재구조화', status: '예정', note: '업무·주거 복합 개발' },
       { title: '신안산선 건설', status: '진행중', note: '여의도·광명·안산 연결' },
     ],
+    hobbySpots: ['더현대 서울 문화공간', '여의도 한강공원 자전거·러닝', 'IFC몰 영화관·서점'],
+    shuttles: [
+      { company: 'LG', destination: '마곡·여의도 사옥' },
+      { company: 'SK하이닉스', destination: '이천 본사' },
+    ],
   },
   양천구: {
     schoolDistrictLabel: '목동권 학군',
@@ -100,6 +133,8 @@ const DISTRICT: Record<string, DistrictInsight> = {
     developments: [
       { title: '목동 신시가지 재건축', status: '진행중', note: '목동 1~14단지 순차 추진' },
     ],
+    hobbySpots: ['목동 파리공원 산책', '현대백화점 영화관·서점', '안양천 자전거·러닝'],
+    shuttles: [],
   },
   성동구: {
     schoolDistrictLabel: '성동·금호권 학군',
@@ -114,6 +149,10 @@ const DISTRICT: Record<string, DistrictInsight> = {
       { title: '왕십리 광역환승센터', status: '진행중', note: '2·5·경의중앙·수인분당 4중 환승' },
       { title: '성수 일대 재개발', status: '진행중', note: '준공업·노후 주거지 정비' },
     ],
+    hobbySpots: ['성수 카페거리 (감각 카페·로스터리 밀집)', '서울숲 산책·자전거·전시', '왕십리역 비트플렉스 영화관'],
+    shuttles: [
+      { company: 'SM·크래프톤·무신사', destination: '서울숲 IT클러스터' },
+    ],
   },
   동작구: {
     schoolDistrictLabel: '사당·상도·노량진권 학군',
@@ -127,6 +166,10 @@ const DISTRICT: Record<string, DistrictInsight> = {
       { title: '노량진뉴타운 8개 구역', status: '진행중', note: '한강벨트 19.8만 가구 신호탄, 2031년 전체 준공 목표' },
       { title: '서부선 경전철', status: '예정', note: '노량진역에 서부선 신설 — 1·9·서부선 3중 환승' },
       { title: '신림선 (개통)', status: '완료', note: '여의도~신림 연결, 9호선 환승' },
+    ],
+    hobbySpots: ['보라매공원 산책·자전거', '노량진 수산시장·먹거리', '한강 노들섬 공연·갤러리'],
+    shuttles: [
+      { company: '삼성전자', destination: '수원·기흥 사업장' },
     ],
   },
 };
@@ -221,6 +264,8 @@ interface RegionInsightRow {
   parks: string[] | null;
   hospitals: string[] | null;
   developments: DevelopmentNews[] | null;
+  hobby_spots: string[] | null;
+  shuttles: ShuttleStop[] | null;
 }
 
 function rowToInsight(row: RegionInsightRow): DistrictInsight {
@@ -233,6 +278,8 @@ function rowToInsight(row: RegionInsightRow): DistrictInsight {
     parks: row.parks ?? undefined,
     hospitals: row.hospitals ?? undefined,
     developments: row.developments ?? undefined,
+    hobbySpots: row.hobby_spots ?? undefined,
+    shuttles: row.shuttles ?? undefined,
   };
 }
 
@@ -246,7 +293,7 @@ export async function getDistrictInsightsAsync(
     const { data: rows } = await supabase
       .from('region_insights')
       .select(
-        'district_name, dong_name, scope, school_district_label, school_notes, academy_cluster, commercial_area, major_stores, parks, hospitals, developments'
+        'district_name, dong_name, scope, school_district_label, school_notes, academy_cluster, commercial_area, major_stores, parks, hospitals, developments, hobby_spots, shuttles'
       )
       .eq('district_name', district)
       .or(`scope.eq.sgg,and(scope.eq.dong,dong_name.eq.${dong})`);
