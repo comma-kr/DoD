@@ -68,6 +68,7 @@ export default async function ReportPage({ params }: PageProps) {
     apartments?: Array<
       ApartmentLocation & {
         trades?: Array<{ dealDate: string; priceM10k: number; areaM2: number; floor?: number }>;
+        jeonseRatio?: import('@/lib/jeonse-ratio').JeonseRatioResult | null;
       }
     >;
   };
@@ -78,6 +79,7 @@ export default async function ReportPage({ params }: PageProps) {
   // 무료 단독 리포트는 top-level trades, 비교 리포트는 apartments[].trades 에 각각 저장
   const mainApt = apartments[0];
   const specsTrades = trades.length > 0 ? trades : mainApt?.trades ?? [];
+  const specsJeonse = mainApt?.jeonseRatio ?? null;
   const typeName = PRODUCT_NAMES[report.report_type as ProductId] ?? '리포트';
   const isFree = report.price === 0;
   const conditions = (report.user_conditions ?? {}) as StoredConditions;
@@ -129,6 +131,7 @@ export default async function ReportPage({ params }: PageProps) {
               trades={specsTrades}
               totalUnits={mainApt?.totalUnits ?? null}
               builtYear={mainApt?.builtYear ?? null}
+              jeonseRatio={specsJeonse}
             />
           </div>
         ) : null}

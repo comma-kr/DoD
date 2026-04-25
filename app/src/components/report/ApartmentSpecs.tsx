@@ -1,18 +1,19 @@
 import { Home, Ruler, Users } from 'lucide-react';
 import {
   calcPricePerPyeong,
+  formatPrice10k,
   formatPricePerPyeong,
   typicalPublicPyeong,
 } from '@/lib/utils';
 import { CARD_TINT } from '@/lib/card-tint';
 import type { TradePoint } from '@/types/apartment';
+import type { JeonseRatioResult } from '@/lib/jeonse-ratio';
 
 interface Props {
   trades: TradePoint[];
   totalUnits?: number | null;
   builtYear?: number | null;
-  rentalRatio?: number | null; // 0~1 (e.g., 0.12)
-  rentalUnits?: number | null; // 임대 세대 수
+  jeonseRatio?: JeonseRatioResult | null;
 }
 
 interface AreaBucket {
@@ -58,30 +59,26 @@ export default function ApartmentSpecs({
   trades,
   totalUnits,
   builtYear,
-  rentalRatio,
-  rentalUnits,
+  jeonseRatio,
 }: Props) {
   const top = topAreaBuckets(trades);
   const age = builtYear ? 2026 - builtYear : null;
-
-  // 임대비율이 명시적으로 주어지지 않으면 "데이터 준비 중"
-  const hasRentalData = rentalRatio !== null && rentalRatio !== undefined;
-  const rentalPct = hasRentalData ? Math.round((rentalRatio as number) * 100) : null;
+  const hasJeonse = jeonseRatio !== null && jeonseRatio !== undefined;
 
   return (
     <section className="rounded-3xl border border-border bg-surface p-6 shadow-sm">
       <div className="flex items-center gap-2">
         <h3 className="text-base font-bold">🏘️ 단지 구성</h3>
         <span className="text-[11px] text-foreground-sub">
-          · 세대 · 임대 · 평형별 시세
+          · 세대 · 전세가율 · 평형별 시세
         </span>
       </div>
       <p className="mt-1 text-xs text-foreground-sub">
-        거래 데이터 기반 자동 집계예요.
+        거래 데이터 기반 자동 집계예요. 평당가는 공급면적 기준이고, 직거래는 평균에서 제외했어요.
       </p>
 
       <div className="mt-5 grid auto-rows-fr gap-3 break-keep sm:grid-cols-3">
-        {/* 1) 세대 · 연식 · 임대비율 */}
+        {/* 1) 세대 · 연식 · 전세가율 */}
         <div
           className={`flex flex-col rounded-2xl border border-border bg-surface p-4 ${CARD_TINT.primary}`}
         >
@@ -96,9 +93,15 @@ export default function ApartmentSpecs({
             {age !== null ? `${builtYear}년 입주 · ${age}년 차` : ''}
           </div>
           <div className="mt-auto pt-2 text-[11px] text-foreground-sub">
-            {hasRentalData
-              ? `임대 ${rentalUnits?.toLocaleString() ?? '?'}세대 (${rentalPct}%)`
-              : '임대비율 정보 준비 중'}
+            {hasJeonse ? (
+              <>
+                <span className="font-semibold text-foreground">전세가율 {jeonseRatio.pct}%</span>
+                <br />
+                전세 {formatPrice10k(jeonseRatio.jeonseAvg10k)} · 매매 {formatPrice10k(jeonseRatio.saleAvg10k)} (전용 {jeonseRatio.areaM2}㎡)
+              </>
+            ) : (
+              '전세가율 정보 준비 중'
+            )}
           </div>
         </div>
 

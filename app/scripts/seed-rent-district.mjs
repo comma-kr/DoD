@@ -1,6 +1,11 @@
-// 여의도동 24개 단지의 최근 12개월 실거래가를 국토부 API로 가져와 trade_history에 적재.
-// API: RTMSDataSvcAptTrade (기본 버전)
-// 필터: 영등포구 11560 → umdNm='여의도동' → 단지명 매칭
+// 특정 법정동의 최근 12개월 전월세 실거래가를 국토부 API로 가져와
+// rent_history 테이블에 적재. 매매(seed-trades)와 짝.
+//
+// 사용법:
+//   node scripts/seed-rent-district.mjs                  ← 기본: 영등포구 11560 + 여의도동
+//   node scripts/seed-rent-district.mjs 11650 잠실동      ← LAWD_CD + 동명
+//
+// 매매와 같은 단지 매칭 로직을 재사용 (단지명 정규화).
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -23,49 +28,43 @@ const KEY = KEY_RAW.includes('%') ? decodeURIComponent(KEY_RAW) : KEY_RAW;
 
 const sb = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
-const LAWD_CD = '11560'; // 영등포구
-const TARGET_DONG = '여의도동';
+// ==== 인자 ====
+const LAWD_CD = process.argv[2] ?? '11560';
+const TARGET_DONG = process.argv[3] ?? '여의도동';
 
-// 최근 12개월
-function getRecentMonths(count = 12) {
-  const months = [];
-  const now = new Date(2026, 3, 1); // 2026-04 기준
-  for (let i = 1; i <= count; i++) {
-    const d = new Date(now);
-    d.setMonth(d.getMonth() - i);
-    const ym = `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}`;
-    months.push(ym);
-  }
-  return months.reverse(); // 오래된 것부터
-}
-
-// 로마숫자/한자숫자 → 아라비아숫자
+// ==== 단지명 정규화 (매매 시드와 동일) ====
 const ROMAN_MAP = {
   Ⅰ: '1', Ⅱ: '2', Ⅲ: '3', Ⅳ: '4', Ⅴ: '5',
   I: '1', II: '2', III: '3', IV: '4', V: '5',
   '1차': '1', '2차': '2', '3차': '3', '4차': '4', '5차': '5',
 };
 
-// 단지명 정규화 (매칭용)
 function normalize(name) {
   let n = name;
-  // 괄호 내용 → 별도 추출 후 본명에서 제거
-  n = n.replace(/\((.*?)\)/g, ' $1 '); // "순복음(초원)" → "순복음 초원"
-  // 로마숫자/한자숫자 → 아라비아
+  n = n.replace(/\((.*?)\)/g, ' $1 ');
   for (const [from, to] of Object.entries(ROMAN_MAP)) {
     n = n.replace(new RegExp(from, 'g'), to);
   }
-  // 공백·특수문자 제거
   n = n.replace(/\s+/g, '').replace(/[·.,_-]/g, '');
-  // 접미사 제거
   n = n.replace(/아파트$/, '').replace(/주상복합$/, '');
-  // 접두사 변형: "여의" 또는 "여의도" 둘 다 정규화
-  // (그대로 두고 매칭 시 substring 처리)
   return n.toLowerCase();
 }
 
-// XML → 객체 배열
-function parseTradeXml(xml) {
+// ==== 최근 12개월 ====
+function getRecentMonths(count = 12) {
+  const months = [];
+  const now = new Date(2026, 3, 1);
+  for (let i = 1; i <= count; i++) {
+    const d = new Date(now);
+    d.setMonth(d.getMonth() - i);
+    const ym = `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}`;
+    months.push(ym);
+  }
+  return months.reverse();
+}
+
+// ==== XML 파서 ====
+function parseRentXml(xml) {
   const items = [];
   const itemRegex = /<item>([\s\S]*?)<\/item>/g;
   let m;
@@ -82,8 +81,10 @@ function parseTradeXml(xml) {
   return items;
 }
 
-async function fetchTradesByMonth(ym, pageNo = 1, numOfRows = 200) {
-  const url = new URL('https://apis.data.go.kr/1613000/RTMSDataSvcAptTrade/getRTMSDataSvcAptTrade');
+async function fetchRentByMonth(ym, pageNo = 1, numOfRows = 200) {
+  const url = new URL(
+    'https://apis.data.go.kr/1613000/RTMSDataSvcAptRent/getRTMSDataSvcAptRent'
+  );
   url.searchParams.set('serviceKey', KEY);
   url.searchParams.set('LAWD_CD', LAWD_CD);
   url.searchParams.set('DEAL_YMD', ym);
@@ -92,60 +93,50 @@ async function fetchTradesByMonth(ym, pageNo = 1, numOfRows = 200) {
 
   const res = await fetch(url.toString());
   if (!res.ok) throw new Error(`HTTP ${res.status} for ${ym}`);
-  return parseTradeXml(await res.text());
+  return parseRentXml(await res.text());
 }
 
 async function main() {
-  console.log('=== 1단계: DB의 여의도 단지 24개 로드 ===');
-  const { data: apts } = await sb
-    .from('apartments')
-    .select('id, name')
-    .order('name');
+  console.log(`=== rent_history 시드: LAWD_CD=${LAWD_CD}, 동=${TARGET_DONG} ===\n`);
 
-  const normalizedMap = new Map(); // normalized name → apartment id
-  // "여의도삼부" → ["여의도삼부", "삼부"] 양쪽 모두 인덱싱
+  console.log('1단계: DB의 단지 로드');
+  const { data: apts } = await sb.from('apartments').select('id, name').order('name');
+
+  const normalizedMap = new Map();
   for (const apt of apts) {
     const norm = normalize(apt.name);
     normalizedMap.set(norm, apt.id);
-    // 여의도/여의 접두어 제거 버전도 추가
     const stripped = norm.replace(/^여의도?/, '');
     if (stripped.length >= 2 && !normalizedMap.has(stripped)) {
       normalizedMap.set(stripped, apt.id);
     }
   }
-  console.log(`   ${apts.length}개 단지 로드 완료 (매칭 인덱스 ${normalizedMap.size}개)`);
+  console.log(`   ${apts.length}개 단지 로드 (인덱스 ${normalizedMap.size}개)`);
 
-  // 매칭 헬퍼: 정확 → 접두어 제거 → 부분 매칭 (양방향)
   function matchApartment(apiName) {
     const norm = normalize(apiName);
-
-    // 1. 정확 매칭
     if (normalizedMap.has(norm)) return normalizedMap.get(norm);
-
-    // 2. 접두어 제거 매칭
     const stripped = norm.replace(/^여의도?/, '');
     if (stripped.length >= 2 && normalizedMap.has(stripped)) {
       return normalizedMap.get(stripped);
     }
-
-    // 3. 부분 매칭 (양방향)
     for (const [dbNorm, id] of normalizedMap.entries()) {
       if (dbNorm.length < 2) continue;
-      if (norm.includes(dbNorm) || dbNorm.includes(norm)) {
+      if (norm.includes(dbNorm) || dbNorm.includes(norm)) return id;
+      if (
+        stripped.length >= 2 &&
+        (stripped.includes(dbNorm) || dbNorm.includes(stripped))
+      )
         return id;
-      }
-      if (stripped.length >= 2 && (stripped.includes(dbNorm) || dbNorm.includes(stripped))) {
-        return id;
-      }
     }
-
     return null;
   }
 
-  console.log('\n=== 2단계: 기존 trade_history 비우기 ===');
-  await sb.from('trade_history').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+  console.log(`\n2단계: 기존 rent_history (${TARGET_DONG} 단지) 비우기`);
+  const aptIds = apts.map((a) => a.id);
+  await sb.from('rent_history').delete().in('apartment_id', aptIds);
 
-  console.log('\n=== 3단계: 12개월 거래 데이터 수집 ===');
+  console.log('\n3단계: 12개월 전월세 데이터 수집');
   const months = getRecentMonths(12);
   let totalFetched = 0;
   let totalMatched = 0;
@@ -157,7 +148,7 @@ async function main() {
     let monthItems = [];
     let pageNo = 1;
     while (true) {
-      const items = await fetchTradesByMonth(ym, pageNo);
+      const items = await fetchRentByMonth(ym, pageNo);
       if (items.length === 0) break;
       monthItems = monthItems.concat(items);
       if (items.length < 200) break;
@@ -165,56 +156,61 @@ async function main() {
       await new Promise((r) => setTimeout(r, 200));
     }
 
-    // 여의도동만 필터
-    const yeouidoItems = monthItems.filter((it) => it.umdNm === TARGET_DONG);
+    const dongItems = monthItems.filter((it) => it.umdNm === TARGET_DONG);
 
-    // 매칭
     const inserts = [];
-    for (const it of yeouidoItems) {
+    for (const it of dongItems) {
       const aptId = matchApartment(it.aptNm);
       if (!aptId) {
         unmatchedNames.add(it.aptNm);
         continue;
       }
       const dealDate = `${it.dealYear}-${String(it.dealMonth).padStart(2, '0')}-${String(it.dealDay).padStart(2, '0')}`;
-      const price10k = parseInt(it.dealAmount.replace(/,/g, ''), 10);
+      const deposit10k = parseInt((it.deposit ?? '0').replace(/,/g, ''), 10);
+      const monthly10k = parseInt((it.monthlyRent ?? '0').replace(/,/g, ''), 10) || 0;
       const areaM2 = parseFloat(it.excluUseAr);
       const floor = parseInt(it.floor, 10);
 
-      if (isNaN(price10k) || isNaN(areaM2)) continue;
+      if (isNaN(deposit10k) || isNaN(areaM2)) continue;
+
+      // 월세 0이면 전세, 아니면 월세
+      const contractType = monthly10k > 0 ? '월세' : '전세';
 
       inserts.push({
         apartment_id: aptId,
         deal_date: dealDate,
         area_m2: areaM2,
-        price_10k: price10k,
+        deposit_10k: deposit10k,
+        monthly_rent_10k: monthly10k,
         floor: isNaN(floor) ? null : floor,
-        deal_type: it.dealingGbn ?? null, // '중개거래' | '직거래' | null
+        contract_type: contractType,
+        deal_type: it.dealingGbn ?? null,
+        raw_contract_type: it.contractType ?? null,
       });
     }
 
     if (inserts.length > 0) {
-      const { error } = await sb.from('trade_history').insert(inserts);
+      const { error } = await sb.from('rent_history').insert(inserts);
       if (error) {
         console.log(` ERROR ${error.message}`);
       } else {
         console.log(
-          ` 영등포구 ${monthItems.length}건 → 여의도 ${yeouidoItems.length}건 → 매칭 ${inserts.length}건 적재`
+          ` 전체 ${monthItems.length}건 → ${TARGET_DONG} ${dongItems.length}건 → 매칭 ${inserts.length}건 적재`
         );
         totalInserted += inserts.length;
       }
     } else {
-      console.log(` 영등포구 ${monthItems.length}건 → 여의도 ${yeouidoItems.length}건 → 매칭 0건`);
+      console.log(` 전체 ${monthItems.length}건 → ${TARGET_DONG} ${dongItems.length}건 → 매칭 0건`);
     }
 
     totalFetched += monthItems.length;
-    totalMatched += yeouidoItems.length;
+    totalMatched += dongItems.length;
     await new Promise((r) => setTimeout(r, 300));
   }
 
   console.log(`\n=== 완료 ===`);
-  console.log(`총 영등포구 거래: ${totalFetched}건`);
-  console.log(`여의도동 거래: ${totalMatched}건`);
+  console.log(`총 전월세 거래: ${totalFetched}건`);
+  console.log(`${TARGET_DONG} 거래: ${totalMatched}건`);
   console.log(`매칭·적재: ${totalInserted}건`);
 
   if (unmatchedNames.size > 0) {
@@ -222,19 +218,20 @@ async function main() {
     for (const n of unmatchedNames) console.log(`  - ${n}`);
   }
 
-  // 단지별 거래 건수 분포
-  console.log('\n단지별 적재된 거래 건수:');
+  console.log('\n단지별 전월세 거래 분포:');
   const { data: counts } = await sb
-    .from('trade_history')
-    .select('apartment_id, apartments(name)')
-    .order('apartment_id');
+    .from('rent_history')
+    .select('apartment_id, contract_type, apartments(name)');
   const byApt = new Map();
   for (const r of counts ?? []) {
     const name = r.apartments?.name ?? r.apartment_id;
-    byApt.set(name, (byApt.get(name) || 0) + 1);
+    if (!byApt.has(name)) byApt.set(name, { 전세: 0, 월세: 0 });
+    byApt.get(name)[r.contract_type] = (byApt.get(name)[r.contract_type] || 0) + 1;
   }
-  for (const [name, n] of [...byApt.entries()].sort((a, b) => b[1] - a[1])) {
-    console.log(`  ${name.padEnd(25)} ${n}건`);
+  for (const [name, c] of [...byApt.entries()].sort(
+    (a, b) => b[1].전세 + b[1].월세 - (a[1].전세 + a[1].월세)
+  )) {
+    console.log(`  ${name.padEnd(25)} 전세 ${c.전세}건 · 월세 ${c.월세}건`);
   }
 }
 

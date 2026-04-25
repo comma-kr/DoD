@@ -59,3 +59,65 @@ export function parseMolitPrice(dealAmount: string): number {
   // "12,500" → 12500 (만원 단위)
   return Number(dealAmount.replace(/[^0-9]/g, ''));
 }
+
+// ============================================================
+// 전월세 실거래가 (getRTMSDataSvcAptRent)
+// ============================================================
+
+interface MolitRentItem {
+  aptNm?: string;
+  umdNm?: string;
+  sggCd?: string;
+  deposit?: string;        // 보증금 (만원, 콤마 포함)
+  monthlyRent?: string;    // 월세 (만원, 콤마 포함). 전세는 '0' or ''.
+  excluUseAr?: string;     // 전용면적
+  dealYear?: string;
+  dealMonth?: string;
+  dealDay?: string;
+  floor?: string;
+  contractType?: string;   // '신규' | '갱신' (2024+ 필드, 없을 수도)
+  contractTerm?: string;   // 계약기간
+  useRRRight?: string;     // 갱신요구권 사용 여부
+}
+
+interface MolitRentResponse {
+  response?: {
+    body?: {
+      items?: {
+        item?: MolitRentItem | MolitRentItem[];
+      };
+      totalCount?: number;
+    };
+  };
+}
+
+const RENT_BASE_URL =
+  'http://openapi.molit.go.kr/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptRent';
+
+export async function fetchAptRentByRegion(params: {
+  lawdCd: string; // 법정동 코드 (5자리)
+  dealYmd: string; // YYYYMM
+}): Promise<MolitRentItem[]> {
+  const serviceKey = process.env.PUBLIC_DATA_API_KEY;
+  if (!serviceKey) {
+    throw new Error('PUBLIC_DATA_API_KEY가 설정되지 않았습니다');
+  }
+
+  const url = new URL(RENT_BASE_URL);
+  url.searchParams.set('serviceKey', serviceKey);
+  url.searchParams.set('LAWD_CD', params.lawdCd);
+  url.searchParams.set('DEAL_YMD', params.dealYmd);
+  url.searchParams.set('_type', 'json');
+
+  const res = await fetch(url.toString(), { next: { revalidate: 60 * 60 } });
+  if (!res.ok) {
+    throw new Error(`국토부 전월세 API 실패: ${res.status}`);
+  }
+
+  const data = (await res.json()) as MolitRentResponse;
+  const items = data.response?.body?.items?.item;
+  if (!items) return [];
+  return Array.isArray(items) ? items : [items];
+}
+
+export type { MolitRentItem };

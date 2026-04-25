@@ -5,6 +5,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase/server';
 import { checkFreeQuota, consumeFreeQuota } from '@/lib/quota';
 import { generateFreeDeepSingleReport } from '@/lib/claude';
 import { loadProfile } from '@/lib/profile';
+import { calcJeonseRatio, type RentPoint } from '@/lib/jeonse-ratio';
 import type { ApartmentWithLatestPrice } from '@/types/apartment';
 import type { UserProfile } from '@/types/profile';
 import { buildMockFreeReport } from '@/lib/mock-reports';
@@ -74,7 +75,7 @@ export async function POST(request: Request) {
 
   const { data: tradeRows } = await supabase
     .from('trade_history')
-    .select('price_10k, deal_date, area_m2, floor')
+    .select('price_10k, deal_date, area_m2, floor, deal_type')
     .eq('apartment_id', apartmentId)
     .order('deal_date', { ascending: false })
     .limit(24);
@@ -84,8 +85,27 @@ export async function POST(request: Request) {
     priceM10k: t.price_10k,
     areaM2: t.area_m2,
     floor: t.floor ?? undefined,
+    dealType: (t as { deal_type?: string | null }).deal_type ?? null,
   }));
 
+  // 전세가율 계산용 전월세 거래 (최근 60건)
+  const { data: rentRows } = await supabase
+    .from('rent_history')
+    .select('deposit_10k, monthly_rent_10k, area_m2, deal_date, contract_type, deal_type')
+    .eq('apartment_id', apartmentId)
+    .order('deal_date', { ascending: false })
+    .limit(60);
+
+  const rents: RentPoint[] = (rentRows ?? []).map((r) => ({
+    dealDate: r.deal_date,
+    depositM10k: r.deposit_10k,
+    monthlyRentM10k: r.monthly_rent_10k ?? 0,
+    areaM2: r.area_m2,
+    contractType: (r.contract_type ?? null) as RentPoint['contractType'],
+    dealType: (r as { deal_type?: string | null }).deal_type ?? null,
+  }));
+
+  const jeonseRatio = calcJeonseRatio(trades, rents);
   const latest = trades[0];
 
   const apartment: ApartmentWithLatestPrice = {
@@ -166,6 +186,7 @@ export async function POST(request: Request) {
             stationDistanceM: apartment.stationDistanceM ?? null,
             totalUnits: apartment.totalUnits ?? null,
             builtYear: apartment.builtYear ?? null,
+            jeonseRatio, // null 또는 { ratio, pct, saleAvg10k, jeonseAvg10k, ... }
           },
         ],
         generatedAt: new Date().toISOString(),

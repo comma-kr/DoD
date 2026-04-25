@@ -6,6 +6,7 @@ import { generateCompareReport } from './claude';
 import { buildMockCompareReport } from './mock-reports';
 import { loadProfile } from './profile';
 import { PRODUCT_NAMES, type ProductId } from './pricing';
+import { calcJeonseRatio, type RentPoint } from './jeonse-ratio';
 import type { ApartmentWithLatestPrice, TradePoint } from '@/types/apartment';
 
 export interface PendingPaymentRow {
@@ -63,6 +64,32 @@ export async function fulfillPendingPayment(
       if (!list) {
         tradesByApt.set(t.apartment_id, [point]);
       } else if (list.length < 24) {
+        list.push(point);
+      }
+    }
+  }
+
+  // 1.2) 전월세 거래 로드 (전세가율 계산용)
+  const rentsByApt = new Map<string, RentPoint[]>();
+  if (aptRows && aptRows.length > 0) {
+    const { data: rents } = await supabase
+      .from('rent_history')
+      .select('apartment_id, deposit_10k, monthly_rent_10k, area_m2, deal_date, floor, contract_type, deal_type')
+      .in('apartment_id', apartmentIds)
+      .order('deal_date', { ascending: false });
+    for (const r of rents ?? []) {
+      const list = rentsByApt.get(r.apartment_id);
+      const point: RentPoint = {
+        dealDate: r.deal_date,
+        depositM10k: r.deposit_10k,
+        monthlyRentM10k: r.monthly_rent_10k ?? 0,
+        areaM2: r.area_m2,
+        contractType: (r.contract_type ?? null) as RentPoint['contractType'],
+        dealType: (r as { deal_type?: string | null }).deal_type ?? null,
+      };
+      if (!list) {
+        rentsByApt.set(r.apartment_id, [point]);
+      } else if (list.length < 60) {
         list.push(point);
       }
     }
@@ -135,20 +162,26 @@ export async function fulfillPendingPayment(
       content: {
         markdown,
         apartmentName: apartments.map((a) => a.name).join(' vs '),
-        apartments: apartments.map((a) => ({
-          id: a.id,
-          name: a.name,
-          address: a.address,
-          latitude: a.latitude ?? null,
-          longitude: a.longitude ?? null,
-          nearestStation: a.nearestStation ?? null,
-          stationDistanceM: a.stationDistanceM ?? null,
-          totalUnits: a.totalUnits ?? null,
-          builtYear: a.builtYear ?? null,
-          latestPrice10k: a.latestPrice10k ?? null,
-          latestAreaM2: a.latestAreaM2 ?? null,
-          trades: a.trades ?? [],
-        })),
+        apartments: apartments.map((a) => {
+          const aptTrades = a.trades ?? [];
+          const aptRents = rentsByApt.get(a.id) ?? [];
+          const jeonse = calcJeonseRatio(aptTrades, aptRents);
+          return {
+            id: a.id,
+            name: a.name,
+            address: a.address,
+            latitude: a.latitude ?? null,
+            longitude: a.longitude ?? null,
+            nearestStation: a.nearestStation ?? null,
+            stationDistanceM: a.stationDistanceM ?? null,
+            totalUnits: a.totalUnits ?? null,
+            builtYear: a.builtYear ?? null,
+            latestPrice10k: a.latestPrice10k ?? null,
+            latestAreaM2: a.latestAreaM2 ?? null,
+            trades: aptTrades,
+            jeonseRatio: jeonse, // null 또는 { ratio, pct, ... }
+          };
+        }),
         generatedAt: new Date().toISOString(),
       },
       price: pending.amount,
