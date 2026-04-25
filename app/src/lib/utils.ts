@@ -34,6 +34,20 @@ export function m2ToPyeong(m2: number): number {
   return Math.round((m2 / PYEONG_M2) * 10) / 10;
 }
 
+// 전용 m²를 한국 관용 "공급 평형"으로 근사.
+// 통상 공급면적 = 전용 / 0.77, 평 = 면적 / 3.3058.
+// 표준 전용면적의 관용 평형 매핑 (59→24, 74→30, 84→32, 99→39, 114→44, 134→51)
+export function typicalPublicPyeong(areaM2: number): number {
+  if (areaM2 < 40) return Math.max(1, Math.round(areaM2 / 2.6));
+  if (areaM2 < 65) return 24;
+  if (areaM2 < 80) return 30;
+  if (areaM2 < 95) return 32;
+  if (areaM2 < 110) return 39;
+  if (areaM2 < 130) return 44;
+  if (areaM2 < 150) return 51;
+  return Math.round(areaM2 / 2.6);
+}
+
 export function formatDate(iso: string): string {
   const d = new Date(iso);
   return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
