@@ -53,7 +53,7 @@ export default function CommuteGrid({ address, highlightArea }: Props) {
         참고 수치예요. 실제 시간대와 환승 대기에 따라 달라질 수 있어요.
       </p>
 
-      <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
+      <div className="mt-5 grid auto-rows-fr grid-cols-2 gap-2 break-keep sm:grid-cols-3 lg:grid-cols-4">
         {grid.map(({ area, label, estimate }) => {
           const active = area === highlightArea;
           if (!estimate) {

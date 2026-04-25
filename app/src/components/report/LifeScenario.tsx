@@ -111,11 +111,11 @@ export default function LifeScenario({
         실제 입주 전에 직접 답사해보시는 걸 추천드려요. 참고용 시뮬레이션이에요.
       </p>
 
-      <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-5 grid auto-rows-fr gap-3 break-keep sm:grid-cols-2 lg:grid-cols-4">
         {scenarios.map((s, i) => (
           <div
             key={i}
-            className={`rounded-2xl border border-border bg-surface p-4 ${CARD_TINT[toneMap[s.accent]]}`}
+            className={`flex flex-col rounded-2xl border border-border bg-surface p-4 ${CARD_TINT[toneMap[s.accent]]}`}
           >
             <div className="flex items-center gap-2">
               <div

@@ -241,21 +241,21 @@ export default function InsightCards({ apartment, insights, nearby }: Props) {
   ];
 
   return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid auto-rows-fr gap-3 break-keep sm:grid-cols-2 lg:grid-cols-3">
       {cards.map((card) => (
         <div
           key={card.key}
-          className={`rounded-2xl border border-border bg-surface p-5 shadow-sm ${CARD_TINT[card.tone]}`}
+          className={`flex flex-col rounded-2xl border border-border bg-surface p-5 shadow-sm ${CARD_TINT[card.tone]}`}
         >
           <div className="mb-4 flex items-center gap-2">
             <span
-              className={`flex h-8 w-8 items-center justify-center rounded-xl border ${card.accent}`}
+              className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border ${card.accent}`}
             >
               {card.icon}
             </span>
             <h3 className="text-sm font-bold text-foreground">{card.title}</h3>
           </div>
-          {card.content}
+          <div className="flex-1">{card.content}</div>
         </div>
       ))}
     </div>

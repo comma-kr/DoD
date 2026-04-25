@@ -51,7 +51,7 @@ export default function LandingPage() {
             세 가지 방식으로, 가볍게.
           </h2>
         </div>
-        <div className="grid gap-5 sm:grid-cols-3">
+        <div className="grid auto-rows-fr gap-5 break-keep sm:grid-cols-3">
           <FeatureCard
             icon={<Building2 className="h-5 w-5" />}
             title="내 가족 관점으로"
@@ -126,7 +126,7 @@ function FeatureCard({
   }[badgeColor];
 
   return (
-    <div className="group rounded-2xl border border-border bg-surface p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+    <div className="group flex h-full flex-col rounded-2xl border border-border bg-surface p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
       <div className="flex items-center justify-between">
         <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${iconBgClass}`}>
           {icon}

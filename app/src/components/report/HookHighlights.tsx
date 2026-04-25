@@ -169,11 +169,11 @@ export default function HookHighlights({
         </div>
       ) : null}
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="grid auto-rows-fr grid-cols-2 gap-3 break-keep lg:grid-cols-4">
         {cards.map((card) => (
           <div
             key={card.key}
-            className={`relative overflow-hidden rounded-2xl border border-border bg-surface p-4 shadow-sm ${CARD_TINT[toneMap[card.accent]]}`}
+            className={`relative flex flex-col overflow-hidden rounded-2xl border border-border bg-surface p-4 shadow-sm ${CARD_TINT[toneMap[card.accent]]}`}
           >
             <div className="flex items-center justify-between">
               <div

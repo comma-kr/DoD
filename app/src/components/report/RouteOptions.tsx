@@ -50,11 +50,11 @@ export default function RouteOptions({
         </div>
       </div>
 
-      <div className="mt-5 grid gap-3 sm:grid-cols-3">
+      <div className="mt-5 grid auto-rows-fr gap-3 break-keep sm:grid-cols-3">
         {options.map((opt) => (
           <div
             key={opt.mode}
-            className="rounded-2xl border border-border bg-surface-soft p-4"
+            className="flex flex-col rounded-2xl border border-border bg-surface-soft p-4"
           >
             <div className="flex items-center justify-between">
               <span className="text-lg">{opt.icon}</span>
