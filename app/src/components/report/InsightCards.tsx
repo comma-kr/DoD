@@ -60,7 +60,7 @@ export default function InsightCards({ apartment, insights, nearby }: Props) {
           ) : null}
           {!insights.schoolDistrictLabel && !insights.academyCluster ? (
             <div className="text-xs text-foreground-sub">
-              학구 정보는 학교알리미에서 확인해보세요
+              학교알리미에서 배정 확인
             </div>
           ) : null}
         </div>
@@ -80,18 +80,14 @@ export default function InsightCards({ apartment, insights, nearby }: Props) {
                 {apartment.nearestStation}
               </div>
               <div className="text-xs text-foreground-sub">
-                {apartment.stationDistanceM ? `${apartment.stationDistanceM}m` : ''}
-                {walkMin ? ` · 도보 약 ${walkMin}분` : ''}
+                {walkMin ? `도보 ${walkMin}분` : ''}
               </div>
             </>
           ) : (
             <div className="text-xs text-foreground-sub">
-              주변 역 정보는 카카오맵으로 확인해보세요
+              주변 역 정보는 카카오맵에서 확인
             </div>
           )}
-          <div className="pt-1 text-[11px] text-foreground-sub">
-            주요 업무지 소요시간은 아래 그리드에서 확인하실 수 있어요
-          </div>
         </div>
       ),
     },
@@ -121,9 +117,7 @@ export default function InsightCards({ apartment, insights, nearby }: Props) {
             </div>
           ) : null}
           {!insights.commercialArea ? (
-            <div className="text-xs text-foreground-sub">
-              상권 정보가 아직 큐레이션되지 않았어요
-            </div>
+            <div className="text-xs text-foreground-sub">상권 정보 준비 중</div>
           ) : null}
         </div>
       ),
@@ -157,9 +151,7 @@ export default function InsightCards({ apartment, insights, nearby }: Props) {
             </div>
           ) : null}
           {!insights.hospitals && !insights.parks ? (
-            <div className="text-xs text-foreground-sub">
-              인프라 정보가 아직 큐레이션되지 않았어요
-            </div>
+            <div className="text-xs text-foreground-sub">인프라 정보 준비 중</div>
           ) : null}
         </div>
       ),
@@ -196,12 +188,9 @@ export default function InsightCards({ apartment, insights, nearby }: Props) {
             </ul>
           ) : (
             <div className="text-xs text-foreground-sub">
-              현재 큐레이션된 개발 호재 정보가 없어요
+              큐레이션된 호재 없음
             </div>
           )}
-          <div className="pt-1 text-[10px] text-foreground-sub">
-            ※ 일반 공공 정보이며, 투자 판단이 아닙니다
-          </div>
         </div>
       ),
     },
@@ -232,7 +221,7 @@ export default function InsightCards({ apartment, insights, nearby }: Props) {
             </ul>
           ) : (
             <div className="text-xs text-foreground-sub">
-              반경 3km 내 1,500세대 이상 단지가 시드에 없어요
+              반경 3km 내 1,500세대 이상 없음
             </div>
           )}
         </div>

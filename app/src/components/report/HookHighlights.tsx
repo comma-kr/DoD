@@ -105,7 +105,7 @@ export default function HookHighlights({
       icon: <Wallet className="h-4 w-4" />,
       label: '월 대출 상환액',
       main: `${monthlyMortgage.toLocaleString()}만원`,
-      sub: '70% 대출 · 30년 · 4.5% 가정',
+      sub: '70% · 30년 · 4.5%',
       accent: 'accent',
     });
   }
@@ -117,22 +117,22 @@ export default function HookHighlights({
       icon: <Train className="h-4 w-4" />,
       label: '가장 가까운 역',
       main: nearestStation.split(' ')[0],
-      sub:
-        nearestStationDistanceM && walkingMin
-          ? `${nearestStationDistanceM}m · 도보 ${walkingMin}분`
-          : '실시간 카카오 데이터',
+      sub: walkingMin ? `도보 ${walkingMin}분` : '',
       accent: 'secondary',
     });
   }
 
   // 4. 학군
   if (schoolName) {
+    const schoolWalkMin = schoolDistanceM
+      ? Math.max(1, Math.round(schoolDistanceM / 70))
+      : null;
     cards.push({
       key: 'school',
       icon: <GraduationCap className="h-4 w-4" />,
       label: '가장 가까운 학교',
       main: shortenSchool(schoolName),
-      sub: schoolDistanceM ? `${schoolDistanceM}m 도보권` : '학군 분석',
+      sub: schoolWalkMin ? `도보 ${schoolWalkMin}분` : '',
       accent: 'amber',
     });
   }
