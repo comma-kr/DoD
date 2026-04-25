@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { Suspense, useState, useEffect, useCallback } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Building2, Plus, X } from 'lucide-react';
 import SearchBar, { type SearchResult } from '@/components/search/SearchBar';
 import PhoneAuthModal from '@/components/auth/PhoneAuthModal';
@@ -11,8 +11,9 @@ import { PRODUCT_PRICES } from '@/lib/pricing';
 
 const MAX_COMPARE = 3;
 
-export default function ComparePage() {
+function ComparePageContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [picks, setPicks] = useState<SearchResult[]>([]);
   const [authOpen, setAuthOpen] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
@@ -25,6 +26,37 @@ export default function ComparePage() {
       .then((d) => setAuthenticated(d.authenticated))
       .catch(() => {});
   }, []);
+
+  // ?ids=A,B,C 쿼리 → 단지 정보 prefilled
+  useEffect(() => {
+    const ids = searchParams.get('ids');
+    if (!ids) return;
+    const idList = ids.split(',').filter(Boolean).slice(0, MAX_COMPARE);
+    if (idList.length === 0) return;
+    Promise.all(
+      idList.map((id) =>
+        fetch(`/api/apartments/${id}`)
+          .then((r) => (r.ok ? r.json() : null))
+          .catch(() => null)
+      )
+    ).then((results) => {
+      const validApts: SearchResult[] = [];
+      for (const data of results) {
+        if (data?.apartment) {
+          validApts.push({
+            id: data.apartment.id,
+            name: data.apartment.name,
+            address: data.apartment.address,
+            totalUnits: data.apartment.totalUnits,
+            builtYear: data.apartment.builtYear,
+            nearestStation: data.apartment.nearestStation,
+            stationDistanceM: data.apartment.stationDistanceM,
+          });
+        }
+      }
+      if (validApts.length > 0) setPicks(validApts);
+    });
+  }, [searchParams]);
 
   function handleSelect(apt: SearchResult) {
     if (picks.find((p) => p.id === apt.id)) return;
@@ -198,5 +230,13 @@ export default function ComparePage() {
         onSuccess={handleAuthSuccess}
       />
     </main>
+  );
+}
+
+export default function ComparePage() {
+  return (
+    <Suspense fallback={<div className="px-6 pt-20 text-center text-foreground-sub">불러오는 중...</div>}>
+      <ComparePageContent />
+    </Suspense>
   );
 }

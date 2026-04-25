@@ -10,6 +10,8 @@ import ProfileBadge from '@/components/report/ProfileBadge';
 import ShareBar from '@/components/report/ShareBar';
 import PriceChart from '@/components/report/PriceChart';
 import ApartmentSpecs from '@/components/report/ApartmentSpecs';
+import RegionPercentileBar from '@/components/report/RegionPercentileBar';
+import CompareSuggestionsCard from '@/components/report/CompareSuggestionsCard';
 import LocationSection, {
   type ApartmentLocation,
 } from '@/components/report/LocationSection';
@@ -65,16 +67,20 @@ export default async function ReportPage({ params }: PageProps) {
 
   const content = (report.content ?? {}) as {
     markdown?: string;
+    tldr?: string;
+    compareSuggestions?: import('@/lib/compare-suggestions').CompareSuggestion[];
     trades?: Array<{ dealDate: string; priceM10k: number; areaM2: number; floor?: number }>;
     apartmentName?: string;
     apartments?: Array<
       ApartmentLocation & {
         trades?: Array<{ dealDate: string; priceM10k: number; areaM2: number; floor?: number }>;
         jeonseRatio?: import('@/lib/jeonse-ratio').JeonseRatioResult | null;
+        regionPercentile?: import('@/lib/region-stats').RegionPercentileResult | null;
       }
     >;
   };
   const markdown = content.markdown ?? '';
+  const tldr = content.tldr ?? null;
   const trades = content.trades ?? [];
   const apartmentName = content.apartmentName ?? '';
   const apartments = content.apartments ?? [];
@@ -82,6 +88,8 @@ export default async function ReportPage({ params }: PageProps) {
   const mainApt = apartments[0];
   const specsTrades = trades.length > 0 ? trades : mainApt?.trades ?? [];
   const specsJeonse = mainApt?.jeonseRatio ?? null;
+  const regionPercentile = mainApt?.regionPercentile ?? null;
+  const compareSuggestions = content.compareSuggestions ?? [];
   const headings = extractH2Headings(markdown);
   const typeName = PRODUCT_NAMES[report.report_type as ProductId] ?? '리포트';
   const isFree = report.price === 0;
@@ -120,6 +128,17 @@ export default async function ReportPage({ params }: PageProps) {
           </div>
         ) : null}
 
+        {tldr ? (
+          <div className="mb-8 rounded-2xl border-l-4 border-primary bg-primary-soft/50 px-5 py-4">
+            <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-primary-ink">
+              TL;DR · 한 줄 요약
+            </div>
+            <p className="mt-1.5 text-[15px] font-semibold leading-relaxed text-foreground">
+              {tldr}
+            </p>
+          </div>
+        ) : null}
+
         {apartments.length > 0 ? (
           <div className="mb-10">
             <LocationSection
@@ -134,8 +153,14 @@ export default async function ReportPage({ params }: PageProps) {
 
         <ReportMarkdown markdown={markdown} />
 
-        {specsTrades.length > 0 ? (
+        {regionPercentile ? (
           <div className="mt-10">
+            <RegionPercentileBar data={regionPercentile} />
+          </div>
+        ) : null}
+
+        {specsTrades.length > 0 ? (
+          <div className="mt-6">
             <ApartmentSpecs
               trades={specsTrades}
               totalUnits={mainApt?.totalUnits ?? null}
@@ -148,6 +173,16 @@ export default async function ReportPage({ params }: PageProps) {
         {trades.length > 0 ? (
           <div className="mt-6">
             <PriceChart trades={trades} apartmentName={apartmentName} />
+          </div>
+        ) : null}
+
+        {compareSuggestions.length > 0 && mainApt ? (
+          <div className="mt-10">
+            <CompareSuggestionsCard
+              currentApartmentId={mainApt.id}
+              currentApartmentName={mainApt.name}
+              suggestions={compareSuggestions}
+            />
           </div>
         ) : null}
 

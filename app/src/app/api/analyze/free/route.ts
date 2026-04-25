@@ -6,9 +6,12 @@ import { checkFreeQuota, consumeFreeQuota } from '@/lib/quota';
 import { generateFreeDeepSingleReport } from '@/lib/claude';
 import { loadProfile } from '@/lib/profile';
 import { calcJeonseRatio, type RentPoint } from '@/lib/jeonse-ratio';
+import { calcRegionPercentile } from '@/lib/region-stats';
+import { fetchCompareSuggestions } from '@/lib/compare-suggestions';
+import { calcPricePerPyeong } from '@/lib/utils';
 import type { ApartmentWithLatestPrice } from '@/types/apartment';
 import type { UserProfile } from '@/types/profile';
-import { buildMockFreeReport } from '@/lib/mock-reports';
+import { buildMockFreeReport, buildMockTldr } from '@/lib/mock-reports';
 
 const schema = z.object({
   apartmentId: z.string().uuid(),
@@ -106,6 +109,25 @@ export async function POST(request: Request) {
   }));
 
   const jeonseRatio = calcJeonseRatio(trades, rents);
+  const regionPercentile = await calcRegionPercentile(
+    apartmentId,
+    aptRow.dong_code ?? null,
+    trades
+  ).catch(() => null);
+
+  // 비교 추천 단지 (현 단지의 평당가 평균을 기준으로)
+  const myMarketTrades = trades.filter((t) => t.dealType !== '직거래');
+  const myAvgPpy =
+    myMarketTrades.length > 0
+      ? Math.round(
+          myMarketTrades.reduce((s, t) => s + calcPricePerPyeong(t.priceM10k, t.areaM2), 0) /
+            myMarketTrades.length
+        )
+      : 0;
+  const compareSuggestions = myAvgPpy > 0
+    ? await fetchCompareSuggestions(apartmentId, aptRow.dong_code ?? null, myAvgPpy).catch(() => [])
+    : [];
+
   const latest = trades[0];
 
   const apartment: ApartmentWithLatestPrice = {
@@ -156,6 +178,9 @@ export async function POST(request: Request) {
     );
   }
 
+  // TL;DR — mock builder는 결정론적이라 항상 생성. Claude API 모드에서도 mock으로 보조 가능.
+  const tldr = buildMockTldr(apartment, profile);
+
   const { data: report, error: reportError } = await supabase
     .from('reports')
     .insert({
@@ -173,6 +198,8 @@ export async function POST(request: Request) {
         : null,
       content: {
         markdown,
+        tldr,
+        compareSuggestions,
         trades: apartment.trades ?? [],
         apartmentName: apartment.name,
         apartments: [
@@ -187,6 +214,7 @@ export async function POST(request: Request) {
             totalUnits: apartment.totalUnits ?? null,
             builtYear: apartment.builtYear ?? null,
             jeonseRatio, // null 또는 { ratio, pct, saleAvg10k, jeonseAvg10k, ... }
+            regionPercentile, // null 또는 { scope, regionAvg, diffPct, ... }
           },
         ],
         generatedAt: new Date().toISOString(),

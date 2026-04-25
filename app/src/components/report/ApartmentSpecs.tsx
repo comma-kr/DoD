@@ -1,4 +1,4 @@
-import { Home, Ruler, Users } from 'lucide-react';
+import { Home, Ruler, Users, Receipt, Wallet } from 'lucide-react';
 import {
   calcPricePerPyeong,
   formatPrice10k,
@@ -14,6 +14,31 @@ interface Props {
   totalUnits?: number | null;
   builtYear?: number | null;
   jeonseRatio?: JeonseRatioResult | null;
+}
+
+// 취득세율 (1주택자 기준, 2026년 시점)
+// - 6억 이하: 1.0%, 6억~9억: 1~3% 누진, 9억 초과: 3%
+function calcAcquisitionTax(price10k: number): number {
+  const eok = price10k / 10000;
+  if (eok <= 6) return Math.round(price10k * 0.01);
+  if (eok <= 9) {
+    // 6~9억 구간 누진: (가격 × 2/3억 - 3) / 100
+    const rate = (eok * (2 / 3) - 3) / 100;
+    return Math.round(price10k * rate);
+  }
+  return Math.round(price10k * 0.03);
+}
+
+// 부동산 중개 수수료 상한 (2024 개정)
+// - 9억 미만: 0.4%, 9억~12억: 0.5%, 12억~15억: 0.6%, 15억 초과: 0.7%
+function calcBrokerageFee(price10k: number): number {
+  const eok = price10k / 10000;
+  let rate: number;
+  if (eok < 9) rate = 0.004;
+  else if (eok < 12) rate = 0.005;
+  else if (eok < 15) rate = 0.006;
+  else rate = 0.007;
+  return Math.round(price10k * rate);
 }
 
 interface AreaBucket {
@@ -64,6 +89,24 @@ export default function ApartmentSpecs({
   const top = topAreaBuckets(trades);
   const age = builtYear ? 2026 - builtYear : null;
   const hasJeonse = jeonseRatio !== null && jeonseRatio !== undefined;
+
+  // 초기비용 = 취득세 + 중개수수료 (대표 평형 A 매매 평균 기준)
+  // 대표 평형 평균 평당가가 아닌 그 평형 매매 평균가 사용 — 거래 raw 평균
+  const refTrades = top[0]?.trades ?? [];
+  const refSaleAvg10k = refTrades.length > 0
+    ? Math.round(refTrades.filter((t) => t.dealType !== '직거래').reduce((s, t) => s + t.priceM10k, 0) /
+        Math.max(1, refTrades.filter((t) => t.dealType !== '직거래').length))
+    : 0;
+  const acquisitionTax = refSaleAvg10k > 0 ? calcAcquisitionTax(refSaleAvg10k) : 0;
+  const brokerage = refSaleAvg10k > 0 ? calcBrokerageFee(refSaleAvg10k) : 0;
+  const initialCost = acquisitionTax + brokerage;
+  const refArea = top[0]?.areaM2;
+
+  // 갭 = 매매 평균 - 전세 평균 (전세가율의 saleAvg/jeonseAvg 활용)
+  const gapAmount =
+    hasJeonse && jeonseRatio
+      ? jeonseRatio.saleAvg10k - jeonseRatio.jeonseAvg10k
+      : null;
 
   return (
     <section className="rounded-3xl border border-border bg-surface p-6 shadow-sm">
@@ -133,6 +176,53 @@ export default function ApartmentSpecs({
           </div>
         )}
       </div>
+
+      {/* 두번째 행: 초기비용 시뮬레이션 + 갭투자 시뮬레이션 */}
+      {refSaleAvg10k > 0 ? (
+        <div className="mt-3 grid auto-rows-fr gap-3 break-keep sm:grid-cols-2">
+          {/* 초기비용 = 취득세 + 중개수수료 */}
+          <div
+            className={`flex flex-col rounded-2xl border border-border bg-surface p-4 ${CARD_TINT.warning}`}
+          >
+            <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-foreground-sub">
+              <Receipt className="h-3.5 w-3.5" />
+              매수 초기비용
+            </div>
+            <div className="mt-2 text-lg font-bold text-foreground">
+              약 {formatPrice10k(initialCost)}
+            </div>
+            <div className="mt-1 text-[11px] leading-relaxed text-foreground-sub">
+              취득세 {formatPrice10k(acquisitionTax)} · 중개수수료 {formatPrice10k(brokerage)}
+            </div>
+            <div className="mt-auto pt-2 text-[11px] text-foreground-sub">
+              전용 {refArea}㎡ 매매 평균 {formatPrice10k(refSaleAvg10k)} 기준 · 1주택자 가정
+            </div>
+          </div>
+
+          {/* 갭투자 시뮬 = 매매 - 전세 */}
+          <div
+            className={`flex flex-col rounded-2xl border border-border bg-surface p-4 ${
+              hasJeonse ? CARD_TINT.success : CARD_TINT.neutral
+            }`}
+          >
+            <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-foreground-sub">
+              <Wallet className="h-3.5 w-3.5" />
+              갭투자 시 필요자금
+            </div>
+            <div className="mt-2 text-lg font-bold text-foreground">
+              {gapAmount !== null ? `약 ${formatPrice10k(gapAmount)}` : '정보 준비 중'}
+            </div>
+            <div className="mt-1 text-[11px] leading-relaxed text-foreground-sub">
+              {hasJeonse && jeonseRatio
+                ? `매매 ${formatPrice10k(jeonseRatio.saleAvg10k)} - 전세 ${formatPrice10k(jeonseRatio.jeonseAvg10k)}`
+                : '전세 평균이 없어 산출 불가'}
+            </div>
+            <div className="mt-auto pt-2 text-[11px] text-foreground-sub">
+              전세 끼고 매수 시 자기자금 추산값 · 참고용
+            </div>
+          </div>
+        </div>
+      ) : null}
     </section>
   );
 }

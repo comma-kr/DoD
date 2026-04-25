@@ -749,6 +749,48 @@ const DISCLAIMER = `---
 
 ※ 본 자료는 공공데이터 기반 참고용 정보이며, 투자 판단이 아닙니다. 판단의 책임은 이용자에게 있습니다.`;
 
+// 한 줄 요약 (TL;DR) — 단지 + 가구 형태 조합으로 결정론적 한 줄 생성.
+// 본문 위에 별도 박스로 노출됨.
+export function buildMockTldr(
+  apt: ApartmentWithLatestPrice,
+  profile: UserProfile | null
+): string {
+  const f = deriveFacts(apt);
+  // 핵심 형용 3종: 규모 + 연식 + 입지
+  const scale = f.units >= 3000 ? '대단지' : f.units >= 1000 ? '중대형' : '중형';
+  const ageWord =
+    f.age > 0 && f.age <= 10 ? '준신축' : f.age <= 20 ? '연식 있는' : f.age > 0 ? '구축' : '';
+  const stationWord =
+    f.walkMin > 0 && f.walkMin <= 5
+      ? '초역세권'
+      : f.walkMin > 0 && f.walkMin <= 10
+      ? '역세권'
+      : '도보권';
+
+  // 가구 시점 — 한 단지를 어떤 관점으로 봐야 하는지
+  const angle = (() => {
+    if (!profile) return '데이터로 본';
+    switch (profile.householdType) {
+      case 'single':
+        return '1인가구가 통근·생활편의 기준으로 본';
+      case 'couple':
+        return '2인가구가 정주 안정성 기준으로 본';
+      case 'newlywed':
+        return '신혼이 5~10년 후를 함께 본';
+      case 'family_kids':
+        return '자녀 있는 가족이 학군·통학 기준으로 본';
+      case 'school_parent':
+        return '학군 중심 학부모가 본';
+      case 'retired':
+        return '은퇴 후 정주를 기준으로 본';
+      case 'investor':
+        return '참고용 데이터 정리';
+    }
+  })();
+
+  return `${angle} ${scale}${ageWord ? ' · ' + ageWord : ''}${stationWord ? ' · ' + stationWord : ''}, ${f.district || '서울'}${f.dong ? ' ' + f.dong : ''} 일대의 ${f.scaleLabel || '대표 단지'}.`;
+}
+
 export function buildMockFreeReport(
   apt: ApartmentWithLatestPrice,
   profile: UserProfile | null
