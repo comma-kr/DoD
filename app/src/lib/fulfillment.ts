@@ -47,28 +47,23 @@ export async function fulfillPendingPayment(
   if (aptRows && aptRows.length > 0) {
     const { data: trades } = await supabase
       .from('trade_history')
-      .select('apartment_id, price_10k, area_m2, deal_date, floor')
+      .select('apartment_id, price_10k, area_m2, deal_date, floor, deal_type')
       .in('apartment_id', apartmentIds)
       .order('deal_date', { ascending: false });
     for (const t of trades ?? []) {
       const list = tradesByApt.get(t.apartment_id);
+      const point = {
+        dealDate: t.deal_date,
+        priceM10k: t.price_10k,
+        areaM2: t.area_m2,
+        floor: t.floor ?? undefined,
+        dealType: (t as { deal_type?: string | null }).deal_type ?? null,
+      };
       // 단지당 24건까지만 보관 (이미 desc 정렬이라 앞 24건이 최근)
       if (!list) {
-        tradesByApt.set(t.apartment_id, [
-          {
-            dealDate: t.deal_date,
-            priceM10k: t.price_10k,
-            areaM2: t.area_m2,
-            floor: t.floor ?? undefined,
-          },
-        ]);
+        tradesByApt.set(t.apartment_id, [point]);
       } else if (list.length < 24) {
-        list.push({
-          dealDate: t.deal_date,
-          priceM10k: t.price_10k,
-          areaM2: t.area_m2,
-          floor: t.floor ?? undefined,
-        });
+        list.push(point);
       }
     }
   }

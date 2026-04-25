@@ -21,7 +21,13 @@ interface AreaBucket {
   avgPricePerPyeong: number;
 }
 
+// 직거래(가족간·증여성)는 시세 왜곡이라 평균 계산에서 제외 — 호갱노노·아실 표준
+function isMarketTrade(t: TradePoint): boolean {
+  return t.dealType !== '직거래';
+}
+
 // 거래를 정수 전용면적(㎡)으로 버킷팅 → Top 2 추출 + 평균 평당가
+// (평형별 거래 빈도는 전체 trade로 카운트, 평당가 평균은 직거래 제외 후 산정)
 function topAreaBuckets(trades: TradePoint[]): AreaBucket[] {
   if (trades.length === 0) return [];
   const map = new Map<number, TradePoint[]>();
@@ -32,14 +38,16 @@ function topAreaBuckets(trades: TradePoint[]): AreaBucket[] {
   }
   const buckets: AreaBucket[] = [...map.entries()]
     .map(([areaM2, list]) => {
-      const sum = list.reduce(
+      const market = list.filter(isMarketTrade);
+      const sample = market.length > 0 ? market : list; // 직거래만 있는 평형은 그대로
+      const sum = sample.reduce(
         (s, t) => s + calcPricePerPyeong(t.priceM10k, t.areaM2),
         0
       );
       return {
         areaM2,
         trades: list,
-        avgPricePerPyeong: Math.round(sum / list.length),
+        avgPricePerPyeong: Math.round(sum / sample.length),
       };
     })
     .sort((a, b) => b.trades.length - a.trades.length);

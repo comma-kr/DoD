@@ -13,10 +13,15 @@ export function formatPrice10k(price10k: number): string {
 
 // 1평 = 3.3058㎡. 만원 단위 입력, 만원/평 반환.
 const PYEONG_M2 = 3.3058;
+// 전용면적 → 공급면적 환산 비율 (한국 아파트 통상 공용면적 ≈ 23%)
+// 호갱노노/아실/네이버부동산 모두 "공급면적 기준" 평당가 사용.
+const SUPPLY_RATIO = 0.77;
 
 export function calcPricePerPyeong(price10k: number, areaM2: number): number {
   if (!areaM2 || areaM2 <= 0) return 0;
-  return Math.round((price10k * PYEONG_M2) / areaM2);
+  // 공급면적 기준 = (가격 × 1평) / (전용 / 공용비율)
+  //              = price10k × PYEONG_M2 × SUPPLY_RATIO / areaM2
+  return Math.round((price10k * PYEONG_M2 * SUPPLY_RATIO) / areaM2);
 }
 
 export function formatPricePerPyeong(manWon: number): string {

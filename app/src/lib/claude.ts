@@ -13,6 +13,7 @@ import {
   PRIORITY_LABELS,
   COMMUTE_LABELS,
 } from '@/types/profile';
+import { calcPricePerPyeong, typicalPublicPyeong } from './utils';
 
 // 키가 비어있을 때 모듈 로드만으로 throw되지 않도록 지연 초기화한다.
 // (dev에서 키 없이 mock으로 동작하는 경로를 import해도 안전하게 통과시킴)
@@ -144,9 +145,9 @@ export async function generateFreeDeepSingleReport(
   const age = apartment.builtYear ? 2026 - apartment.builtYear : null;
 
   const area = apartment.latestAreaM2 ?? 84.99;
-  const pyeong = Math.round((area / 3.3058) * 10) / 10;
+  const pyeong = typicalPublicPyeong(area);
   const pricePerPyeong = apartment.latestPrice10k
-    ? Math.round((apartment.latestPrice10k * 3.3058) / area)
+    ? calcPricePerPyeong(apartment.latestPrice10k, area)
     : null;
 
   const sortedTrades = [...(apartment.trades ?? [])].sort(
@@ -158,7 +159,7 @@ export async function generateFreeDeepSingleReport(
           .slice(-12)
           .map(
             (t) =>
-              `  - ${t.dealDate.slice(0, 7)}: ${formatPrice10k(t.priceM10k)} · 평당 ${Math.round((t.priceM10k * 3.3058) / t.areaM2).toLocaleString()}만원${t.floor ? ` · ${t.floor}층` : ''}`
+              `  - ${t.dealDate.slice(0, 7)}: ${formatPrice10k(t.priceM10k)} · 평당 ${calcPricePerPyeong(t.priceM10k, t.areaM2).toLocaleString()}만원${t.floor ? ` · ${t.floor}층` : ''}`
           )
           .join('\n')
       : '  - (실거래 데이터 없음)';
@@ -246,9 +247,9 @@ export async function generateCompareReport(
         : '정보 없음';
 
       const area = apt.latestAreaM2 ?? 84.99;
-      const pyeong = Math.round((area / 3.3058) * 10) / 10;
+      const pyeong = typicalPublicPyeong(area);
       const pricePerPyeong = apt.latestPrice10k
-        ? Math.round((apt.latestPrice10k * 3.3058) / area)
+        ? calcPricePerPyeong(apt.latestPrice10k, area)
         : null;
       const walkMin = apt.stationDistanceM
         ? Math.max(1, Math.round(apt.stationDistanceM / 70))

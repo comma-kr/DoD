@@ -33,4 +33,5 @@ export interface TradePoint {
   priceM10k: number; // price_10k, 만원
   areaM2: number;
   floor?: number;
+  dealType?: string | null; // '중개거래' | '직거래' | null (구 데이터)
 }
