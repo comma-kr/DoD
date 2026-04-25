@@ -749,8 +749,8 @@ const DISCLAIMER = `---
 
 ※ 본 자료는 공공데이터 기반 참고용 정보이며, 투자 판단이 아닙니다. 판단의 책임은 이용자에게 있습니다.`;
 
-// 한 줄 요약 (TL;DR) — 단지 + 가구 형태 조합으로 결정론적 한 줄 생성.
-// 본문 위에 별도 박스로 노출됨.
+// 한 줄 요약 (TL;DR) — 단지 + 가구 형태 조합으로 1인칭 직접 화법 한 줄 생성.
+// 본문 위에 별도 박스로 노출됨. "이 단지를 [당신] 입장에서 한 줄로 정리하면" 톤.
 export function buildMockTldr(
   apt: ApartmentWithLatestPrice,
   profile: UserProfile | null
@@ -766,29 +766,45 @@ export function buildMockTldr(
       : f.walkMin > 0 && f.walkMin <= 10
       ? '역세권'
       : '도보권';
+  const tagline = [stationWord, scale, ageWord].filter(Boolean).join(' · ');
+  const where = `${f.district || '서울'}${f.dong ? ' ' + f.dong : ''}`;
 
-  // 가구 시점 — 한 단지를 어떤 관점으로 봐야 하는지
-  const angle = (() => {
-    if (!profile) return '데이터로 본';
-    switch (profile.householdType) {
-      case 'single':
-        return '1인가구가 통근·생활편의 기준으로 본';
-      case 'couple':
-        return '2인가구가 정주 안정성 기준으로 본';
-      case 'newlywed':
-        return '신혼이 5~10년 후를 함께 본';
-      case 'family_kids':
-        return '자녀 있는 가족이 학군·통학 기준으로 본';
-      case 'school_parent':
-        return '학군 중심 학부모가 본';
-      case 'retired':
-        return '은퇴 후 정주를 기준으로 본';
-      case 'investor':
-        return '참고용 데이터 정리';
-    }
-  })();
+  if (!profile) {
+    return `${where} 일대의 ${tagline} 단지로, 데이터로 보면 ${f.scaleLabel || '주거 정체성이 뚜렷한'} 포지션이에요.`;
+  }
 
-  return `${angle} ${scale}${ageWord ? ' · ' + ageWord : ''}${stationWord ? ' · ' + stationWord : ''}, ${f.district || '서울'}${f.dong ? ' ' + f.dong : ''} 일대의 ${f.scaleLabel || '대표 단지'}.`;
+  // 1순위 우선순위 → 풀어드릴 핵심 관점
+  const top = profile.priorities[0];
+  const lens = top
+    ? {
+        transport: '출퇴근 동선',
+        school: '학군과 통학 환경',
+        convenience: '생활 편의와 상권',
+        quiet: '주거 분위기',
+        newbuild: '연식과 시설 상태',
+        size: '평수와 단지 규모',
+        price: '가격 안정성',
+        community: '단지 커뮤니티',
+      }[top]
+    : '입지 전반';
+
+  // 가구별 1인칭 직접 화법
+  switch (profile.householdType) {
+    case 'single':
+      return `1인가구의 ${lens} 기준으로 보면, ${where}의 이 ${tagline} 단지는 자기 동선 하나에 집중할 수 있는 포지션이에요.`;
+    case 'couple':
+      return `2인가구의 ${lens} 기준으로 보면, ${where}의 이 ${tagline} 단지는 둘이 정주하기 좋은 안정감이 있는 단지예요.`;
+    case 'newlywed':
+      return `신혼부부의 ${lens} 관점에서 풀어드리면, ${where}의 이 ${tagline} 단지는 지금과 5~10년 후를 함께 견딜 수 있을지가 핵심이에요.`;
+    case 'family_kids':
+      return `자녀 있는 가족의 ${lens} 관점에서 보면, ${where}의 이 ${tagline} 단지는 통학로와 학군 동선부터 먼저 짚어봐야 해요.`;
+    case 'school_parent':
+      return `학군 중심 학부모의 관점에서 풀어드리면, ${where}의 이 ${tagline} 단지는 배정 학교와 학원가 접근성이 첫 번째 체크포인트예요.`;
+    case 'retired':
+      return `은퇴 후 정주의 관점에서 보면, ${where}의 이 ${tagline} 단지는 보행·의료·생활 편의가 어떻게 짜이는지가 핵심이에요.`;
+    case 'investor':
+      return `참고용 데이터로 보면, ${where}의 이 ${tagline} 단지는 ${lens} 측면에서 ${f.scaleLabel || '뚜렷한 포지션'}을 가진 단지예요.`;
+  }
 }
 
 export function buildMockFreeReport(
