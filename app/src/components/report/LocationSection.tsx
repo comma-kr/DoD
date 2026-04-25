@@ -136,6 +136,7 @@ export default async function LocationSection({
         totalUnits={primary.totalUnits ?? null}
         builtYear={primary.builtYear ?? null}
         priorities={priorities ?? undefined}
+        householdType={householdType}
       />
 
       {/* 1. 실제 카카오 지도 + 도보 경로 + 리딩단지 구역 + 상권 클러스터 + 학교 */}
@@ -167,6 +168,7 @@ export default async function LocationSection({
         insights={insights}
         nearby={nearby}
         priorities={priorities ?? undefined}
+        householdType={householdType}
       />
 
       {/* 2. 내 출근지 3경로 (프로필 출근지 있을 때만) */}

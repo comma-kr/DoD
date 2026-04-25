@@ -1,13 +1,25 @@
 import Link from 'next/link';
 import { BarChart3, Target, ArrowRight } from 'lucide-react';
+import { HOUSEHOLD_SPEC } from '@/lib/household-priorities';
+import type { HouseholdType } from '@/types/profile';
 
-export default function UpsellCTAs() {
+interface Props {
+  householdType?: HouseholdType | null;
+}
+
+// 가구별 비교 CTA 카피 — "[가구] 입장에서 봐야 할 다른 단지" 식.
+function compareCtaBody(household: HouseholdType | null | undefined): string {
+  if (!household) return '2~3개 단지를 데이터로 비교';
+  return HOUSEHOLD_SPEC[household].ctaSuggestion;
+}
+
+export default function UpsellCTAs({ householdType }: Props = {}) {
   const ctas = [
     {
       href: '/compare',
       icon: <BarChart3 className="h-5 w-5" />,
       title: '옆 단지랑 나란히 보기',
-      body: '2~3개 단지를 데이터로 비교',
+      body: compareCtaBody(householdType),
       price: '990원',
       color: 'primary' as const,
     },

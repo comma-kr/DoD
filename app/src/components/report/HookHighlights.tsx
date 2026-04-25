@@ -9,7 +9,8 @@ import {
   GraduationCap,
 } from 'lucide-react';
 import { CARD_TINT, type TintTone } from '@/lib/card-tint';
-import type { Priority } from '@/types/profile';
+import type { Priority, HouseholdType } from '@/types/profile';
+import { resolveHookOrder, isCardWeakForHousehold, type HookKey } from '@/lib/household-priorities';
 
 interface Props {
   // 시세
@@ -35,15 +36,8 @@ interface Props {
 
   // 프로필 1순위 → 해당 카드를 첫번째로 끌어올림 + 강조
   priorities?: Priority[];
+  householdType?: HouseholdType | null;
 }
-
-// priority → cardKey 매핑
-const PRIORITY_TO_CARD: Partial<Record<Priority, string>> = {
-  price: 'price',
-  transport: 'transit',
-  school: 'school',
-  // size/community/quiet/newbuild/convenience 는 매핑 없음 (기본 순서)
-};
 
 function formatEok(manWon: number | null | undefined): string {
   if (!manWon) return '-';
@@ -78,6 +72,7 @@ export default function HookHighlights({
   totalUnits,
   builtYear,
   priorities,
+  householdType,
 }: Props) {
   const cards: Array<{
     key: string;
@@ -152,16 +147,15 @@ export default function HookHighlights({
 
   if (cards.length === 0) return null;
 
-  // 우선순위 1순위 → 해당 카드를 가장 앞으로
-  const topPriority = priorities?.[0];
-  const topCardKey = topPriority ? PRIORITY_TO_CARD[topPriority] : undefined;
-  if (topCardKey) {
-    const idx = cards.findIndex((c) => c.key === topCardKey);
-    if (idx > 0) {
-      const [hit] = cards.splice(idx, 1);
-      cards.unshift(hit);
-    }
-  }
+  // 가구 본질 우선순위 + 사용자 1순위 → 카드 정렬
+  // (1인가구는 학군 자동으로 가장 뒤로, 가족은 학군 가장 앞으로)
+  const order = resolveHookOrder(householdType, priorities);
+  cards.sort((a, b) => {
+    const ai = order.indexOf(a.key as HookKey);
+    const bi = order.indexOf(b.key as HookKey);
+    return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+  });
+  const topCardKey = cards[0]?.key;
 
   // 단지 정체성 한 줄 (세대수 + 연식)
   const identity =
@@ -195,11 +189,14 @@ export default function HookHighlights({
 
       <div className="grid auto-rows-fr grid-cols-2 gap-3 break-keep lg:grid-cols-4">
         {cards.map((card, idx) => {
-          const isTop = idx === 0 && !!topCardKey && card.key === topCardKey;
+          const isTop = idx === 0;
+          const isWeak = isCardWeakForHousehold(householdType, card.key as HookKey);
           return (
           <div
             key={card.key}
-            className={`relative flex flex-col overflow-hidden rounded-2xl border border-border bg-surface p-4 shadow-sm ${CARD_TINT[toneMap[card.accent]]} ${isTop ? 'ring-2 ring-primary/30' : ''}`}
+            className={`relative flex flex-col overflow-hidden rounded-2xl border border-border bg-surface p-4 shadow-sm ${CARD_TINT[toneMap[card.accent]]} ${
+              isTop ? 'ring-2 ring-primary/30' : ''
+            } ${isWeak ? 'opacity-60' : ''}`}
           >
             <div className="flex items-center justify-between">
               <div

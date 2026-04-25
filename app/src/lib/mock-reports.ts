@@ -402,7 +402,7 @@ function buildStrengths(f: ApartmentFacts, profile: UserProfile | null): string 
     );
   }
 
-  // 프로필 기반 추가 강점
+  // 프로필 기반 추가 강점 — 가구별 본질 키워드 한 줄
   if (profile?.householdType === 'family_kids' || profile?.householdType === 'school_parent') {
     if (f.district) {
       strengths.push(
@@ -410,14 +410,35 @@ function buildStrengths(f: ApartmentFacts, profile: UserProfile | null): string 
       );
     }
   }
-  if (profile?.householdType === 'single' && f.units >= 2000) {
+  if (profile?.householdType === 'single') {
+    if (f.units >= 2000) {
+      strengths.push(
+        `- **1인 일상이 단지 안에서** — 대단지 상가에 카페·편의점·헬스장이 있어 퇴근 후 동선이 짧고, 야간에도 단지 내 조명·CCTV가 안정적이에요.`
+      );
+    } else if (f.walkMin > 0 && f.walkMin <= 7) {
+      strengths.push(
+        `- **1인 통근에 최적** — ${f.stationName} 도보 ${f.walkMin}분이라 출퇴근 피로 누적이 적고, 배달·외식 동선도 역세권 상권으로 자연스럽게 이어져요.`
+      );
+    }
+  }
+  if (profile?.householdType === 'couple') {
     strengths.push(
-      `- **1인가구 편의** — 대단지 상가와 커뮤니티 시설 덕에 혼자 살아도 일상 동선이 단지 내에서 상당히 해결돼요.`
+      `- **둘이 정주하기 좋은 구조** — ${f.units.toLocaleString()}세대 규모와 ${f.stationName ?? '인근'} 접근성은 두 사람의 통근·생활 리듬을 분산 없이 맞추기 좋은 포지션이에요.`
+    );
+  }
+  if (profile?.householdType === 'newlywed') {
+    strengths.push(
+      `- **5~10년 후도 함께** — 지금의 통근 효율과 미래 자녀 학군 후보를 동시에 검토할 수 있는 구간이에요. 평수 확장 가능성도 함께 보세요.`
     );
   }
   if (profile?.householdType === 'retired') {
     strengths.push(
-      `- **안정적인 관리 구조** — ${f.units.toLocaleString()}세대 규모는 관리 사무소 체계가 탄탄한 편이라 은퇴 후 주거 안정감 측면에서 이점이 있어요.`
+      `- **은퇴 후 정주 안정성** — ${f.units.toLocaleString()}세대 규모는 관리 체계가 탄탄하고, 단지 내 평지·엘리베이터·종합 보안이 고령 거주에 유리한 편이에요.`
+    );
+  }
+  if (profile?.householdType === 'investor') {
+    strengths.push(
+      `- **거래 활성도 관점** — ${f.units.toLocaleString()}세대 규모는 매물 다양성과 임차 수요 측면에서 거래가 잠잠하지 않을 가능성이 있어요.`
     );
   }
 
