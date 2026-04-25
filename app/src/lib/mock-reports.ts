@@ -13,7 +13,7 @@ import type {
   Priority,
   CommuteArea,
 } from '@/types/profile';
-import { HOUSEHOLD_LABELS, COMMUTE_LABELS } from '@/types/profile';
+import { HOUSEHOLD_LABELS, COMMUTE_LABELS, PRIORITY_LABELS } from '@/types/profile';
 import {
   calcPricePerPyeong,
   formatPricePerPyeong,
@@ -775,7 +775,8 @@ export function buildMockFreeReport(
 // ========= 비교 리포트 (990원 상품) =========
 
 export function buildMockCompareReport(
-  apartments: ApartmentWithLatestPrice[]
+  apartments: ApartmentWithLatestPrice[],
+  profile: UserProfile | null = null
 ): string {
   const fmtPrice = (p?: number) => {
     if (!p) return '정보 없음';
@@ -817,6 +818,36 @@ export function buildMockCompareReport(
   const tableSeparator = ['---', ...apartments.map(() => '---')].join(' | ');
   const rowData = (label: string, fn: (a: ApartmentWithLatestPrice) => string) =>
     [`**${label}**`, ...apartments.map(fn)].join(' | ');
+
+  // 단지별 6/12개월 상승률
+  const computeDeltas = (a: ApartmentWithLatestPrice) => {
+    const sorted = [...(a.trades ?? [])].sort(
+      (x, y) => new Date(x.dealDate).getTime() - new Date(y.dealDate).getTime()
+    );
+    const latest = sorted[sorted.length - 1];
+    let delta6: number | null = null;
+    let delta12: number | null = null;
+    if (latest) {
+      const latestTime = new Date(latest.dealDate).getTime();
+      const t6 = sorted.find(
+        (t) => new Date(t.dealDate).getTime() >= latestTime - 180 * 86400000
+      );
+      const t12 = sorted.find(
+        (t) => new Date(t.dealDate).getTime() >= latestTime - 365 * 86400000
+      );
+      if (t6 && t6 !== latest) {
+        delta6 = Math.round(((latest.priceM10k - t6.priceM10k) / t6.priceM10k) * 1000) / 10;
+      }
+      if (t12 && t12 !== latest) {
+        delta12 = Math.round(((latest.priceM10k - t12.priceM10k) / t12.priceM10k) * 1000) / 10;
+      }
+    }
+    return { delta6, delta12, count: sorted.length };
+  };
+  const deltasByApt = new Map(apartments.map((a) => [a.id, computeDeltas(a)]));
+  const fmtDelta = (d: number | null) =>
+    d !== null ? `${d > 0 ? '+' : ''}${d}%` : '-';
+
   const tableRows = [
     rowData('단지명', (a) => a.name),
     rowData('세대수', (a) => (a.totalUnits ? `${a.totalUnits.toLocaleString()}세대` : '-')),
@@ -833,6 +864,8 @@ export function buildMockCompareReport(
       const ppy = calcPricePerPyeong(a.latestPrice10k, a.latestAreaM2);
       return formatPricePerPyeong(ppy);
     }),
+    rowData('6개월 상승률', (a) => fmtDelta(deltasByApt.get(a.id)?.delta6 ?? null)),
+    rowData('12개월 상승률', (a) => fmtDelta(deltasByApt.get(a.id)?.delta12 ?? null)),
   ].join('\n');
 
   const priced = apartments.filter((a) => a.latestPrice10k);
@@ -873,19 +906,54 @@ export function buildMockCompareReport(
     })
     .join('\n');
 
-  return `## 🎯 한 장 요약
+  // 시세 흐름 비교 섹션
+  const trendBlock = (() => {
+    const lines = apartments.map((a) => {
+      const d = deltasByApt.get(a.id);
+      const d6 = d?.delta6 ?? null;
+      const d12 = d?.delta12 ?? null;
+      const cnt = d?.count ?? 0;
+      if (cnt === 0) {
+        return `- **${a.name}** — 관측 거래 없음`;
+      }
+      const parts: string[] = [];
+      if (d6 !== null) parts.push(`6개월 ${fmtDelta(d6)}`);
+      if (d12 !== null) parts.push(`12개월 ${fmtDelta(d12)}`);
+      const tail = parts.length > 0 ? parts.join(' · ') : '관측 기간 부족';
+      return `- **${a.name}** — ${tail} (${cnt}건 거래)`;
+    });
 
-${cards}
+    // 가장 많이 오른 단지 / 가장 적게 오른 단지
+    const ranked = apartments
+      .map((a) => ({ a, d: deltasByApt.get(a.id)?.delta12 ?? null }))
+      .filter((x) => x.d !== null) as { a: ApartmentWithLatestPrice; d: number }[];
 
-> ${priceGap}
+    let comment = '관측 기간이 짧아서 흐름 비교는 다음 분기에 다시 봐주세요.';
+    if (ranked.length >= 2) {
+      ranked.sort((x, y) => y.d - x.d);
+      const top = ranked[0];
+      const bot = ranked[ranked.length - 1];
+      const gap = Math.round((top.d - bot.d) * 10) / 10;
+      if (Math.abs(gap) < 1) {
+        comment = `세 단지 모두 비슷한 흐름이에요. 가격 순위 변화가 거의 없는 시기입니다.`;
+      } else {
+        comment = `12개월 기준 **${top.a.name}**이 가장 강한 흐름(${fmtDelta(top.d)}), **${bot.a.name}**이 상대적으로 약한 흐름(${fmtDelta(bot.d)})이에요. 두 단지 사이 ${gap}%p 차이는 같은 가격대 안에서도 흐름의 갈림길을 보여줘요.`;
+      }
+    }
 
-## 📊 나란히 비교표
+    return `${lines.join('\n')}\n\n${comment}`;
+  })();
 
-${tableHeader}
-${tableSeparator}
-${tableRows}
+  // 프로필 greeting
+  const profileGreeting = profile
+    ? `\n\n${HOUSEHOLD_LABELS[profile.householdType]}의 ${profile.priorities[0] ? PRIORITY_LABELS[profile.priorities[0]] : '균형'} 관점으로 풀어드릴게요.`
+    : '';
 
-## 🚇 교통 비교
+  // 우선순위 기반 섹션 순서: 1순위가 transport면 교통 비교를 시세 위로, school이면 규모·연식 다음에 학군 힌트를 붙임 등.
+  const priorityOrder = profile?.priorities ?? [];
+  const top = priorityOrder[0];
+
+  const sectionTransport = `## 🚇 교통 비교
 
 각 단지의 역까지 도보 분을 나란히 놓고 보면 어느 단지가 어떤 업무 권역에 더 유리한지 감이 잡혀요.
 
@@ -896,15 +964,23 @@ ${apartments
   )
   .join('\n')}
 
-출근지가 고정된 통근자라면, 같은 권역에서도 역거리 1~2분 차이가 누적되면서 월 단위로는 꽤 큰 차이를 만들어요.
+출근지가 고정된 통근자라면, 같은 권역에서도 역거리 1~2분 차이가 누적되면서 월 단위로는 꽤 큰 차이를 만들어요.${
+    top === 'transport'
+      ? '\n\n프로필상 출퇴근이 1순위라 이 섹션을 가장 먼저 배치했어요.'
+      : ''
+  }`;
 
-## 🏗️ 규모·연식 비교
+  const sectionScale = `## 🏗️ 규모·연식 비교
 
 세대수가 큰 단지는 커뮤니티 시설과 관리비 분담 구조에서 이점이 있어요. 반대로 세대수가 작은 단지는 조용한 주거 분위기와 빠른 의사결정(재건축·관리 이슈)에서 장점이 있을 수 있어요.
 
-입주년도 차이는 인테리어 상태, 설비 노후도, 리모델링 부담도에 직접 연결돼요. 10년 이상 차이가 나는 단지끼리 비교할 때 특히 중요한 포인트예요.
+입주년도 차이는 인테리어 상태, 설비 노후도, 리모델링 부담도에 직접 연결돼요. 10년 이상 차이가 나는 단지끼리 비교할 때 특히 중요한 포인트예요.${
+    top === 'school'
+      ? '\n\n학군 우선이라면 단지 규모도 같이 봐야 해요. 대단지는 보통 단지 내 어린이집·유치원 운영 확률이 높고, 학원가 접근성과 별개로 영유아 동선이 짧아져요.'
+      : ''
+  }`;
 
-## 💰 시세 포지션
+  const sectionPricePosition = `## 💰 시세 포지션
 
 ${
   priced.length === apartments.length && apartments.length >= 2
@@ -914,7 +990,35 @@ ${
         .map((a, i) => `${i + 1}위: **${a.name}** · ${fmtPrice(a.latestPrice10k)}`)
         .join('\n')}\n\n${priceGap} 이 차이만큼의 가치가 어디에서 오는지(세대수? 역거리? 연식?)를 짚어보면 선택 기준이 선명해져요.`
     : '일부 단지의 실거래가 데이터가 없어요. 국토부 실거래가 공개시스템에서 최신 데이터를 확인해보세요.'
-}
+}`;
+
+  const sectionTrend = `## 📈 시세 흐름 비교
+
+${trendBlock}`;
+
+  // 우선순위 1순위에 따라 핵심 섹션을 시세 포지션보다 위로 끌어올림
+  const middleSections =
+    top === 'transport'
+      ? [sectionTransport, sectionScale, sectionPricePosition, sectionTrend]
+      : top === 'price'
+      ? [sectionPricePosition, sectionTrend, sectionTransport, sectionScale]
+      : top === 'newbuild' || top === 'size' || top === 'community'
+      ? [sectionScale, sectionTransport, sectionPricePosition, sectionTrend]
+      : [sectionTransport, sectionScale, sectionPricePosition, sectionTrend];
+
+  return `## 🎯 한 장 요약
+
+${cards}
+
+> ${priceGap}${profileGreeting}
+
+## 📊 나란히 비교표
+
+${tableHeader}
+${tableSeparator}
+${tableRows}
+
+${middleSections.join('\n\n')}
 
 ## 🎭 이런 분에게 어울려요
 

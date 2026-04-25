@@ -4,8 +4,9 @@
 import { createSupabaseAdminClient } from './supabase/server';
 import { generateCompareReport } from './claude';
 import { buildMockCompareReport } from './mock-reports';
+import { loadProfile } from './profile';
 import { PRODUCT_NAMES, type ProductId } from './pricing';
-import type { ApartmentWithLatestPrice } from '@/types/apartment';
+import type { ApartmentWithLatestPrice, TradePoint } from '@/types/apartment';
 
 export interface PendingPaymentRow {
   order_id: string;
@@ -36,31 +37,45 @@ export async function fulfillPendingPayment(
   const productId = pending.product_id as ProductId;
   const apartmentIds = pending.apartment_ids;
 
-  // 1) 단지 데이터 + 최근 실거래가 로드
+  // 1) 단지 데이터 + 단지별 최근 24건 실거래가 로드 (시세 흐름 비교용)
   const { data: aptRows } = await supabase
     .from('apartments')
     .select('*')
     .in('id', apartmentIds);
 
-  const latestTradesByApt = new Map<string, { priceM10k: number; areaM2: number }>();
+  const tradesByApt = new Map<string, TradePoint[]>();
   if (aptRows && aptRows.length > 0) {
     const { data: trades } = await supabase
       .from('trade_history')
-      .select('apartment_id, price_10k, area_m2, deal_date')
+      .select('apartment_id, price_10k, area_m2, deal_date, floor')
       .in('apartment_id', apartmentIds)
       .order('deal_date', { ascending: false });
     for (const t of trades ?? []) {
-      if (!latestTradesByApt.has(t.apartment_id)) {
-        latestTradesByApt.set(t.apartment_id, {
+      const list = tradesByApt.get(t.apartment_id);
+      // 단지당 24건까지만 보관 (이미 desc 정렬이라 앞 24건이 최근)
+      if (!list) {
+        tradesByApt.set(t.apartment_id, [
+          {
+            dealDate: t.deal_date,
+            priceM10k: t.price_10k,
+            areaM2: t.area_m2,
+            floor: t.floor ?? undefined,
+          },
+        ]);
+      } else if (list.length < 24) {
+        list.push({
+          dealDate: t.deal_date,
           priceM10k: t.price_10k,
           areaM2: t.area_m2,
+          floor: t.floor ?? undefined,
         });
       }
     }
   }
 
   const apartments: ApartmentWithLatestPrice[] = (aptRows ?? []).map((row) => {
-    const latest = latestTradesByApt.get(row.id);
+    const trades = tradesByApt.get(row.id) ?? [];
+    const latest = trades[0]; // desc 정렬 → 최신
     return {
       id: row.id,
       name: row.name,
@@ -72,18 +87,30 @@ export async function fulfillPendingPayment(
       latitude: row.latitude,
       longitude: row.longitude,
       latestPrice10k: latest?.priceM10k,
+      latestDealDate: latest?.dealDate,
       latestAreaM2: latest?.areaM2,
+      trades,
     };
   });
+
+  // 1.5) 비교 리포트 개인화: 사용자 프로필 로드 (실패해도 진행)
+  let profile = null;
+  if (productId === 'compare_report') {
+    try {
+      profile = await loadProfile(pending.phone);
+    } catch {
+      profile = null;
+    }
+  }
 
   // 2) 리포트 마크다운 생성 (상품별 분기)
   let markdown: string;
   try {
     if (productId === 'compare_report') {
       if (process.env.NODE_ENV === 'development' && !process.env.ANTHROPIC_API_KEY) {
-        markdown = buildMockCompareReport(apartments);
+        markdown = buildMockCompareReport(apartments, profile);
       } else {
-        markdown = await generateCompareReport(apartments);
+        markdown = await generateCompareReport(apartments, profile);
       }
     } else {
       markdown = `# ${PRODUCT_NAMES[productId]}\n\n곧 제공될 예정이에요. 조금만 기다려주세요.`;
@@ -123,6 +150,9 @@ export async function fulfillPendingPayment(
           stationDistanceM: a.stationDistanceM ?? null,
           totalUnits: a.totalUnits ?? null,
           builtYear: a.builtYear ?? null,
+          latestPrice10k: a.latestPrice10k ?? null,
+          latestAreaM2: a.latestAreaM2 ?? null,
+          trades: a.trades ?? [],
         })),
         generatedAt: new Date().toISOString(),
       },

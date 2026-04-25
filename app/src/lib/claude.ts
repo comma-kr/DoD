@@ -14,9 +14,20 @@ import {
   COMMUTE_LABELS,
 } from '@/types/profile';
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY!,
-});
+// 키가 비어있을 때 모듈 로드만으로 throw되지 않도록 지연 초기화한다.
+// (dev에서 키 없이 mock으로 동작하는 경로를 import해도 안전하게 통과시킴)
+let _anthropic: Anthropic | null = null;
+function getAnthropic(): Anthropic {
+  if (_anthropic) return _anthropic;
+  const key = process.env.ANTHROPIC_API_KEY;
+  if (!key) {
+    throw new Error(
+      'ANTHROPIC_API_KEY 가 비어있어요. dev에서는 mock 분기로 가야 합니다.'
+    );
+  }
+  _anthropic = new Anthropic({ apiKey: key });
+  return _anthropic;
+}
 
 const MODEL = 'claude-sonnet-4-5';
 
@@ -90,7 +101,7 @@ const COMPARE_REPORT_STRUCTURE = `
 
 ## 📊 나란히 비교표
 마크다운 표 형식. 컬럼: 항목 / 단지 A / 단지 B (/ 단지 C).
-행: 세대수 / 입주년도 / 가장 가까운 역 / 역 거리 / 최근 실거래가.
+행: 세대수 / 입주년도 / 가장 가까운 역 / 역 거리(도보 분) / 최근 실거래가 / 평당가.
 숫자는 프롬프트 값 그대로.
 
 ## 🚇 교통 비교
@@ -104,6 +115,11 @@ const COMPARE_REPORT_STRUCTURE = `
 ## 💰 시세 포지션
 각 단지의 최근 실거래가를 나란히 놓고 절대값 비교만.
 "같은 가격대 내에서의 선택지"로 프레이밍.
+
+## 📈 시세 흐름 비교
+프롬프트에 주어진 6개월/12개월 상승률을 단지별로 나란히. 새로 계산하지 말 것.
+누가 더 많이 올랐는지, 흐름이 비슷한지/엇갈리는지를 한두 문단으로.
+데이터가 부족한 단지는 "관측 데이터 부족"으로 명시.
 
 ## 🎭 이런 분에게 어울려요
 각 단지별로 "○○한 사람에게는 A가", "△△한 사람에게는 B가 어울릴 수 있어요" 형식.
@@ -204,7 +220,7 @@ ${TONE_GUIDE}
 ${FREE_REPORT_STRUCTURE}
 `.trim();
 
-  const message = await anthropic.messages.create({
+  const message = await getAnthropic().messages.create({
     model: MODEL,
     max_tokens: 3500,
     messages: [{ role: 'user', content: prompt }],
@@ -218,23 +234,79 @@ ${FREE_REPORT_STRUCTURE}
 }
 
 export async function generateCompareReport(
-  apartments: ApartmentWithLatestPrice[]
+  apartments: ApartmentWithLatestPrice[],
+  profile: UserProfile | null = null
 ): Promise<string> {
   const apartmentBlocks = apartments
     .map((apt, i) => {
+      const letter = String.fromCharCode(65 + i);
       const age = apt.builtYear ? 2026 - apt.builtYear : null;
       const priceText = apt.latestPrice10k
         ? formatPrice10k(apt.latestPrice10k)
         : '정보 없음';
+
+      const area = apt.latestAreaM2 ?? 84.99;
+      const pyeong = Math.round((area / 3.3058) * 10) / 10;
+      const pricePerPyeong = apt.latestPrice10k
+        ? Math.round((apt.latestPrice10k * 3.3058) / area)
+        : null;
+      const walkMin = apt.stationDistanceM
+        ? Math.max(1, Math.round(apt.stationDistanceM / 70))
+        : null;
+
+      // 단지별 trade로 6/12개월 상승률 계산 (프롬프트에는 값만 전달)
+      const sortedTrades = [...(apt.trades ?? [])].sort(
+        (a, b) => new Date(a.dealDate).getTime() - new Date(b.dealDate).getTime()
+      );
+      const latest = sortedTrades[sortedTrades.length - 1];
+      let delta6m: number | null = null;
+      let delta12m: number | null = null;
+      if (latest) {
+        const latestTime = new Date(latest.dealDate).getTime();
+        const t6 = sortedTrades.find(
+          (t) => new Date(t.dealDate).getTime() >= latestTime - 180 * 86400000
+        );
+        const t12 = sortedTrades.find(
+          (t) => new Date(t.dealDate).getTime() >= latestTime - 365 * 86400000
+        );
+        if (t6 && t6 !== latest) {
+          delta6m = Math.round(((latest.priceM10k - t6.priceM10k) / t6.priceM10k) * 1000) / 10;
+        }
+        if (t12 && t12 !== latest) {
+          delta12m = Math.round(((latest.priceM10k - t12.priceM10k) / t12.priceM10k) * 1000) / 10;
+        }
+      }
+
+      const fmtDelta = (d: number | null) =>
+        d !== null ? `${d > 0 ? '+' : ''}${d}%` : '데이터 부족';
+
       return `
-## 단지 ${String.fromCharCode(65 + i)}: ${apt.name}
+## 단지 ${letter}: ${apt.name}
 - 주소: ${apt.address}
 - 세대수: ${apt.totalUnits ?? '정보 없음'}
 - 입주년도: ${apt.builtYear ?? '정보 없음'}${age ? ` (${age}년 차)` : ''}
-- 가장 가까운 역: ${apt.nearestStation ?? '?'} (${apt.stationDistanceM ?? '?'}m)
-- 최근 실거래가 (84㎡ 기준): ${priceText}`.trim();
+- 가장 가까운 역: ${apt.nearestStation ?? '?'} (${apt.stationDistanceM ?? '?'}m${walkMin ? `, 도보 ${walkMin}분` : ''})
+- 기준 면적: ${area}㎡ (약 ${pyeong}평)
+- 최근 실거래가: ${priceText}
+- 평당가: ${pricePerPyeong ? pricePerPyeong.toLocaleString() + '만원/평' : '정보 없음'}
+- 6개월 상승률 (제공값, 새로 계산 금지): ${fmtDelta(delta6m)}
+- 12개월 상승률 (제공값, 새로 계산 금지): ${fmtDelta(delta12m)}
+- 관측 거래 수: ${sortedTrades.length}건`.trim();
     })
     .join('\n\n');
+
+  const profileBlock = profile
+    ? `
+## 사용자 프로필 (이 관점으로 비교를 재구성)
+- 가구 형태: ${HOUSEHOLD_LABELS[profile.householdType]}
+- 우선순위 (중요도 순): ${profile.priorities.map((p) => PRIORITY_LABELS[p]).join(', ')}
+${profile.commuteArea && profile.commuteArea !== 'none' ? `- 주 출근지: ${COMMUTE_LABELS[profile.commuteArea]}` : ''}
+
+→ 우선순위 1순위 영역에 해당하는 비교 섹션을 가장 먼저, 가장 길게 풀어주세요.
+→ "🎯 한 장 요약" 끝 한 줄에 "[가구형태]+[1순위] 관점으로 풀어드릴게요" greeting을 자연스럽게 끼워넣으세요.
+→ "🎭 이런 분에게 어울려요" 섹션은 사용자 프로필을 직접 가리키며 작성하지 말 것 — 일반 페르소나 형태로 유지.
+`.trim()
+    : '';
 
   const prompt = `
 당신은 부동산 데이터 해설 전문가입니다. 투자 자문가가 아닙니다.
@@ -243,14 +315,16 @@ export async function generateCompareReport(
 
 ${apartmentBlocks}
 
+${profileBlock}
+
 ${TONE_GUIDE}
 
 ${COMPARE_REPORT_STRUCTURE}
 `.trim();
 
-  const message = await anthropic.messages.create({
+  const message = await getAnthropic().messages.create({
     model: MODEL,
-    max_tokens: 4000,
+    max_tokens: 4500,
     messages: [{ role: 'user', content: prompt }],
   });
 
