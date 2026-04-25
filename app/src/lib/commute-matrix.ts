@@ -131,6 +131,43 @@ export function getCommuteGrid(district: string): Array<{
   }));
 }
 
+// DB 우선 조회 (서버 컴포넌트에서 사용). 매트릭스 미스 시 코드 fallback.
+import { createSupabaseAdminClient } from './supabase/server';
+
+export async function getCommuteGridAsync(district: string): Promise<
+  Array<{ area: CommuteArea; label: string; estimate: CommuteEstimate | null }>
+> {
+  // DB 한 번에 조회
+  let dbMap: Partial<Record<CommuteArea, CommuteEstimate>> = {};
+  try {
+    const supabase = createSupabaseAdminClient();
+    const { data } = await supabase
+      .from('region_commute')
+      .select('commute_area, min_minutes, max_minutes, transfer_count, verdict, description')
+      .eq('district_name', district);
+
+    for (const row of data ?? []) {
+      const v = (row as { verdict: string }).verdict as CommuteEstimate['verdict'];
+      dbMap[(row as { commute_area: CommuteArea }).commute_area] = {
+        minMinutes: (row as { min_minutes: number }).min_minutes,
+        maxMinutes: (row as { max_minutes: number }).max_minutes,
+        transferCount: (row as { transfer_count: number }).transfer_count,
+        verdict: v,
+        description: (row as { description: string }).description,
+      };
+    }
+  } catch {
+    // DB 실패 → 코드 fallback
+    dbMap = {};
+  }
+
+  return MAIN_CBDS.map((area) => ({
+    area,
+    label: CBD_LABELS[area],
+    estimate: dbMap[area] ?? MATRIX[district]?.[area] ?? null,
+  }));
+}
+
 export function getVerdictColor(verdict: CommuteEstimate['verdict']): string {
   switch (verdict) {
     case '최적':

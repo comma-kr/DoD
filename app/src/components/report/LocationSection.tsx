@@ -4,7 +4,7 @@ import CommuteGrid from './CommuteGrid';
 import NeighborhoodMap from './NeighborhoodMap';
 import HookHighlights, { calcMonthlyMortgage } from './HookHighlights';
 import LifeScenario from './LifeScenario';
-import { getDistrictInsights, parseDistrictDong } from '@/lib/district-insights';
+import { getDistrictInsightsAsync, parseDistrictDong } from '@/lib/district-insights';
 import { findNearbyLargeApartments } from '@/lib/nearby-apartments';
 import {
   fetchCommercialClusters,
@@ -47,7 +47,7 @@ export default async function LocationSection({
 
   const primary = apartments[0];
   const { district, dong } = parseDistrictDong(primary.address);
-  const insights = getDistrictInsights(district, dong);
+  const insights = await getDistrictInsightsAsync(district, dong);
 
   // 좌표가 있으면 주변 데이터를 병렬 조회
   const hasCoord = primary.latitude !== null && primary.longitude !== null;

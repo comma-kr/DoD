@@ -1,5 +1,5 @@
 import { Clock, Briefcase } from 'lucide-react';
-import { getCommuteGrid, getVerdictColor } from '@/lib/commute-matrix';
+import { getCommuteGridAsync, getVerdictColor } from '@/lib/commute-matrix';
 import { COMMUTE_LABELS, type CommuteArea } from '@/types/profile';
 import { CARD_TINT, type TintTone } from '@/lib/card-tint';
 
@@ -16,14 +16,19 @@ const verdictTone: Record<string, TintTone> = {
   불편: 'danger',
 };
 
-export default function CommuteGrid({ address, highlightArea }: Props) {
-  const district = address.match(/서울(?:특별시)?\s+(\S+구)/)?.[1] ?? '';
+export default async function CommuteGrid({ address, highlightArea }: Props) {
+  // 서울 구 + 인천 군구 + 경기 시군 모두 매칭
+  const district =
+    address.match(/(\S+구)/)?.[1] ??
+    address.match(/(\S+시)(?!\s+\S+구)/)?.[1] ??
+    address.match(/(\S+군)/)?.[1] ??
+    '';
 
   if (!district) {
     return null;
   }
 
-  const grid = getCommuteGrid(district);
+  const grid = await getCommuteGridAsync(district);
   const hasData = grid.some((g) => g.estimate !== null);
 
   if (!hasData) {

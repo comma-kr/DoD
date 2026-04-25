@@ -1,6 +1,11 @@
-// 부동산 커뮤니티가 중요시하는 입지 요소 큐레이션 데이터
-// 현재는 시드 10개 단지가 속한 구/동 기준으로 하드코딩.
-// 후속으로 공공데이터·Kakao Local API·공시자료와 연동해 자동 생성으로 전환 예정.
+// 부동산 커뮤니티가 중요시하는 입지 요소 큐레이션 데이터.
+//
+// v1: 코드에 하드코딩 (서울 8개 구만)
+// v2 (현재): DB(region_insights) 조회로 전환. 코드 매트릭스는 DB 미스 시 fallback.
+//
+// 새 권역 추가 시:
+//   1) DB region_insights 테이블에 INSERT (admin UI 또는 SQL)
+//   2) 또는 아래 DISTRICT/DONG 객체에 추가 (PR 검수 흐름)
 
 export interface DevelopmentNews {
   title: string;
@@ -193,6 +198,7 @@ const DONG: Record<string, Record<string, DistrictInsight>> = {
   },
 };
 
+// 코드 fallback (DB 조회 실패 시)
 export function getDistrictInsights(district: string, dong: string): DistrictInsight {
   const base = DISTRICT[district] ?? {};
   const dongOverride = DONG[district]?.[dong];
@@ -200,11 +206,95 @@ export function getDistrictInsights(district: string, dong: string): DistrictIns
   return { ...base, ...dongOverride };
 }
 
+// DB 우선 조회 (서버 컴포넌트에서 사용)
+import { createSupabaseAdminClient } from './supabase/server';
+
+interface RegionInsightRow {
+  district_name: string;
+  dong_name: string | null;
+  scope: 'sgg' | 'dong';
+  school_district_label: string | null;
+  school_notes: string[] | null;
+  academy_cluster: string | null;
+  commercial_area: string | null;
+  major_stores: string[] | null;
+  parks: string[] | null;
+  hospitals: string[] | null;
+  developments: DevelopmentNews[] | null;
+}
+
+function rowToInsight(row: RegionInsightRow): DistrictInsight {
+  return {
+    schoolDistrictLabel: row.school_district_label ?? undefined,
+    schoolNotes: row.school_notes ?? undefined,
+    academyCluster: row.academy_cluster ?? undefined,
+    commercialArea: row.commercial_area ?? undefined,
+    majorStores: row.major_stores ?? undefined,
+    parks: row.parks ?? undefined,
+    hospitals: row.hospitals ?? undefined,
+    developments: row.developments ?? undefined,
+  };
+}
+
+export async function getDistrictInsightsAsync(
+  district: string,
+  dong: string
+): Promise<DistrictInsight> {
+  // 1순위: DB 조회 — district 이름 + scope='sgg' 와 dong override 둘 다.
+  try {
+    const supabase = createSupabaseAdminClient();
+    const { data: rows } = await supabase
+      .from('region_insights')
+      .select(
+        'district_name, dong_name, scope, school_district_label, school_notes, academy_cluster, commercial_area, major_stores, parks, hospitals, developments'
+      )
+      .eq('district_name', district)
+      .or(`scope.eq.sgg,and(scope.eq.dong,dong_name.eq.${dong})`);
+
+    if (rows && rows.length > 0) {
+      const sggRow = rows.find((r) => r.scope === 'sgg');
+      const dongRow = rows.find((r) => r.scope === 'dong' && r.dong_name === dong);
+      const base = sggRow ? rowToInsight(sggRow as RegionInsightRow) : {};
+      const overlay = dongRow ? rowToInsight(dongRow as RegionInsightRow) : null;
+      if (overlay) {
+        // dong에서 정의된 필드만 덮어씀
+        return {
+          ...base,
+          ...Object.fromEntries(
+            Object.entries(overlay).filter(([, v]) => v !== undefined)
+          ),
+        };
+      }
+      return base;
+    }
+  } catch {
+    // DB 실패 → 코드 fallback
+  }
+  return getDistrictInsights(district, dong);
+}
+
 export function parseDistrictDong(address: string): { district: string; dong: string } {
-  // K-Apt 주소는 "서울특별시 영등포구 여의도동 50" 형식
-  // 일부 데이터는 "서울 영등포구 ..." 형식
-  // 둘 다 커버하는 정규식
-  const district = address.match(/서울(?:특별시)?\s+(\S+구)/)?.[1] ?? '';
+  // 수도권 전체 커버:
+  //   서울특별시 영등포구 여의도동 50
+  //   인천광역시 연수구 송도동 ...
+  //   경기도 성남시 분당구 정자동 ...  → district = "성남시 분당구" 또는 "분당구"
+  //   경기도 고양시 일산동구 백석동 ... → district = "일산동구"
+  //   경기도 수원시 영통구 광교동 ...  → district = "영통구"
+  //   경기도 의정부시 ...           → district = "의정부시"
+  //   경기도 김포시 운양동 ...       → district = "김포시"
+  // 자치구가 있는 도시는 일반 구 이름이 우선, 없으면 시 이름.
+
+  // 1. 자치구 (강남구·분당구·일산서구 등) 우선
+  let district = address.match(/(\S+구)/)?.[1] ?? '';
+  // 2. 없으면 시 (의정부시·김포시 등)
+  if (!district) {
+    district = address.match(/(\S+시)(?!\s+\S+구)/)?.[1] ?? '';
+  }
+  // 3. 없으면 군 (가평군·양평군 등)
+  if (!district) {
+    district = address.match(/(\S+군)/)?.[1] ?? '';
+  }
+
   const dong = address.match(/(\S+동)/)?.[1] ?? '';
   return { district, dong };
 }
