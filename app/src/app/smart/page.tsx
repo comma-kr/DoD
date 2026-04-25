@@ -14,7 +14,7 @@ export default function SmartPickPage() {
           <ArrowLeft className="h-4 w-4" /> 분석으로 돌아가기
         </Link>
 
-        <div className="rounded-3xl border border-secondary/30 bg-gradient-to-b from-secondary/10 to-transparent p-8 text-center">
+        <div className="rounded-3xl border border-secondary/30 bg-primary-soft p-8 text-center">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-secondary/20 text-secondary">
             <Target className="h-7 w-7" />
           </div>

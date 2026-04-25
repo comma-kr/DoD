@@ -7,7 +7,7 @@ interface Props {
 
 export default function ReportMarkdown({ markdown }: Props) {
   return (
-    <div className="prose prose-invert max-w-none">
+    <div className="prose max-w-none">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{

@@ -113,10 +113,10 @@ function makeMarkerHtml(point: MapPoint): string {
           align-items: center;
           gap: 2px;
           padding: 7px 13px 8px;
-          background: linear-gradient(180deg, #8b5cf6, #7c3aed);
+          background: #E25555;
           color: white;
           border-radius: 14px;
-          box-shadow: 0 6px 18px rgba(124, 58, 237, 0.45), 0 2px 4px rgba(0,0,0,0.2);
+          box-shadow: 0 6px 18px rgba(226, 85, 85, 0.45), 0 2px 4px rgba(0,0,0,0.15);
           border: 2px solid white;
           white-space: nowrap;
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Pretendard', sans-serif;
@@ -132,7 +132,7 @@ function makeMarkerHtml(point: MapPoint): string {
           transform: translateX(-50%) rotate(45deg);
           width: 11px;
           height: 11px;
-          background: #7c3aed;
+          background: #C13C3C;
           border-right: 2px solid white;
           border-bottom: 2px solid white;
         "></div>
@@ -144,9 +144,9 @@ function makeMarkerHtml(point: MapPoint): string {
           width: 10px;
           height: 10px;
           border-radius: 50%;
-          background: #7c3aed;
+          background: #C13C3C;
           border: 2px solid white;
-          box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.3);
+          box-shadow: 0 0 0 2px rgba(193, 60, 60, 0.3);
         "></div>
       </div>
     `;
@@ -333,8 +333,9 @@ export default function KakaoMapClient({
         // 점포 수가 많을수록 진한 색상 (호갱노노 빨강 → 우리는 주황 톤)
         const intensity = Math.min(1, c.count / 30);
         const fillOpacity = 0.25 + intensity * 0.3; // 0.25 ~ 0.55
-        const fillColor = c.count >= 20 ? '#ef4444' : c.count >= 10 ? '#f97316' : '#fb923c';
-        const strokeColor = c.count >= 20 ? '#dc2626' : '#f97316';
+        // 메인 코랄 색과 분리하기 위해 상권은 amber 계열로
+        const fillColor = c.count >= 20 ? '#D97706' : c.count >= 10 ? '#F59E0B' : '#FBBF24';
+        const strokeColor = c.count >= 20 ? '#B45309' : '#D97706';
 
         const polygon = new kakao.maps.Polygon({
           path: c.polygon.map((p) => new kakao.maps.LatLng(p.lat, p.lng)),
@@ -356,7 +357,7 @@ export default function KakaoMapClient({
             pointer-events: none;
             padding: 4px 9px;
             background: white;
-            color: #b91c1c;
+            color: #92400E;
             border: 2px solid ${strokeColor};
             border-radius: 12px;
             font-size: ${fontSize}px;
@@ -443,23 +444,23 @@ export default function KakaoMapClient({
             <div style="
               padding: 3px 8px 4px;
               background: white;
-              color: #6d28d9;
-              border: 1.5px solid #8b5cf6;
+              color: #C13C3C;
+              border: 1.5px solid #E25555;
               border-radius: 999px;
               font-size: 10px;
               font-weight: 700;
               font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', sans-serif;
               white-space: nowrap;
-              box-shadow: 0 2px 6px rgba(139, 92, 246, 0.3);
+              box-shadow: 0 2px 6px rgba(226, 85, 85, 0.25);
               letter-spacing: -0.3px;
             ">${zone.name}</div>
             <div style="
               width: 8px;
               height: 8px;
               border-radius: 50%;
-              background: #8b5cf6;
+              background: #E25555;
               border: 2px solid white;
-              box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+              box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
             "></div>
           </div>
         `;
@@ -555,10 +556,10 @@ export default function KakaoMapClient({
       center: new kakao.maps.LatLng(center.lat, center.lng),
       radius: 500,
       strokeWeight: 1,
-      strokeColor: '#7c3aed',
+      strokeColor: '#E25555',
       strokeOpacity: 0.4,
       strokeStyle: 'dashed',
-      fillColor: '#7c3aed',
+      fillColor: '#E25555',
       fillOpacity: 0.03,
     });
     circle500.setMap(map);
@@ -568,7 +569,7 @@ export default function KakaoMapClient({
       center: new kakao.maps.LatLng(center.lat, center.lng),
       radius: 1000,
       strokeWeight: 1,
-      strokeColor: '#7c3aed',
+      strokeColor: '#E25555',
       strokeOpacity: 0.25,
       strokeStyle: 'dashed',
       fillColor: 'transparent',
@@ -607,18 +608,18 @@ export default function KakaoMapClient({
     return (
       <div className="flex h-full w-full items-center justify-center bg-[#f4f1ea] p-8">
         <div className="max-w-sm text-center">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-100 text-amber-600">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-warning-soft text-warning">
             <KeyRound className="h-5 w-5" />
           </div>
-          <h4 className="mt-4 text-sm font-bold text-gray-800">
+          <h4 className="mt-4 text-sm font-bold text-foreground">
             카카오 지도 키를 설정해주세요
           </h4>
-          <p className="mt-2 text-xs leading-relaxed text-gray-600">
+          <p className="mt-2 text-xs leading-relaxed text-foreground-sub">
             더 정확한 한국 지도와 POI를 보시려면 카카오 개발자 계정에서
-            JavaScript 키를 받아 <code className="mx-0.5 rounded bg-gray-200 px-1 py-0.5 text-[10px]">.env.local</code>에
+            JavaScript 키를 받아 <code className="mx-0.5 rounded bg-surface-soft px-1 py-0.5 text-[10px]">.env.local</code>에
             추가해주세요.
           </p>
-          <div className="mt-4 rounded-xl bg-gray-100 p-3 text-left font-mono text-[10px] text-gray-700">
+          <div className="mt-4 rounded-xl bg-surface-soft p-3 text-left font-mono text-[10px] text-foreground-sub">
             NEXT_PUBLIC_KAKAO_MAP_KEY=발급받은_키
           </div>
           <Link
@@ -637,23 +638,23 @@ export default function KakaoMapClient({
 
   if (status === 'failed') {
     return (
-      <div className="flex h-full w-full items-center justify-center bg-gray-100 p-8">
+      <div className="flex h-full w-full items-center justify-center bg-surface-soft p-8">
         <div className="max-w-sm text-left">
-          <div className="text-sm font-bold text-gray-800">
+          <div className="text-sm font-bold text-foreground">
             카카오 지도를 불러오지 못했어요
           </div>
-          <p className="mt-2 text-xs text-gray-700">
-            개발자 콘솔(F12) Console 탭에 <code className="rounded bg-gray-200 px-1">[KakaoMap]</code> 로그가 있는지 먼저 확인해주세요.
+          <p className="mt-2 text-xs text-foreground-sub">
+            개발자 콘솔(F12) Console 탭에 <code className="rounded bg-surface-soft px-1">[KakaoMap]</code> 로그가 있는지 먼저 확인해주세요.
           </p>
-          <div className="mt-4 rounded-lg bg-white p-3 text-[11px] text-gray-700">
-            <div className="font-semibold text-gray-900">체크리스트</div>
+          <div className="mt-4 rounded-lg bg-surface p-3 text-[11px] text-foreground-sub">
+            <div className="font-semibold text-foreground">체크리스트</div>
             <ul className="mt-2 space-y-1.5">
               <li>
                 ① <strong>JavaScript 키</strong>인지 확인 (REST API 키·Admin 키 아님)
               </li>
               <li>
                 ② 카카오 개발자 콘솔 → 플랫폼 → Web →{' '}
-                <strong>사이트 도메인에 <code className="rounded bg-gray-100 px-1">http://localhost:3000</code></strong> 등록
+                <strong>사이트 도메인에 <code className="rounded bg-surface-soft px-1">http://localhost:3000</code></strong> 등록
               </li>
               <li>
                 ③ 도메인은 프로토콜 포함 <strong>정확한 형식</strong>이어야 함 (예: <code>http://localhost:3000</code> ✓, <code>localhost</code> ✗, <code>https://localhost:3000</code> ✗)
@@ -674,8 +675,8 @@ export default function KakaoMapClient({
   if (status === 'loading') {
     return (
       <div className="flex h-full w-full items-center justify-center bg-[#f4f1ea]">
-        <div className="flex items-center gap-2 text-xs text-gray-500">
-          <span className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-gray-400 border-t-transparent" />
+        <div className="flex items-center gap-2 text-xs text-foreground-sub">
+          <span className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-foreground-mute border-t-transparent" />
           카카오 지도 불러오는 중...
         </div>
       </div>

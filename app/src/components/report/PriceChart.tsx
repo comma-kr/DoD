@@ -48,15 +48,15 @@ export default function PriceChart({ trades, apartmentName }: Props) {
 
   const trendIcon =
     absDelta > 1 ? (
-      <TrendingUp className="h-4 w-4 text-emerald-400" />
+      <TrendingUp className="h-4 w-4 text-success" />
     ) : absDelta < -1 ? (
-      <TrendingDown className="h-4 w-4 text-red-400" />
+      <TrendingDown className="h-4 w-4 text-danger" />
     ) : (
       <Minus className="h-4 w-4 text-foreground-sub" />
     );
 
   const trendColor =
-    absDelta > 1 ? 'text-emerald-400' : absDelta < -1 ? 'text-red-400' : 'text-foreground-sub';
+    absDelta > 1 ? 'text-success' : absDelta < -1 ? 'text-danger' : 'text-foreground-sub';
 
   return (
     <div className="rounded-3xl border border-border bg-surface/60 p-6 backdrop-blur">
@@ -80,22 +80,16 @@ export default function PriceChart({ trades, apartmentName }: Props) {
       <div className="h-56 w-full">
         <ResponsiveContainer>
           <LineChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-            <defs>
-              <linearGradient id="priceLine" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="#3b82f6" stopOpacity={1} />
-                <stop offset="100%" stopColor="#8b5cf6" stopOpacity={1} />
-              </linearGradient>
-            </defs>
-            <CartesianGrid stroke="#1f2937" strokeDasharray="3 3" vertical={false} />
+            <CartesianGrid stroke="#EDEDED" strokeDasharray="3 3" vertical={false} />
             <XAxis
               dataKey="date"
-              tick={{ fill: '#9ca3af', fontSize: 11 }}
-              stroke="#1f2937"
+              tick={{ fill: '#6B7684', fontSize: 11 }}
+              stroke="#EDEDED"
               tickFormatter={(v: string) => v.slice(5)}
             />
             <YAxis
-              tick={{ fill: '#9ca3af', fontSize: 11 }}
-              stroke="#1f2937"
+              tick={{ fill: '#6B7684', fontSize: 11 }}
+              stroke="#EDEDED"
               tickFormatter={(v: number) => {
                 if (v >= 10000) return `${Math.floor(v / 10000)}억`;
                 return `${v}`;
@@ -105,33 +99,34 @@ export default function PriceChart({ trades, apartmentName }: Props) {
             />
             <ReferenceLine
               y={avg}
-              stroke="#8b5cf6"
+              stroke="#9CA3AF"
               strokeDasharray="4 4"
-              strokeOpacity={0.5}
+              strokeOpacity={0.6}
               label={{
                 value: `평균 ${formatPrice10k(avg)}`,
                 position: 'right',
-                fill: '#8b5cf6',
+                fill: '#6B7684',
                 fontSize: 10,
               }}
             />
             <Tooltip
               contentStyle={{
-                backgroundColor: '#111827',
-                border: '1px solid #1f2937',
+                backgroundColor: '#FFFFFF',
+                border: '1px solid #EDEDED',
                 borderRadius: '12px',
                 fontSize: '12px',
+                boxShadow: '0 8px 24px -8px rgba(20,20,20,0.12)',
               }}
-              labelStyle={{ color: '#f9fafb' }}
+              labelStyle={{ color: '#141414' }}
               formatter={(value) => [formatPrice10k(Number(value)), '거래가']}
             />
             <Line
               type="monotone"
               dataKey="price"
-              stroke="url(#priceLine)"
+              stroke="#E25555"
               strokeWidth={3}
-              dot={{ fill: '#3b82f6', r: 4 }}
-              activeDot={{ r: 6, fill: '#8b5cf6' }}
+              dot={{ fill: '#E25555', r: 4 }}
+              activeDot={{ r: 6, fill: '#C13C3C' }}
             />
           </LineChart>
         </ResponsiveContainer>

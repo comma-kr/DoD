@@ -7,7 +7,7 @@ export default function LandingPage() {
     <main className="flex-1">
       {/* 히어로 */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(59,130,246,0.15),_transparent_50%)]" />
+        <div className="absolute inset-0 bg-primary-soft" />
         <div className="relative mx-auto max-w-5xl px-6 pt-24 pb-20 sm:pt-32 sm:pb-28">
           <div className="flex flex-col items-center text-center">
             <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-4 py-1.5 text-xs text-foreground-sub backdrop-blur">
@@ -17,7 +17,7 @@ export default function LandingPage() {
             <h1 className="text-balance text-4xl font-bold leading-tight tracking-tight sm:text-6xl">
               내가 아는 단지,
               <br />
-              <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              <span className="text-primary">
                 제대로 한 번 정리해드려요
               </span>
             </h1>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>입지990 · E1 vs E3 비교</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif;
+    background: #F2F4F6; color: #191F28;
+    -webkit-font-smoothing: antialiased;
+  }
+  header {
+    padding: 24px 32px; background: #0f172a; color: #fff;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  header h1 { font-size: 17px; font-weight: 700; letter-spacing: -0.02em; }
+  header a { color: #cbd5e1; text-decoration: none; font-size: 13px; }
+  header a:hover { color: #fff; }
+
+  .pair {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 28px;
+    padding: 32px; max-width: 1400px; margin: 0 auto;
+  }
+  @media (max-width: 1100px) { .pair { grid-template-columns: 1fr; } }
+
+  .col {
+    background: #FAFAFA; border-radius: 20px; padding: 28px;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .col-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-bottom: 16px; border-bottom: 1px solid #EDEDED;
+  }
+  .col-head .name { font-size: 18px; font-weight: 800; letter-spacing: -0.02em; }
+  .col-head .hex { font-family: ui-monospace, Menlo, monospace; font-size: 13px; opacity: 0.7; }
+  .swatch-line {
+    display: flex; gap: 6px; padding: 6px 0;
+  }
+  .swatch {
+    width: 36px; height: 24px; border-radius: 6px;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
+  }
+
+  /* 미니 mockup */
+  .mock {
+    background: #FFFFFF; border: 1px solid #EDEDED; border-radius: 14px;
+    padding: 20px;
+  }
+  .mhead {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-bottom: 12px; border-bottom: 1px solid #F5F5F5;
+  }
+  .mhead .logo { font-weight: 800; letter-spacing: -0.02em; }
+  .mhead .nav { display: flex; gap: 12px; font-size: 12px; color: #444; }
+  .hero { padding: 22px 0 14px; }
+  .badge {
+    display: inline-block; padding: 4px 10px; border-radius: 999px;
+    font-size: 10px; font-weight: 600; margin-bottom: 10px;
+  }
+  .hero h2 {
+    font-size: 22px; font-weight: 800; letter-spacing: -0.025em; line-height: 1.25;
+    margin-bottom: 6px;
+  }
+  .hero h2 em {
+    font-style: normal;
+    background: linear-gradient(180deg, transparent 62%, #FEE88A 62%);
+    padding: 0 2px;
+  }
+  .hero .sub { font-size: 12px; color: #6B7684; }
+  .data {
+    margin: 14px 0;
+  }
+  .data .row {
+    display: flex; justify-content: space-between; padding: 6px 0;
+    font-size: 12px; border-bottom: 1px dashed #F5F5F5;
+  }
+  .data .row:last-child { border: 0; }
+  .data .k { color: #6B7684; }
+  .data .v { font-weight: 600; }
+  .pill {
+    display: inline-block; padding: 2px 8px; border-radius: 999px;
+    font-size: 10px; font-weight: 700;
+  }
+  .pill.up { background: #E8F5ED; color: #2F6B3D; }
+  .bars {
+    display: flex; align-items: flex-end; gap: 4px; height: 50px;
+    margin: 8px 0 12px;
+  }
+  .bars span { flex: 1; border-radius: 3px 3px 0 0; }
+  .cta {
+    display: block; width: 100%; padding: 12px;
+    border: 0; border-radius: 10px; cursor: pointer;
+    font-size: 13px; font-weight: 700; color: #fff;
+    font-family: inherit; letter-spacing: -0.01em;
+  }
+  .fine { font-size: 10px; color: #888; text-align: center; margin-top: 8px; }
+
+  /* E1 카드 색 토큰 */
+  .col-e1 .badge { background: #FEF5D7; color: #8A6914; }
+  .col-e1 .pill { background: #FCE3E3; color: #C13C3C; }
+  .col-e1 .cta { background: #E25555; }
+  .col-e1 .cta:hover { background: #C13C3C; }
+  .col-e1 .bars span { background: #E25555; }
+
+  /* E3 카드 색 토큰 */
+  .col-e3 .badge { background: #FEF5D7; color: #8A6914; }
+  .col-e3 .pill { background: #E3EEFD; color: #1D4ED8; }
+  .col-e3 .cta { background: #2563EB; }
+  .col-e3 .cta:hover { background: #1D4ED8; }
+  .col-e3 .bars span { background: #2563EB; }
+
+  /* 차이 요약 박스 */
+  .summary {
+    max-width: 1400px; margin: 0 auto 60px; padding: 0 32px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 28px;
+  }
+  @media (max-width: 1100px) { .summary { grid-template-columns: 1fr; } }
+  .sum-card {
+    background: #fff; border-radius: 16px; padding: 24px;
+    border: 1px solid #EDEDED;
+  }
+  .sum-card h3 {
+    font-size: 14px; font-weight: 700; margin-bottom: 12px;
+    padding-bottom: 8px; border-bottom: 1px solid #F5F5F5;
+    letter-spacing: -0.01em;
+  }
+  .sum-card ul { list-style: none; }
+  .sum-card li {
+    padding: 8px 0; font-size: 13px; line-height: 1.55;
+    color: #4E5968;
+    padding-left: 16px; position: relative;
+  }
+  .sum-card li::before {
+    content: '·'; position: absolute; left: 4px; color: #B0B8C1;
+  }
+  .sum-card li b { color: #191F28; }
+  .verdict {
+    max-width: 1400px; margin: 0 auto 60px; padding: 28px 32px;
+    background: #fff; border-radius: 16px;
+    border-left: 4px solid #3182F6;
+  }
+  .verdict h3 {
+    font-size: 16px; font-weight: 800; margin-bottom: 10px; letter-spacing: -0.02em;
+  }
+  .verdict p {
+    font-size: 14px; line-height: 1.7; color: #4E5968;
+  }
+  .verdict b { color: #191F28; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>입지990 · E1 코랄 펀치 vs E3 애저 블루</h1>
+  <a href="/design-mockups.html">← 5종 시안 전체로</a>
+</header>
+
+<!-- 좌우 미니 mockup -->
+<section class="pair">
+  <div class="col col-e1">
+    <div class="col-head">
+      <div>
+        <div class="name">E1. 코랄 펀치</div>
+        <div class="hex">#E25555</div>
+      </div>
+      <div class="swatch-line">
+        <div class="swatch" style="background:#E25555"></div>
+        <div class="swatch" style="background:#FCE3E3"></div>
+        <div class="swatch" style="background:#FEE88A"></div>
+      </div>
+    </div>
+
+    <div class="mock">
+      <div class="mhead">
+        <span class="logo">입지990</span>
+        <div class="nav"><span>분석</span><span>비교</span><span>마이</span></div>
+      </div>
+      <div class="hero">
+        <span class="badge">NEW · 오늘의 큐레이션</span>
+        <h2>내가 아는 단지, <em>제대로</em><br>옆 단지랑 <em>나란히</em>.</h2>
+        <p class="sub">990원으로 만나는 단지 해설 큐레이션</p>
+      </div>
+      <div class="data">
+        <div class="row"><span class="k">세대수</span><span class="v">6,864세대</span></div>
+        <div class="row"><span class="k">입주년도</span><span class="v">2008년 (18년차)</span></div>
+        <div class="row"><span class="k">최근 실거래</span><span class="v">22억 4,000만원</span></div>
+        <div class="row"><span class="k">12개월 흐름</span><span class="pill up">+8.4%</span></div>
+      </div>
+      <div class="bars">
+        <span style="height:40%"></span><span style="height:55%"></span>
+        <span style="height:50%"></span><span style="height:68%"></span>
+        <span style="height:72%"></span><span style="height:80%"></span>
+        <span style="height:85%"></span><span style="height:92%"></span>
+      </div>
+      <button class="cta">990원 · 나란히 보기</button>
+      <p class="fine">투자 판단이 아니라 고민 정리에 쓰는 참고용 정보예요</p>
+    </div>
+  </div>
+
+  <div class="col col-e3">
+    <div class="col-head">
+      <div>
+        <div class="name">E3. 애저 블루</div>
+        <div class="hex">#2563EB</div>
+      </div>
+      <div class="swatch-line">
+        <div class="swatch" style="background:#2563EB"></div>
+        <div class="swatch" style="background:#E3EEFD"></div>
+        <div class="swatch" style="background:#FEE88A"></div>
+      </div>
+    </div>
+
+    <div class="mock">
+      <div class="mhead">
+        <span class="logo">입지990</span>
+        <div class="nav"><span>분석</span><span>비교</span><span>마이</span></div>
+      </div>
+      <div class="hero">
+        <span class="badge">NEW · 오늘의 큐레이션</span>
+        <h2>내가 아는 단지, <em>제대로</em><br>옆 단지랑 <em>나란히</em>.</h2>
+        <p class="sub">990원으로 만나는 단지 해설 큐레이션</p>
+      </div>
+      <div class="data">
+        <div class="row"><span class="k">세대수</span><span class="v">6,864세대</span></div>
+        <div class="row"><span class="k">입주년도</span><span class="v">2008년 (18년차)</span></div>
+        <div class="row"><span class="k">최근 실거래</span><span class="v">22억 4,000만원</span></div>
+        <div class="row"><span class="k">12개월 흐름</span><span class="pill up">+8.4%</span></div>
+      </div>
+      <div class="bars">
+        <span style="height:40%"></span><span style="height:55%"></span>
+        <span style="height:50%"></span><span style="height:68%"></span>
+        <span style="height:72%"></span><span style="height:80%"></span>
+        <span style="height:85%"></span><span style="height:92%"></span>
+      </div>
+      <button class="cta">990원 · 나란히 보기</button>
+      <p class="fine">투자 판단이 아니라 고민 정리에 쓰는 참고용 정보예요</p>
+    </div>
+  </div>
+</section>
+
+<!-- 차이 요약 카드 2개 -->
+<section class="summary">
+  <div class="sum-card">
+    <h3>🔥 E1. 코랄 펀치가 강한 점</h3>
+    <ul>
+      <li><b>"커피 한 입 값" 카피와 톤 일치</b> — 카페·리테일 인상이라 부동산 무게감을 가장 잘 걷어냄</li>
+      <li><b>경쟁사 시각적 차별</b> — 호갱노노·직방·아실·토스부동산이 모두 푸른색 계열. 빨간 코랄은 시장에서 비어 있는 자리</li>
+      <li><b>CTA 클릭 유도력 우세</b> — 따뜻한 빨간 계열은 결제 버튼에서 푸른색보다 평균 클릭률 높다는 데이터(리테일 영역)</li>
+      <li><b>SNS 캡쳐 친화</b> — 인스타·블로그 공유 시 시선이 먼저 가는 색</li>
+      <li>주의: 빨간색 = 하락이라는 차트 컨벤션과 충돌. <b>상승=초록 / 포인트=코랄</b>로 분리해야 함</li>
+    </ul>
+  </div>
+  <div class="sum-card">
+    <h3>🧊 E3. 애저 블루가 강한 점</h3>
+    <ul>
+      <li><b>데이터·신뢰감</b> — 공공데이터 기반 리포트라는 정체성과 가장 잘 맞음</li>
+      <li><b>법적 안전감</b> — "참고용 정보·투자 판단 아님" 면책과 톤이 자연스러움. 빨간색은 무의식적 경고 신호</li>
+      <li><b>장기 사용 피로 적음</b> — 매일 보거나 자주 열어보는 마이페이지 사용자에게 눈이 덜 피로</li>
+      <li><b>차트 컨벤션 충돌 없음</b> — 상승=빨강(또는 초록) / 하락=파랑이라는 한국식 차트 관습과 메인 색이 분리됨</li>
+      <li>약점: <b>차별화가 약함</b>. 토스·직방·카카오뱅크·당근페이가 다 비슷한 푸른색이라 "또 하나의 핀테크 앱" 인상</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 추천 -->
+<section class="verdict">
+  <h3>🎯 결정 도우미</h3>
+  <p>
+    <b>"브랜드 인상·결제 전환·차별화"</b>가 1순위면 → <b>E1 코랄 펀치</b>가 더 좋음.
+    부동산 도메인의 푸른 일색 안에서 가장 눈에 띄고, "990원 박리다매 큐레이션" 카피와 톤 결이 일치합니다.
+    단, 시세 차트의 상승/하락 색 룰을 명확히 분리해야 빨간 코랄이 "하락"으로 오해되지 않습니다.
+    <br><br>
+    <b>"데이터 신뢰감·장기 사용 피로·법적 안전 톤"</b>이 1순위면 → <b>E3 애저 블루</b>.
+    공공데이터 출처 명시와 면책 고지가 많은 본 서비스 성격상 안정적이지만,
+    경쟁사들과 시각적으로 비슷해 보일 위험이 있습니다.
+    <br><br>
+    <b>👉 입지990의 기획서 톤("부동산 무게감 배제 · 커피 한 입 값 · SNS 친화") 기준으로는 E1 코랄 펀치가 더 정합적입니다.</b>
+    E3는 안전한 선택이지만, 안전이 곧 차별화 부재로 이어질 가능성이 큽니다.
+  </p>
+</section>
+
+</body>
+</html>

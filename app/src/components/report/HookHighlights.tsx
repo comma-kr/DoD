@@ -146,9 +146,9 @@ export default function HookHighlights({
 
   const accentMap = {
     primary: 'border-primary/40 bg-primary/10 text-primary',
-    accent: 'border-emerald-500/40 bg-emerald-500/10 text-emerald-400',
+    accent: 'border-success/40 bg-success-soft text-success',
     secondary: 'border-secondary/40 bg-secondary/10 text-secondary',
-    amber: 'border-amber-500/40 bg-amber-500/10 text-amber-400',
+    amber: 'border-warning/40 bg-warning-soft text-warning',
   };
 
   return (
@@ -176,9 +176,9 @@ export default function HookHighlights({
                 <span
                   className={`rounded-md border px-1.5 py-0.5 text-[10px] font-bold ${
                     card.badge.tone === 'up'
-                      ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-400'
+                      ? 'border-success/40 bg-success-soft text-success'
                       : card.badge.tone === 'down'
-                      ? 'border-red-500/40 bg-red-500/10 text-red-400'
+                      ? 'border-danger/40 bg-danger-soft text-danger'
                       : 'border-border bg-background text-foreground-sub'
                   }`}
                 >

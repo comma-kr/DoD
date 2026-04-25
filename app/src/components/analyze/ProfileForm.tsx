@@ -376,7 +376,7 @@ function Step3({
       </div>
 
       {error ? (
-        <p className="mt-4 text-center text-sm text-red-400">{error}</p>
+        <p className="mt-4 text-center text-sm text-danger">{error}</p>
       ) : null}
 
       <div className="mt-8 flex gap-3">

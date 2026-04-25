@@ -86,10 +86,10 @@ export default function LifeScenario({
   const scenarios = [morning, afternoon, weekend, night];
 
   const accentMap = {
-    amber: 'border-amber-500/30 bg-amber-500/8 text-amber-400',
-    orange: 'border-orange-500/30 bg-orange-500/8 text-orange-400',
-    emerald: 'border-emerald-500/30 bg-emerald-500/8 text-emerald-400',
-    violet: 'border-violet-500/30 bg-violet-500/8 text-violet-400',
+    amber: 'border-warning/30 bg-warning-soft text-warning',
+    orange: 'border-primary/30 bg-primary-soft text-primary',
+    emerald: 'border-success/30 bg-success-soft text-success',
+    violet: 'border-primary/30 bg-primary-soft text-primary',
   };
 
   return (
@@ -127,8 +127,8 @@ export default function LifeScenario({
       </div>
 
       {schoolName ? (
-        <div className="mt-4 flex items-center gap-2 rounded-xl border border-amber-500/30 bg-amber-500/5 px-3 py-2 text-[11px] text-foreground-sub">
-          <span className="text-amber-300">💡</span>
+        <div className="mt-4 flex items-center gap-2 rounded-xl border border-warning/30 bg-warning-soft px-3 py-2 text-[11px] text-foreground-sub">
+          <span className="text-warning">💡</span>
           <span>
             <strong className="text-foreground">신혼부부</strong>라면 미래에 자녀가 다닐
             가까운 학교 ({schoolName.replace(/등학교$|학교$/, '')})까지의 동선도 한 번

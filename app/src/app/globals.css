@@ -1,25 +1,62 @@
 @import "tailwindcss";
 
+/* ============================================================
+   입지990 · E1 코랄 펀치 라이트 테마
+   ============================================================ */
 :root {
-  --background: #030712;
-  --surface: #111827;
-  --border: #1f2937;
-  --foreground: #f9fafb;
-  --foreground-sub: #9ca3af;
-  --primary: #3b82f6;
-  --secondary: #8b5cf6;
-  --accent: #10b981;
+  --background: #FAFAFA;         /* 바디 */
+  --surface: #FFFFFF;            /* 카드·모달 */
+  --surface-soft: #F5F5F5;       /* 검색 박스, 섹션 강조 바닥 */
+  --border: #EDEDED;             /* 보더 기본 */
+  --border-soft: #F5F5F5;        /* 점선/약한 보더 */
+  --foreground: #141414;         /* 본문 */
+  --foreground-sub: #6B7684;     /* 서브텍스트 */
+  --foreground-mute: #9CA3AF;    /* 더 약한 톤 (placeholder, fine print) */
+
+  /* 포인트 — 코랄 펀치 */
+  --primary: #E25555;            /* 메인 CTA, 로고 강조 */
+  --primary-hover: #C13C3C;      /* hover 진하게 */
+  --primary-soft: #FCE3E3;       /* pill/배지 배경, soft surface */
+  --primary-ink: #C13C3C;        /* pill 글자 */
+
+  /* 상태색 — 차트 상승/하락 시각 컨벤션 유지 */
+  --success: #2F6B3D;            /* 상승률 + 초록 */
+  --success-soft: #E8F5ED;
+  --warning: #8A6914;            /* 주의 */
+  --warning-soft: #FEF5D7;
+  --danger: #B42318;             /* 에러 (코랄과 구분되는 더 짙은 레드) */
+  --danger-soft: #FEE4E2;
+
+  /* 하이라이트 — 리포트 문장 강조 (형광 펜 톤) */
+  --highlight: #FEE88A;          /* 노랑 형광 하이라이트 */
+
+  /* 레거시 토큰 호환 (기존 secondary/accent를 쓰던 컴포넌트용) */
+  --secondary: var(--primary-hover);
+  --accent: var(--success);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-surface: var(--surface);
+  --color-surface-soft: var(--surface-soft);
   --color-border: var(--border);
+  --color-border-soft: var(--border-soft);
   --color-foreground: var(--foreground);
   --color-foreground-sub: var(--foreground-sub);
+  --color-foreground-mute: var(--foreground-mute);
   --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-soft: var(--primary-soft);
+  --color-primary-ink: var(--primary-ink);
   --color-secondary: var(--secondary);
   --color-accent: var(--accent);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-highlight: var(--highlight);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -34,4 +71,10 @@ body {
   font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI",
     "Apple SD Gothic Neo", "Pretendard", sans-serif;
   -webkit-font-smoothing: antialiased;
+}
+
+/* 리포트 본문 강조 구문 — ReportMarkdown에서 사용 */
+.report-highlight {
+  background: linear-gradient(180deg, transparent 62%, var(--highlight) 62%);
+  padding: 0 2px;
 }

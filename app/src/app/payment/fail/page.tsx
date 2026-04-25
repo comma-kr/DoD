@@ -12,7 +12,7 @@ function FailContent() {
 
   return (
     <div className="w-full max-w-md rounded-3xl border border-border bg-surface/60 p-10 text-center backdrop-blur">
-      <XCircle className="mx-auto h-10 w-10 text-red-400" />
+      <XCircle className="mx-auto h-10 w-10 text-danger" />
       <h1 className="mt-6 text-xl font-bold">결제가 완료되지 않았어요</h1>
       <p className="mt-2 text-sm text-foreground-sub">{message}</p>
       {code ? (

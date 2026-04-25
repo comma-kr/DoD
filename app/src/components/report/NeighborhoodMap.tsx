@@ -22,7 +22,7 @@ const KakaoMap = dynamic(() => import('./KakaoMapClient'), {
   ssr: false,
   loading: () => (
     <div className="flex h-full w-full items-center justify-center bg-[#f4f1ea]">
-      <span className="text-xs text-gray-500">카카오 지도 불러오는 중...</span>
+      <span className="text-xs text-foreground-sub">카카오 지도 불러오는 중...</span>
     </div>
   ),
 });
@@ -192,24 +192,24 @@ export default function NeighborhoodMap({
       {/* 하단 범례 */}
       <div className="flex flex-wrap items-center gap-3 border-t border-border bg-background/40 px-5 py-2.5 text-[10px] text-foreground-sub">
         <span className="inline-flex items-center gap-1.5">
-          <span className="inline-block h-2.5 w-2.5 rounded-full bg-violet-600 ring-2 ring-white/60" />
+          <span className="inline-block h-2.5 w-2.5 rounded-full bg-primary ring-2 ring-foreground/20" />
           현재 단지
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="inline-block h-2.5 w-2.5 rounded-full border-2 border-violet-500 bg-violet-500/30" />
+          <span className="inline-block h-2.5 w-2.5 rounded-full border-2 border-primary bg-primary/20" />
           리딩단지 ({apartmentZones.length})
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="inline-block h-2.5 w-2.5 rounded-full border-2 border-orange-500 bg-orange-500/30" />
+          <span className="inline-block h-2.5 w-2.5 rounded-full border-2 border-warning bg-warning/20" />
           상권 ({commercialClusters?.length ?? 0})
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="inline-block h-2.5 w-2.5 rounded-full border-2 border-emerald-500 bg-emerald-500/30" />
+          <span className="inline-block h-2.5 w-2.5 rounded-full border-2 border-success bg-success/20" />
           학교 ({nearbySchools?.length ?? 0})
         </span>
         {walkingRoute ? (
           <span className="inline-flex items-center gap-1.5">
-            <span className="inline-block h-0.5 w-3 bg-violet-600" />
+            <span className="inline-block h-0.5 w-3 bg-primary" />
             도보 {walkingRoute.distanceM}m·{walkingRoute.walkMin}분
           </span>
         ) : null}

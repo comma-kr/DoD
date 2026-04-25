@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>입지990 · 디자인 컨셉 시안 4종</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif;
+    font-feature-settings: 'ss03';
+    -webkit-font-smoothing: antialiased;
+  }
+  .nav {
+    position: sticky; top: 0; z-index: 50;
+    background: #0f172a; color: #fff; padding: 14px 24px;
+    display: flex; gap: 24px; align-items: center;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.05);
+  }
+  .nav .brand { font-weight: 700; font-size: 15px; }
+  .nav a {
+    color: #cbd5e1; text-decoration: none; font-size: 13px;
+    padding: 6px 10px; border-radius: 8px;
+  }
+  .nav a:hover { background: rgba(255,255,255,0.08); color: #fff; }
+  .concept {
+    min-height: 100vh;
+    padding: 80px 40px;
+    scroll-margin-top: 60px;
+  }
+  .concept-meta {
+    max-width: 1000px; margin: 0 auto 40px;
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 24px; flex-wrap: wrap;
+  }
+  .concept-label {
+    display: inline-block; padding: 4px 10px; border-radius: 999px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.02em;
+    margin-bottom: 10px;
+  }
+  .concept-meta h2 {
+    font-size: 28px; font-weight: 800; letter-spacing: -0.02em;
+  }
+  .concept-meta p { font-size: 14px; margin-top: 6px; opacity: 0.7; }
+  .swatch-row { display: flex; gap: 8px; }
+  .swatch {
+    width: 32px; height: 32px; border-radius: 8px;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
+  }
+  .mock {
+    max-width: 1000px; margin: 0 auto;
+    border-radius: 24px; overflow: hidden;
+    box-shadow: 0 30px 80px -20px rgba(15,23,42,0.2);
+  }
+  .mock-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 28px; border-bottom: 1px solid;
+  }
+  .mock-logo { font-weight: 800; font-size: 17px; letter-spacing: -0.02em; }
+  .mock-nav { display: flex; gap: 18px; font-size: 13px; }
+  .hero { padding: 56px 40px 40px; text-align: center; }
+  .hero .badge {
+    display: inline-block; padding: 5px 12px; border-radius: 999px;
+    font-size: 11px; font-weight: 600; margin-bottom: 18px;
+  }
+  .hero h1 {
+    font-size: 38px; font-weight: 800; letter-spacing: -0.03em;
+    line-height: 1.2; margin-bottom: 12px;
+  }
+  .hero .sub { font-size: 15px; opacity: 0.65; margin-bottom: 28px; }
+  .search {
+    max-width: 520px; margin: 0 auto;
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 18px; border-radius: 16px;
+  }
+  .search input {
+    flex: 1; border: 0; outline: 0; background: transparent;
+    font-size: 15px; font-family: inherit; color: inherit;
+  }
+  .grid { padding: 30px 40px 40px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; }
+  .card {
+    padding: 24px; border-radius: 20px; border: 1px solid;
+  }
+  .card h3 {
+    font-size: 16px; font-weight: 700; margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px; letter-spacing: -0.01em;
+  }
+  .card .data-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 0; font-size: 14px;
+    border-bottom: 1px dashed;
+  }
+  .card .data-row:last-child { border: 0; }
+  .card .k { opacity: 0.6; }
+  .card .v { font-weight: 600; }
+  .pill {
+    display: inline-block; padding: 3px 9px; border-radius: 999px;
+    font-size: 11px; font-weight: 600;
+  }
+  .cta {
+    padding: 16px 24px; border-radius: 14px; font-size: 15px;
+    font-weight: 700; border: 0; cursor: pointer; letter-spacing: -0.01em;
+    display: block; width: 100%; text-align: center; margin-top: 16px;
+  }
+  .fine { font-size: 11px; opacity: 0.6; margin-top: 10px; text-align: center; }
+  .chart-bars { display: flex; align-items: flex-end; gap: 6px; height: 80px; margin: 14px 0 8px; }
+  .chart-bars span { flex: 1; border-radius: 6px 6px 0 0; opacity: 0.85; }
+
+  /* ============================================================
+     A. 뮤지·아이보리 (따뜻한 미니멀)
+     ============================================================ */
+  #concept-a {
+    background: #F4EFE6;
+    color: #1A1A1A;
+  }
+  #concept-a .concept-label { background: #E8DFCC; color: #6B5B3E; }
+  #concept-a .mock {
+    background: #FAF7F2; border: 1px solid #E8DFCC;
+    box-shadow: 0 30px 80px -20px rgba(107,91,62,0.25);
+  }
+  #concept-a .mock-header { border-color: #E8DFCC; background: #FAF7F2; }
+  #concept-a .mock-nav a { color: #6B5B3E; }
+  #concept-a .hero .badge { background: #F1E8D4; color: #8A6D34; }
+  #concept-a .hero h1 { color: #1A1A1A; }
+  #concept-a .search { background: #FFFFFF; border: 1px solid #E8DFCC; box-shadow: 0 4px 20px -6px rgba(107,91,62,0.12); }
+  #concept-a .card { background: #FFFFFF; border-color: #EBE2CD; }
+  #concept-a .card .data-row { border-color: #F0E8D4; }
+  #concept-a .pill { background: #FCEFD9; color: #B07315; }
+  #concept-a .pill.up { background: #E8EFDE; color: #4A6B2A; }
+  #concept-a .cta { background: #D97757; color: #FFFFFF; }
+  #concept-a .cta:hover { background: #C66340; }
+  #concept-a .chart-bars span { background: #D97757; }
+
+  /* ============================================================
+     B. 모던 핀테크 라이트 (토스 라이트)
+     ============================================================ */
+  #concept-b {
+    background: #F2F4F6;
+    color: #191F28;
+  }
+  #concept-b .concept-label { background: #E8F2FF; color: #1B64DA; }
+  #concept-b .mock {
+    background: #FFFFFF; border: 1px solid #E5E8EB;
+    box-shadow: 0 30px 80px -20px rgba(25,31,40,0.15);
+  }
+  #concept-b .mock-header { border-color: #F2F4F6; }
+  #concept-b .mock-nav a { color: #4E5968; }
+  #concept-b .hero .badge { background: #E8F2FF; color: #3182F6; }
+  #concept-b .hero h1 { color: #191F28; }
+  #concept-b .search { background: #F2F4F6; }
+  #concept-b .card { background: #FAFBFC; border-color: #E5E8EB; }
+  #concept-b .card .data-row { border-color: #E5E8EB; }
+  #concept-b .pill { background: #E8F2FF; color: #3182F6; }
+  #concept-b .pill.up { background: #E6F9F0; color: #00AC4F; }
+  #concept-b .cta { background: #3182F6; color: #FFFFFF; }
+  #concept-b .cta:hover { background: #1B64DA; }
+  #concept-b .chart-bars span { background: #3182F6; }
+
+  /* ============================================================
+     C. 에디토리얼 (리포트=기사)
+     ============================================================ */
+  #concept-c {
+    background: #FFFDF8;
+    color: #1A1A1A;
+  }
+  #concept-c .concept-label { background: #EDE6D7; color: #4A3E22; }
+  #concept-c .mock {
+    background: #FFFFFF; border: 1px solid #E8DFC8;
+    box-shadow: 0 30px 80px -20px rgba(74,62,34,0.2);
+  }
+  #concept-c .mock-header { border-color: #EDE6D7; background: #FFFDF8; }
+  #concept-c .mock-logo {
+    font-family: 'RIDIBatang', 'Noto Serif KR', serif; font-weight: 700;
+  }
+  #concept-c .mock-nav a { color: #4A3E22; font-style: italic; }
+  #concept-c .hero .badge {
+    background: transparent; border: 1px solid #B5A87A; color: #4A3E22;
+    font-style: italic; letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  #concept-c .hero h1 {
+    font-family: 'Noto Serif KR', 'RIDIBatang', serif;
+    font-weight: 700; letter-spacing: -0.02em; color: #0F2A4F;
+  }
+  #concept-c .hero .sub { font-style: italic; }
+  #concept-c .search { background: #FFFDF8; border: 1px solid #B5A87A; border-radius: 4px; }
+  #concept-c .card { background: #FFFDF8; border-color: #EDE6D7; border-radius: 4px; }
+  #concept-c .card h3 {
+    font-family: 'Noto Serif KR', serif; font-weight: 700;
+    font-size: 18px; letter-spacing: -0.01em;
+    padding-bottom: 10px; margin-bottom: 14px;
+    border-bottom: 2px solid #0F2A4F;
+  }
+  #concept-c .card .data-row { border-color: #EDE6D7; }
+  #concept-c .pill {
+    background: transparent; border: 1px solid #0F2A4F; color: #0F2A4F;
+    letter-spacing: 0.02em; border-radius: 2px;
+  }
+  #concept-c .pill.up { border-color: #2F6B3D; color: #2F6B3D; }
+  #concept-c .cta {
+    background: #0F2A4F; color: #FFFDF8; border-radius: 2px;
+    letter-spacing: 0.02em;
+  }
+  #concept-c .cta:hover { background: #081A33; }
+  #concept-c .chart-bars span { background: #0F2A4F; }
+
+  /* ============================================================
+     D. 마켓컬리·뉴닉 라이트 프리미엄
+     ============================================================ */
+  #concept-d {
+    background: #FAFAFA;
+    color: #141414;
+  }
+  #concept-d .concept-label { background: #F5E6E8; color: #722F37; }
+  #concept-d .mock {
+    background: #FFFFFF; border: 1px solid #EDEDED;
+    box-shadow: 0 30px 80px -20px rgba(20,20,20,0.15);
+  }
+  #concept-d .mock-header { border-color: #EDEDED; }
+  #concept-d .mock-nav a { color: #444444; font-weight: 500; }
+  #concept-d .hero .badge { background: #FEF5D7; color: #8A6914; }
+  #concept-d .hero h1 { color: #141414; }
+  #concept-d .hero h1 em {
+    font-style: normal;
+    background: linear-gradient(180deg, transparent 62%, #FEE88A 62%);
+    padding: 0 2px;
+  }
+  #concept-d .search { background: #FAFAFA; border: 1px solid #EDEDED; }
+  #concept-d .card { background: #FFFFFF; border-color: #EDEDED; }
+  #concept-d .card .data-row { border-color: #F5F5F5; }
+  #concept-d .pill { background: #F5E6E8; color: #722F37; }
+  #concept-d .pill.up { background: #E8F5ED; color: #2F6B3D; }
+  #concept-d .cta { background: #722F37; color: #FFFFFF; }
+  #concept-d .cta:hover { background: #5A2229; }
+  #concept-d .chart-bars span { background: #722F37; }
+
+  /* ============================================================
+     E1~E5 — D 컨셉(단색·노랑 형광 하이라이트) 그대로, 포인트 색만 변형
+     공통 스타일은 .e-mock 클래스로 묶고 ID별로 색 토큰만 교체
+     ============================================================ */
+  .e-mock {
+    background: #FAFAFA; color: #141414;
+  }
+  .e-mock .mock {
+    background: #FFFFFF; border: 1px solid #EDEDED;
+    box-shadow: 0 30px 80px -20px rgba(20,20,20,0.15);
+  }
+  .e-mock .mock-header { border-color: #EDEDED; }
+  .e-mock .mock-nav a { color: #444444; font-weight: 500; }
+  .e-mock .hero .badge { background: #FEF5D7; color: #8A6914; }
+  .e-mock .hero h1 { color: #141414; }
+  .e-mock .hero h1 em {
+    font-style: normal;
+    background: linear-gradient(180deg, transparent 62%, #FEE88A 62%);
+    padding: 0 2px;
+  }
+  .e-mock .search { background: #FAFAFA; border: 1px solid #EDEDED; }
+  .e-mock .card { background: #FFFFFF; border-color: #EDEDED; }
+  .e-mock .card .data-row { border-color: #F5F5F5; }
+  .e-mock .pill.up { background: #E8F5ED; color: #2F6B3D; }
+
+  /* E1. 코랄 펀치 — 살아있는 빨간 코랄 */
+  #concept-e1 .concept-label { background: #FCE3E3; color: #C13C3C; }
+  #concept-e1 .pill { background: #FCE3E3; color: #C13C3C; }
+  #concept-e1 .cta { background: #E25555; color: #FFFFFF; }
+  #concept-e1 .cta:hover { background: #C13C3C; }
+  #concept-e1 .chart-bars span { background: #E25555; }
+
+  /* E2. 살몬 코랄 — 톤다운된 어른스러운 코랄 */
+  #concept-e2 .concept-label { background: #F8E4DC; color: #A8553F; }
+  #concept-e2 .pill { background: #F8E4DC; color: #A8553F; }
+  #concept-e2 .cta { background: #C9745A; color: #FFFFFF; }
+  #concept-e2 .cta:hover { background: #A8553F; }
+  #concept-e2 .chart-bars span { background: #C9745A; }
+
+  /* E3. 애저 블루 — 클래식 명료한 푸른색 */
+  #concept-e3 .concept-label { background: #E3EEFD; color: #1D4ED8; }
+  #concept-e3 .pill { background: #E3EEFD; color: #1D4ED8; }
+  #concept-e3 .cta { background: #2563EB; color: #FFFFFF; }
+  #concept-e3 .cta:hover { background: #1D4ED8; }
+  #concept-e3 .chart-bars span { background: #2563EB; }
+
+  /* E4. 미드나잇 네이비 — 차분하고 묵직한 깊은 푸른색 */
+  #concept-e4 .concept-label { background: #DCE3EE; color: #1E3A5F; }
+  #concept-e4 .pill { background: #DCE3EE; color: #1E3A5F; }
+  #concept-e4 .cta { background: #1E3A5F; color: #FFFFFF; }
+  #concept-e4 .cta:hover { background: #122642; }
+  #concept-e4 .chart-bars span { background: #1E3A5F; }
+
+  /* E5. 오션 틸 — 청록 계열 신뢰감 */
+  #concept-e5 .concept-label { background: #D7ECEA; color: #0F766E; }
+  #concept-e5 .pill { background: #D7ECEA; color: #0F766E; }
+  #concept-e5 .cta { background: #0F766E; color: #FFFFFF; }
+  #concept-e5 .cta:hover { background: #0A554F; }
+  #concept-e5 .chart-bars span { background: #0F766E; }
+
+  /* 푸터 공통 */
+  footer {
+    padding: 40px; text-align: center;
+    background: #0f172a; color: #94a3b8; font-size: 12px;
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <span class="brand">입지990 · 디자인 컨셉 시안 4종</span>
+  <a href="#concept-a">A. 뮤지·아이보리</a>
+  <a href="#concept-b">B. 토스 라이트</a>
+  <a href="#concept-c">C. 에디토리얼</a>
+  <a href="#concept-d">D. 마켓컬리 프리미엄 (#722F37)</a>
+  <a href="#concept-e1">E1. 코랄 펀치</a>
+  <a href="#concept-e2">E2. 살몬 코랄</a>
+  <a href="#concept-e3">E3. 애저 블루</a>
+  <a href="#concept-e4">E4. 미드나잇</a>
+  <a href="#concept-e5">E5. 오션 틸</a>
+</nav>
+
+<!-- ====================================================== A -->
+<section class="concept" id="concept-a">
+  <div class="concept-meta">
+    <div>
+      <span class="concept-label">CONCEPT A · 추천</span>
+      <h2>뮤지·아이보리 (따뜻한 미니멀)</h2>
+      <p>크림 배경 + 테라코타 포인트. 무인양품·Notion 라이트 톤. "커피 한 입 값" 카피와 주파수 일치.</p>
+    </div>
+    <div class="swatch-row">
+      <div class="swatch" style="background:#FAF7F2"></div>
+      <div class="swatch" style="background:#E8DFCC"></div>
+      <div class="swatch" style="background:#D97757"></div>
+      <div class="swatch" style="background:#1A1A1A"></div>
+    </div>
+  </div>
+
+  <div class="mock">
+    <div class="mock-header">
+      <span class="mock-logo">입지990</span>
+      <div class="mock-nav"><a>분석</a><a>비교</a><a>마이</a></div>
+    </div>
+    <div class="hero">
+      <span class="badge">오늘의 단지 분석</span>
+      <h1>내가 아는 단지,<br>공짜로 제대로.</h1>
+      <p class="sub">옆 단지랑 나란히 보기는 딱 990원 — 커피 한 입 값.</p>
+      <div class="search">
+        <span>🔍</span>
+        <input placeholder="단지 이름을 검색해보세요 (예: 헬리오시티)">
+        <span class="pill">Enter ↵</span>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <h3>🏢 파크리오 84㎡ 한 장 요약</h3>
+        <div class="data-row"><span class="k">세대수</span><span class="v">6,864세대</span></div>
+        <div class="data-row"><span class="k">입주년도</span><span class="v">2008년 (18년차)</span></div>
+        <div class="data-row"><span class="k">가장 가까운 역</span><span class="v">잠실역 · 도보 8분</span></div>
+        <div class="data-row"><span class="k">최근 실거래</span><span class="v">22억 4,000만원</span></div>
+        <div class="data-row"><span class="k">12개월 흐름</span><span class="pill up">+8.4%</span></div>
+        <div class="chart-bars">
+          <span style="height:40%"></span><span style="height:55%"></span>
+          <span style="height:50%"></span><span style="height:68%"></span>
+          <span style="height:72%"></span><span style="height:80%"></span>
+          <span style="height:85%"></span><span style="height:92%"></span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>💡 이건 어떠세요</h3>
+        <p style="font-size:13px; line-height:1.7; opacity:0.8;">
+          같은 급지의 <b>리센츠</b>랑 나란히 놓고 보면,
+          평당가 차이가 어디서 오는지 한눈에 보여요.
+          지금은 한 단지만 보이지만,
+          <b>두 단지 이상</b> 올려두면 급이 더 선명해져요.
+        </p>
+        <button class="cta">옆 단지랑 나란히 보기 → 990원</button>
+        <p class="fine">투자 판단이 아니라 고민 정리에 쓰는 참고용 정보예요</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== B -->
+<section class="concept" id="concept-b">
+  <div class="concept-meta">
+    <div>
+      <span class="concept-label">CONCEPT B</span>
+      <h2>모던 핀테크 라이트 (토스 라이트)</h2>
+      <p>흰 배경 + 토스블루 유지. 지금 구조를 그대로 두고 색만 반전 — 전환 비용 최소.</p>
+    </div>
+    <div class="swatch-row">
+      <div class="swatch" style="background:#FFFFFF"></div>
+      <div class="swatch" style="background:#F2F4F6"></div>
+      <div class="swatch" style="background:#3182F6"></div>
+      <div class="swatch" style="background:#191F28"></div>
+    </div>
+  </div>
+
+  <div class="mock">
+    <div class="mock-header">
+      <span class="mock-logo">입지990</span>
+      <div class="mock-nav"><a>분석</a><a>비교</a><a>마이</a></div>
+    </div>
+    <div class="hero">
+      <span class="badge">딱 990원 · 1분 분석</span>
+      <h1>나란히 놓고 보면<br>답이 보여요.</h1>
+      <p class="sub">부동산 고민, 커피 한 입 값으로 가볍게 정리해드려요.</p>
+      <div class="search">
+        <span>🔍</span>
+        <input placeholder="단지 이름을 검색해보세요">
+        <span class="pill">검색</span>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <h3>🏢 파크리오 84㎡ 한 장 요약</h3>
+        <div class="data-row"><span class="k">세대수</span><span class="v">6,864세대</span></div>
+        <div class="data-row"><span class="k">입주년도</span><span class="v">2008년 (18년차)</span></div>
+        <div class="data-row"><span class="k">가장 가까운 역</span><span class="v">잠실역 · 도보 8분</span></div>
+        <div class="data-row"><span class="k">최근 실거래</span><span class="v">22억 4,000만원</span></div>
+        <div class="data-row"><span class="k">12개월 흐름</span><span class="pill up">+8.4%</span></div>
+        <div class="chart-bars">
+          <span style="height:40%"></span><span style="height:55%"></span>
+          <span style="height:50%"></span><span style="height:68%"></span>
+          <span style="height:72%"></span><span style="height:80%"></span>
+          <span style="height:85%"></span><span style="height:92%"></span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>💡 이건 어떠세요</h3>
+        <p style="font-size:13px; line-height:1.7; opacity:0.8;">
+          같은 급지의 <b>리센츠</b>랑 나란히 놓고 보면,
+          평당가 차이가 어디서 오는지 한눈에 보여요.
+          지금은 한 단지만 보이지만,
+          <b>두 단지 이상</b> 올려두면 급이 더 선명해져요.
+        </p>
+        <button class="cta">옆 단지랑 나란히 보기 → 990원</button>
+        <p class="fine">투자 판단이 아니라 고민 정리에 쓰는 참고용 정보예요</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== C -->
+<section class="concept" id="concept-c">
+  <div class="concept-meta">
+    <div>
+      <span class="concept-label">CONCEPT C</span>
+      <h2>에디토리얼 (리포트 = 기사)</h2>
+      <p>오프화이트 + 네이비 + 세리프. 뉴닉·NYT Real Estate 톤. 갓서블식 데이터 해설과 찰떡.</p>
+    </div>
+    <div class="swatch-row">
+      <div class="swatch" style="background:#FFFDF8"></div>
+      <div class="swatch" style="background:#EDE6D7"></div>
+      <div class="swatch" style="background:#0F2A4F"></div>
+      <div class="swatch" style="background:#B5A87A"></div>
+    </div>
+  </div>
+
+  <div class="mock">
+    <div class="mock-header">
+      <span class="mock-logo">입지990</span>
+      <div class="mock-nav"><a>analysis</a><a>compare</a><a>my</a></div>
+    </div>
+    <div class="hero">
+      <span class="badge">Issue · Vol.12</span>
+      <h1>한 단지의 가치는<br>옆 단지 옆에서 드러난다.</h1>
+      <p class="sub">— 공공데이터와 실거래로 읽는 단지 에세이.</p>
+      <div class="search">
+        <span>🔍</span>
+        <input placeholder="찾고 싶은 단지를 입력하세요">
+      </div>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <h3>파크리오 · 84㎡</h3>
+        <div class="data-row"><span class="k">세대수</span><span class="v">6,864세대</span></div>
+        <div class="data-row"><span class="k">입주년도</span><span class="v">2008년 (18년차)</span></div>
+        <div class="data-row"><span class="k">가장 가까운 역</span><span class="v">잠실 · 도보 8분</span></div>
+        <div class="data-row"><span class="k">최근 실거래</span><span class="v">22억 4,000만원</span></div>
+        <div class="data-row"><span class="k">12개월 흐름</span><span class="pill up">+8.4%</span></div>
+        <div class="chart-bars">
+          <span style="height:40%"></span><span style="height:55%"></span>
+          <span style="height:50%"></span><span style="height:68%"></span>
+          <span style="height:72%"></span><span style="height:80%"></span>
+          <span style="height:85%"></span><span style="height:92%"></span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>에디터의 한 줄</h3>
+        <p style="font-size:14px; line-height:1.85; font-family:'Noto Serif KR',serif; color:#1A1A1A;">
+          파크리오는 잠실의 중심축을 쥔 단지다.
+          같은 동선의 <b>리센츠</b>와 나란히 놓아봤을 때,
+          평당가의 6%p 차이가 어디에서 왔는지 —
+          세대수인지, 연식인지, 학군인지 —
+          가볍지만 단호한 해설로 풀어드린다.
+        </p>
+        <button class="cta">나란히 읽기 · ₩990</button>
+        <p class="fine">판단의 책임은 이용자에게 있습니다. 참고용 정보.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== D -->
+<section class="concept" id="concept-d">
+  <div class="concept-meta">
+    <div>
+      <span class="concept-label">CONCEPT D</span>
+      <h2>마켓컬리·뉴닉 라이트 프리미엄</h2>
+      <p>화이트 + 딥버건디 + 노란 형광 하이라이트. 밝은데도 "고급 큐레이션" 톤.</p>
+    </div>
+    <div class="swatch-row">
+      <div class="swatch" style="background:#FAFAFA"></div>
+      <div class="swatch" style="background:#722F37"></div>
+      <div class="swatch" style="background:#FEE88A"></div>
+      <div class="swatch" style="background:#141414"></div>
+    </div>
+  </div>
+
+  <div class="mock">
+    <div class="mock-header">
+      <span class="mock-logo">입지990</span>
+      <div class="mock-nav"><a>분석</a><a>비교</a><a>마이</a></div>
+    </div>
+    <div class="hero">
+      <span class="badge">NEW · 오늘의 큐레이션</span>
+      <h1>내가 아는 단지, <em>제대로</em><br>옆 단지랑 <em>나란히</em>.</h1>
+      <p class="sub">990원으로 만나는 단지 해설 큐레이션.</p>
+      <div class="search">
+        <span>🔍</span>
+        <input placeholder="단지 이름을 검색해보세요">
+        <span class="pill">Go</span>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <h3>🏢 파크리오 84㎡</h3>
+        <div class="data-row"><span class="k">세대수</span><span class="v">6,864세대</span></div>
+        <div class="data-row"><span class="k">입주년도</span><span class="v">2008년 (18년차)</span></div>
+        <div class="data-row"><span class="k">가장 가까운 역</span><span class="v">잠실역 · 도보 8분</span></div>
+        <div class="data-row"><span class="k">최근 실거래</span><span class="v">22억 4,000만원</span></div>
+        <div class="data-row"><span class="k">12개월 흐름</span><span class="pill up">+8.4%</span></div>
+        <div class="chart-bars">
+          <span style="height:40%"></span><span style="height:55%"></span>
+          <span style="height:50%"></span><span style="height:68%"></span>
+          <span style="height:72%"></span><span style="height:80%"></span>
+          <span style="height:85%"></span><span style="height:92%"></span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>✨ 오늘의 한 줄</h3>
+        <p style="font-size:13px; line-height:1.7; opacity:0.85;">
+          같은 급지의 <b>리센츠</b>랑 나란히 놓고 보면,
+          <span style="background:linear-gradient(180deg,transparent 62%,#FEE88A 62%);padding:0 2px;">평당가 차이가 어디서 오는지</span>
+          한눈에 보여요. 두 단지 이상 올려두면 급이 더 선명해져요.
+        </p>
+        <button class="cta">990원 · 나란히 보기</button>
+        <p class="fine">투자 판단이 아니라 고민 정리에 쓰는 참고용 정보예요</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== E1 -->
+<section class="concept e-mock" id="concept-e1">
+  <div class="concept-meta">
+    <div>
+      <span class="concept-label">CONCEPT E1 · 코랄 펀치</span>
+      <h2>코랄 펀치 (#E25555)</h2>
+      <p>D의 버건디 자리를 살아있는 코랄 레드로. D의 명도·채도와 가장 가까워서 가장 안전한 대체 옵션.</p>
+    </div>
+    <div class="swatch-row">
+      <div class="swatch" style="background:#FAFAFA"></div>
+      <div class="swatch" style="background:#E25555"></div>
+      <div class="swatch" style="background:#FEE88A"></div>
+      <div class="swatch" style="background:#141414"></div>
+    </div>
+  </div>
+
+  <div class="mock">
+    <div class="mock-header">
+      <span class="mock-logo">입지990</span>
+      <div class="mock-nav"><a>분석</a><a>비교</a><a>마이</a></div>
+    </div>
+    <div class="hero">
+      <span class="badge">NEW · 오늘의 큐레이션</span>
+      <h1>내가 아는 단지, <em>제대로</em><br>옆 단지랑 <em>나란히</em>.</h1>
+      <p class="sub">990원으로 만나는 단지 해설 큐레이션.</p>
+      <div class="search">
+        <span>🔍</span>
+        <input placeholder="단지 이름을 검색해보세요">
+        <span class="pill">Go</span>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <h3>🏢 파크리오 84㎡</h3>
+        <div class="data-row"><span class="k">세대수</span><span class="v">6,864세대</span></div>
+        <div class="data-row"><span class="k">입주년도</span><span class="v">2008년 (18년차)</span></div>
+        <div class="data-row"><span class="k">가장 가까운 역</span><span class="v">잠실역 · 도보 8분</span></div>
+        <div class="data-row"><span class="k">최근 실거래</span><span class="v">22억 4,000만원</span></div>
+        <div class="data-row"><span class="k">12개월 흐름</span><span class="pill up">+8.4%</span></div>
+        <div class="chart-bars">
+          <span style="height:40%"></span><span style="height:55%"></span>
+          <span style="height:50%"></span><span style="height:68%"></span>
+          <span style="height:72%"></span><span style="height:80%"></span>
+          <span style="height:85%"></span><span style="height:92%"></span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>✨ 오늘의 한 줄</h3>
+        <p style="font-size:13px; line-height:1.7; opacity:0.85;">
+          같은 급지의 <b>리센츠</b>랑 나란히 놓고 보면,
+          <span style="background:linear-gradient(180deg,transparent 62%,#FEE88A 62%);padding:0 2px;">평당가 차이가 어디서 오는지</span>
+          한눈에 보여요. 두 단지 이상 올려두면 급이 더 선명해져요.
+        </p>
+        <button class="cta">990원 · 나란히 보기</button>
+        <p class="fine">투자 판단이 아니라 고민 정리에 쓰는 참고용 정보예요</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== E2 -->
+<section class="concept e-mock" id="concept-e2">
+  <div class="concept-meta">
+    <div>
+      <span class="concept-label">CONCEPT E2 · 살몬 코랄</span>
+      <h2>살몬 코랄 (#C9745A)</h2>
+      <p>채도를 한 단계 낮춘 어른스러운 코랄. 노랑 형광 하이라이트와 톤인톤으로 잘 어울리는 따뜻한 안정감.</p>
+    </div>
+    <div class="swatch-row">
+      <div class="swatch" style="background:#FAFAFA"></div>
+      <div class="swatch" style="background:#C9745A"></div>
+      <div class="swatch" style="background:#FEE88A"></div>
+      <div class="swatch" style="background:#141414"></div>
+    </div>
+  </div>
+
+  <div class="mock">
+    <div class="mock-header">
+      <span class="mock-logo">입지990</span>
+      <div class="mock-nav"><a>분석</a><a>비교</a><a>마이</a></div>
+    </div>
+    <div class="hero">
+      <span class="badge">NEW · 오늘의 큐레이션</span>
+      <h1>내가 아는 단지, <em>제대로</em><br>옆 단지랑 <em>나란히</em>.</h1>
+      <p class="sub">990원으로 만나는 단지 해설 큐레이션.</p>
+      <div class="search">
+        <span>🔍</span>
+        <input placeholder="단지 이름을 검색해보세요">
+        <span class="pill">Go</span>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <h3>🏢 파크리오 84㎡</h3>
+        <div class="data-row"><span class="k">세대수</span><span class="v">6,864세대</span></div>
+        <div class="data-row"><span class="k">입주년도</span><span class="v">2008년 (18년차)</span></div>
+        <div class="data-row"><span class="k">가장 가까운 역</span><span class="v">잠실역 · 도보 8분</span></div>
+        <div class="data-row"><span class="k">최근 실거래</span><span class="v">22억 4,000만원</span></div>
+        <div class="data-row"><span class="k">12개월 흐름</span><span class="pill up">+8.4%</span></div>
+        <div class="chart-bars">
+          <span style="height:40%"></span><span style="height:55%"></span>
+          <span style="height:50%"></span><span style="height:68%"></span>
+          <span style="height:72%"></span><span style="height:80%"></span>
+          <span style="height:85%"></span><span style="height:92%"></span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>✨ 오늘의 한 줄</h3>
+        <p style="font-size:13px; line-height:1.7; opacity:0.85;">
+          같은 급지의 <b>리센츠</b>랑 나란히 놓고 보면,
+          <span style="background:linear-gradient(180deg,transparent 62%,#FEE88A 62%);padding:0 2px;">평당가 차이가 어디서 오는지</span>
+          한눈에 보여요. 두 단지 이상 올려두면 급이 더 선명해져요.
+        </p>
+        <button class="cta">990원 · 나란히 보기</button>
+        <p class="fine">투자 판단이 아니라 고민 정리에 쓰는 참고용 정보예요</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== E3 -->
+<section class="concept e-mock" id="concept-e3">
+  <div class="concept-meta">
+    <div>
+      <span class="concept-label">CONCEPT E3 · 애저 블루</span>
+      <h2>애저 블루 (#2563EB)</h2>
+      <p>전형적인 명료 푸른색. 데이터·신뢰감 강조. 토스B와 비슷해 보이지만 D 구조의 노랑 하이라이트로 차별화.</p>
+    </div>
+    <div class="swatch-row">
+      <div class="swatch" style="background:#FAFAFA"></div>
+      <div class="swatch" style="background:#2563EB"></div>
+      <div class="swatch" style="background:#FEE88A"></div>
+      <div class="swatch" style="background:#141414"></div>
+    </div>
+  </div>
+
+  <div class="mock">
+    <div class="mock-header">
+      <span class="mock-logo">입지990</span>
+      <div class="mock-nav"><a>분석</a><a>비교</a><a>마이</a></div>
+    </div>
+    <div class="hero">
+      <span class="badge">NEW · 오늘의 큐레이션</span>
+      <h1>내가 아는 단지, <em>제대로</em><br>옆 단지랑 <em>나란히</em>.</h1>
+      <p class="sub">990원으로 만나는 단지 해설 큐레이션.</p>
+      <div class="search">
+        <span>🔍</span>
+        <input placeholder="단지 이름을 검색해보세요">
+        <span class="pill">Go</span>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <h3>🏢 파크리오 84㎡</h3>
+        <div class="data-row"><span class="k">세대수</span><span class="v">6,864세대</span></div>
+        <div class="data-row"><span class="k">입주년도</span><span class="v">2008년 (18년차)</span></div>
+        <div class="data-row"><span class="k">가장 가까운 역</span><span class="v">잠실역 · 도보 8분</span></div>
+        <div class="data-row"><span class="k">최근 실거래</span><span class="v">22억 4,000만원</span></div>
+        <div class="data-row"><span class="k">12개월 흐름</span><span class="pill up">+8.4%</span></div>
+        <div class="chart-bars">
+          <span style="height:40%"></span><span style="height:55%"></span>
+          <span style="height:50%"></span><span style="height:68%"></span>
+          <span style="height:72%"></span><span style="height:80%"></span>
+          <span style="height:85%"></span><span style="height:92%"></span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>✨ 오늘의 한 줄</h3>
+        <p style="font-size:13px; line-height:1.7; opacity:0.85;">
+          같은 급지의 <b>리센츠</b>랑 나란히 놓고 보면,
+          <span style="background:linear-gradient(180deg,transparent 62%,#FEE88A 62%);padding:0 2px;">평당가 차이가 어디서 오는지</span>
+          한눈에 보여요. 두 단지 이상 올려두면 급이 더 선명해져요.
+        </p>
+        <button class="cta">990원 · 나란히 보기</button>
+        <p class="fine">투자 판단이 아니라 고민 정리에 쓰는 참고용 정보예요</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== E4 -->
+<section class="concept e-mock" id="concept-e4">
+  <div class="concept-meta">
+    <div>
+      <span class="concept-label">CONCEPT E4 · 미드나잇 네이비</span>
+      <h2>미드나잇 네이비 (#1E3A5F)</h2>
+      <p>차분하고 묵직한 깊은 푸른색. D의 버건디와 채도가 비슷해 무게감 유지. 부동산 전문성·신중함 인상.</p>
+    </div>
+    <div class="swatch-row">
+      <div class="swatch" style="background:#FAFAFA"></div>
+      <div class="swatch" style="background:#1E3A5F"></div>
+      <div class="swatch" style="background:#FEE88A"></div>
+      <div class="swatch" style="background:#141414"></div>
+    </div>
+  </div>
+
+  <div class="mock">
+    <div class="mock-header">
+      <span class="mock-logo">입지990</span>
+      <div class="mock-nav"><a>분석</a><a>비교</a><a>마이</a></div>
+    </div>
+    <div class="hero">
+      <span class="badge">NEW · 오늘의 큐레이션</span>
+      <h1>내가 아는 단지, <em>제대로</em><br>옆 단지랑 <em>나란히</em>.</h1>
+      <p class="sub">990원으로 만나는 단지 해설 큐레이션.</p>
+      <div class="search">
+        <span>🔍</span>
+        <input placeholder="단지 이름을 검색해보세요">
+        <span class="pill">Go</span>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <h3>🏢 파크리오 84㎡</h3>
+        <div class="data-row"><span class="k">세대수</span><span class="v">6,864세대</span></div>
+        <div class="data-row"><span class="k">입주년도</span><span class="v">2008년 (18년차)</span></div>
+        <div class="data-row"><span class="k">가장 가까운 역</span><span class="v">잠실역 · 도보 8분</span></div>
+        <div class="data-row"><span class="k">최근 실거래</span><span class="v">22억 4,000만원</span></div>
+        <div class="data-row"><span class="k">12개월 흐름</span><span class="pill up">+8.4%</span></div>
+        <div class="chart-bars">
+          <span style="height:40%"></span><span style="height:55%"></span>
+          <span style="height:50%"></span><span style="height:68%"></span>
+          <span style="height:72%"></span><span style="height:80%"></span>
+          <span style="height:85%"></span><span style="height:92%"></span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>✨ 오늘의 한 줄</h3>
+        <p style="font-size:13px; line-height:1.7; opacity:0.85;">
+          같은 급지의 <b>리센츠</b>랑 나란히 놓고 보면,
+          <span style="background:linear-gradient(180deg,transparent 62%,#FEE88A 62%);padding:0 2px;">평당가 차이가 어디서 오는지</span>
+          한눈에 보여요. 두 단지 이상 올려두면 급이 더 선명해져요.
+        </p>
+        <button class="cta">990원 · 나란히 보기</button>
+        <p class="fine">투자 판단이 아니라 고민 정리에 쓰는 참고용 정보예요</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== E5 -->
+<section class="concept e-mock" id="concept-e5">
+  <div class="concept-meta">
+    <div>
+      <span class="concept-label">CONCEPT E5 · 오션 틸</span>
+      <h2>오션 틸 (#0F766E)</h2>
+      <p>청록 계열. 부동산 도메인에서 거의 안 쓰이는 색이라 차별화 강함. 신뢰·자연감 + 푸른 계열의 청량감.</p>
+    </div>
+    <div class="swatch-row">
+      <div class="swatch" style="background:#FAFAFA"></div>
+      <div class="swatch" style="background:#0F766E"></div>
+      <div class="swatch" style="background:#FEE88A"></div>
+      <div class="swatch" style="background:#141414"></div>
+    </div>
+  </div>
+
+  <div class="mock">
+    <div class="mock-header">
+      <span class="mock-logo">입지990</span>
+      <div class="mock-nav"><a>분석</a><a>비교</a><a>마이</a></div>
+    </div>
+    <div class="hero">
+      <span class="badge">NEW · 오늘의 큐레이션</span>
+      <h1>내가 아는 단지, <em>제대로</em><br>옆 단지랑 <em>나란히</em>.</h1>
+      <p class="sub">990원으로 만나는 단지 해설 큐레이션.</p>
+      <div class="search">
+        <span>🔍</span>
+        <input placeholder="단지 이름을 검색해보세요">
+        <span class="pill">Go</span>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <h3>🏢 파크리오 84㎡</h3>
+        <div class="data-row"><span class="k">세대수</span><span class="v">6,864세대</span></div>
+        <div class="data-row"><span class="k">입주년도</span><span class="v">2008년 (18년차)</span></div>
+        <div class="data-row"><span class="k">가장 가까운 역</span><span class="v">잠실역 · 도보 8분</span></div>
+        <div class="data-row"><span class="k">최근 실거래</span><span class="v">22억 4,000만원</span></div>
+        <div class="data-row"><span class="k">12개월 흐름</span><span class="pill up">+8.4%</span></div>
+        <div class="chart-bars">
+          <span style="height:40%"></span><span style="height:55%"></span>
+          <span style="height:50%"></span><span style="height:68%"></span>
+          <span style="height:72%"></span><span style="height:80%"></span>
+          <span style="height:85%"></span><span style="height:92%"></span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>✨ 오늘의 한 줄</h3>
+        <p style="font-size:13px; line-height:1.7; opacity:0.85;">
+          같은 급지의 <b>리센츠</b>랑 나란히 놓고 보면,
+          <span style="background:linear-gradient(180deg,transparent 62%,#FEE88A 62%);padding:0 2px;">평당가 차이가 어디서 오는지</span>
+          한눈에 보여요. 두 단지 이상 올려두면 급이 더 선명해져요.
+        </p>
+        <button class="cta">990원 · 나란히 보기</button>
+        <p class="fine">투자 판단이 아니라 고민 정리에 쓰는 참고용 정보예요</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  9개 컨셉 시안 (A,B,C,D + E1~E5) · Pretendard Variable · 입지990 · 2026-04-25<br>
+  최종 결정 후 Tailwind 토큰 + globals.css로 단계적 이식 예정
+</footer>
+
+</body>
+</html>

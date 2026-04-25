@@ -67,7 +67,7 @@ export default function InsightCards({ apartment, insights, nearby }: Props) {
       key: 'transport',
       icon: <Train className="h-5 w-5" />,
       title: '교통',
-      accent: 'text-blue-400 bg-blue-500/15 border-blue-500/30',
+      accent: 'text-primary bg-primary-soft border-primary/30',
       content: (
         <div className="space-y-2">
           {apartment.nearestStation ? (
@@ -127,7 +127,7 @@ export default function InsightCards({ apartment, insights, nearby }: Props) {
       key: 'infra',
       icon: <Hospital className="h-5 w-5" />,
       title: '인프라',
-      accent: 'text-red-400 bg-red-500/15 border-red-500/30',
+      accent: 'text-danger bg-danger-soft border-danger/30',
       content: (
         <div className="space-y-2">
           {insights.hospitals && insights.hospitals.length > 0 ? (
@@ -162,7 +162,7 @@ export default function InsightCards({ apartment, insights, nearby }: Props) {
       key: 'development',
       icon: <Hammer className="h-5 w-5" />,
       title: '개발 호재',
-      accent: 'text-amber-400 bg-amber-500/15 border-amber-500/30',
+      accent: 'text-warning bg-warning-soft border-warning/30',
       content: (
         <div className="space-y-2">
           {insights.developments && insights.developments.length > 0 ? (
@@ -174,9 +174,9 @@ export default function InsightCards({ apartment, insights, nearby }: Props) {
                     <span
                       className={`rounded-md border px-1.5 py-0.5 text-[10px] ${
                         d.status === '완료'
-                          ? 'border-accent/30 bg-accent/10 text-accent'
+                          ? 'border-success/30 bg-success-soft text-success'
                           : d.status === '진행중'
-                          ? 'border-amber-500/30 bg-amber-500/10 text-amber-400'
+                          ? 'border-warning/30 bg-warning-soft text-warning'
                           : 'border-border bg-background/60 text-foreground-sub'
                       }`}
                     >

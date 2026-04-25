@@ -57,7 +57,7 @@ function SuccessContent() {
         </>
       ) : (
         <>
-          <CheckCircle2 className="mx-auto h-10 w-10 text-red-400" />
+          <CheckCircle2 className="mx-auto h-10 w-10 text-danger" />
           <h1 className="mt-6 text-xl font-bold">결제 처리 문제</h1>
           <p className="mt-2 text-sm text-foreground-sub">{message}</p>
         </>

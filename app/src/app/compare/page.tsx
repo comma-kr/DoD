@@ -184,7 +184,7 @@ export default function ComparePage() {
             {formatPrice(amount)} 결제하고 비교 보기
           </Button>
           {error ? (
-            <p className="mt-3 text-center text-sm text-red-400">{error}</p>
+            <p className="mt-3 text-center text-sm text-danger">{error}</p>
           ) : null}
           <p className="mt-3 text-center text-xs text-foreground-sub">
             투자 판단이 아니라 고민 정리에 도움을 드리는 참고용 정보예요
