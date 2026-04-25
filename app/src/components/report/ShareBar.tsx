@@ -49,7 +49,7 @@ export default function ShareBar({ title }: Props) {
   }
 
   return (
-    <div className="flex items-center justify-between rounded-2xl border border-border bg-surface/40 p-4">
+    <div className="flex items-center justify-between rounded-2xl border border-border bg-surface p-4 shadow-sm">
       <div className="flex items-center gap-3">
         <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-surface text-foreground-sub">
           <Share2 className="h-4 w-4" />

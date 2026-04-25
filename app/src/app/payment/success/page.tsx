@@ -46,7 +46,7 @@ function SuccessContent() {
   }, [router, searchParams]);
 
   return (
-    <div className="w-full max-w-md rounded-3xl border border-border bg-surface/60 p-10 text-center backdrop-blur">
+    <div className="w-full max-w-md rounded-3xl border border-border bg-surface p-10 text-center shadow-sm">
       {status === 'processing' ? (
         <>
           <Loader2 className="mx-auto h-10 w-10 animate-spin text-primary" />

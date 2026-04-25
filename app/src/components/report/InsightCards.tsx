@@ -108,7 +108,7 @@ export default function InsightCards({ apartment, insights, nearby }: Props) {
               {insights.majorStores.slice(0, 3).map((store) => (
                 <span
                   key={store}
-                  className="rounded-md bg-background/60 px-2 py-0.5 text-[11px] text-foreground-sub"
+                  className="rounded-md bg-surface-soft px-2 py-0.5 text-[11px] text-foreground-sub"
                 >
                   {store}
                 </span>
@@ -177,7 +177,7 @@ export default function InsightCards({ apartment, insights, nearby }: Props) {
                           ? 'border-success/30 bg-success-soft text-success'
                           : d.status === '진행중'
                           ? 'border-warning/30 bg-warning-soft text-warning'
-                          : 'border-border bg-background/60 text-foreground-sub'
+                          : 'border-border bg-surface-soft text-foreground-sub'
                       }`}
                     >
                       {d.status}
@@ -237,7 +237,7 @@ export default function InsightCards({ apartment, insights, nearby }: Props) {
       {cards.map((card) => (
         <div
           key={card.key}
-          className="rounded-2xl border border-border bg-surface/60 p-5 backdrop-blur"
+          className="rounded-2xl border border-border bg-surface p-5 shadow-sm"
         >
           <div className="mb-4 flex items-center gap-2">
             <span

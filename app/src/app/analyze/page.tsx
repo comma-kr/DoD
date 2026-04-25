@@ -200,7 +200,7 @@ function AnalyzeContent() {
           </div>
         ) : null}
 
-        <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-4 py-1.5 text-xs text-foreground-sub">
+        <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-1.5 text-xs text-foreground-sub">
           <Sparkles className="h-3.5 w-3.5 text-secondary" />
           3단계 · 약 30초
         </div>
@@ -230,7 +230,7 @@ function AnalyzeContent() {
   return (
     <section className="mx-auto max-w-3xl px-6 pt-16 pb-24">
       <div className="mb-10 text-center">
-        <span className="mb-3 inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-4 py-1.5 text-xs text-foreground-sub">
+        <span className="mb-3 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-1.5 text-xs text-foreground-sub">
           <Sparkles className="h-3.5 w-3.5 text-secondary" />
           계정당 1회 무료 심층 분석
         </span>
@@ -243,7 +243,7 @@ function AnalyzeContent() {
       <SearchBar onSelect={setSelected} autoFocus={!selected} />
 
       {selected ? (
-        <div className="mt-8 rounded-3xl border border-border bg-surface/60 p-6 backdrop-blur">
+        <div className="mt-8 rounded-3xl border border-border bg-surface p-6 shadow-sm">
           <div className="flex items-start gap-4">
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/15 text-primary">
               <Building2 className="h-6 w-6" />

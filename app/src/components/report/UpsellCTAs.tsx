@@ -27,7 +27,7 @@ export default function UpsellCTAs() {
   };
 
   return (
-    <section className="mt-12 rounded-3xl border border-border bg-surface/60 p-6 backdrop-blur">
+    <section className="mt-12 rounded-3xl border border-border bg-surface p-6 shadow-sm">
       <h2 className="mb-1 text-lg font-bold">다음 궁금증이 있다면</h2>
       <p className="mb-6 text-sm text-foreground-sub">
         부담 없이 한 장씩 더 보실 수 있어요.

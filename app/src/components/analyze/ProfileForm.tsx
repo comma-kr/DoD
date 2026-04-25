@@ -221,7 +221,7 @@ function Step1({
               className={`flex items-center gap-4 rounded-2xl border p-5 text-left transition ${
                 active
                   ? 'border-primary bg-primary/10'
-                  : 'border-border bg-surface/60 hover:border-foreground-sub/40'
+                  : 'border-border bg-surface hover:border-foreground-sub/40'
               }`}
             >
               <span className="text-2xl">{HOUSEHOLD_EMOJIS[h]}</span>
@@ -280,7 +280,7 @@ function Step2({
               className={`relative flex flex-col items-start gap-2 rounded-2xl border p-4 text-left transition ${
                 active
                   ? 'border-primary bg-primary/10'
-                  : 'border-border bg-surface/60 hover:border-foreground-sub/40'
+                  : 'border-border bg-surface hover:border-foreground-sub/40'
               }`}
             >
               <span className="text-2xl">{PRIORITY_EMOJIS[p]}</span>
@@ -350,7 +350,7 @@ function Step3({
                 className={`rounded-2xl border px-4 py-3.5 text-left font-semibold transition ${
                   active
                     ? 'border-primary bg-primary/10 text-foreground'
-                    : 'border-border bg-surface/60 text-foreground-sub hover:border-foreground-sub/40 hover:text-foreground'
+                    : 'border-border bg-surface text-foreground-sub hover:border-foreground-sub/40 hover:text-foreground'
                 }`}
               >
                 {COMMUTE_LABELS[c]}

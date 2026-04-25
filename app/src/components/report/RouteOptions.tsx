@@ -54,7 +54,7 @@ export default function RouteOptions({
         {options.map((opt) => (
           <div
             key={opt.mode}
-            className="rounded-2xl border border-border bg-background/60 p-4"
+            className="rounded-2xl border border-border bg-surface-soft p-4"
           >
             <div className="flex items-center justify-between">
               <span className="text-lg">{opt.icon}</span>

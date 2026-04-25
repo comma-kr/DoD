@@ -19,7 +19,7 @@ export default function CommuteGrid({ address, highlightArea }: Props) {
 
   if (!hasData) {
     return (
-      <div className="rounded-3xl border border-border bg-surface/60 p-6">
+      <div className="rounded-3xl border border-border bg-surface p-6 shadow-sm">
         <div className="flex items-center gap-2">
           <Briefcase className="h-5 w-5 text-foreground-sub" />
           <h3 className="text-base font-bold">주요 업무지까지</h3>
@@ -32,7 +32,7 @@ export default function CommuteGrid({ address, highlightArea }: Props) {
   }
 
   return (
-    <div className="rounded-3xl border border-border bg-surface/60 p-6">
+    <div className="rounded-3xl border border-border bg-surface p-6 shadow-sm">
       <div className="flex items-center gap-2">
         <Briefcase className="h-5 w-5 text-foreground-sub" />
         <h3 className="text-base font-bold">주요 업무지까지</h3>
@@ -51,7 +51,7 @@ export default function CommuteGrid({ address, highlightArea }: Props) {
             return (
               <div
                 key={area}
-                className="rounded-2xl border border-border bg-background/40 p-3 opacity-50"
+                className="rounded-2xl border border-border bg-surface-soft p-3 opacity-50"
               >
                 <div className="text-xs font-semibold text-foreground-sub">
                   {label}
@@ -66,7 +66,7 @@ export default function CommuteGrid({ address, highlightArea }: Props) {
               className={`rounded-2xl border p-3 transition ${
                 active
                   ? 'border-primary/60 bg-primary/10'
-                  : 'border-border bg-background/40'
+                  : 'border-border bg-surface-soft'
               }`}
             >
               <div className="flex items-center justify-between">

@@ -14,7 +14,7 @@ export default async function MyPage() {
   if (!session) {
     return (
       <main className="flex flex-1 items-center justify-center px-6">
-        <div className="w-full max-w-md rounded-3xl border border-border bg-surface/60 p-10 text-center backdrop-blur">
+        <div className="w-full max-w-md rounded-3xl border border-border bg-surface p-10 text-center shadow-sm">
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-surface text-foreground-sub">
             <Lock className="h-5 w-5" />
           </div>
@@ -64,7 +64,7 @@ export default async function MyPage() {
 
         <Link
           href="/analyze/profile"
-          className="mb-6 flex items-center gap-4 rounded-2xl border border-border bg-surface/60 p-5 transition hover:border-primary/40"
+          className="mb-6 flex items-center gap-4 rounded-2xl border border-border bg-surface p-5 shadow-sm transition hover:border-primary/40"
         >
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary/15 text-secondary">
             <UserCog className="h-5 w-5" />
@@ -98,7 +98,7 @@ export default async function MyPage() {
                 <li key={r.id}>
                   <Link
                     href={`/report/${r.id}`}
-                    className="flex items-start gap-4 rounded-2xl border border-border bg-surface/60 p-5 transition hover:border-primary/40"
+                    className="flex items-start gap-4 rounded-2xl border border-border bg-surface p-5 shadow-sm transition hover:border-primary/40"
                   >
                     <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary">
                       <FileText className="h-5 w-5" />

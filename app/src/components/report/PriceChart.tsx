@@ -59,7 +59,7 @@ export default function PriceChart({ trades, apartmentName }: Props) {
     absDelta > 1 ? 'text-success' : absDelta < -1 ? 'text-danger' : 'text-foreground-sub';
 
   return (
-    <div className="rounded-3xl border border-border bg-surface/60 p-6 backdrop-blur">
+    <div className="rounded-3xl border border-border bg-surface p-6 shadow-sm">
       <div className="mb-5 flex items-start justify-between gap-3">
         <div>
           <h3 className="text-lg font-bold">📊 가격 흐름 차트</h3>
@@ -68,7 +68,7 @@ export default function PriceChart({ trades, apartmentName }: Props) {
             84㎡ 기준 실거래가 · {data.length}건
           </p>
         </div>
-        <div className="flex items-center gap-2 rounded-xl bg-background/60 px-3 py-2">
+        <div className="flex items-center gap-2 rounded-xl bg-surface-soft px-3 py-2">
           {trendIcon}
           <span className={`text-sm font-semibold ${trendColor}`}>
             {absDelta > 0 ? '+' : ''}

@@ -4,14 +4,14 @@
    입지990 · E1 코랄 펀치 라이트 테마
    ============================================================ */
 :root {
-  --background: #FAFAFA;         /* 바디 */
+  --background: #F7F7F8;         /* 바디 — 카드 흰색과 살짝 대비되도록 톤다운 */
   --surface: #FFFFFF;            /* 카드·모달 */
-  --surface-soft: #F5F5F5;       /* 검색 박스, 섹션 강조 바닥 */
-  --border: #EDEDED;             /* 보더 기본 */
-  --border-soft: #F5F5F5;        /* 점선/약한 보더 */
+  --surface-soft: #F1F2F4;       /* 검색 박스, 섹션 강조 바닥 */
+  --border: #E4E6EA;             /* 보더 기본 — 카드 경계 또렷하게 */
+  --border-soft: #EDEDED;        /* 점선/약한 보더 */
   --foreground: #141414;         /* 본문 */
-  --foreground-sub: #6B7684;     /* 서브텍스트 */
-  --foreground-mute: #9CA3AF;    /* 더 약한 톤 (placeholder, fine print) */
+  --foreground-sub: #4B5563;     /* 서브텍스트 — 가독성 확보 위해 한 단계 진하게 */
+  --foreground-mute: #6B7684;    /* 더 약한 톤 (placeholder, fine print) */
 
   /* 포인트 — 코랄 펀치 */
   --primary: #E25555;            /* 메인 CTA, 로고 강조 */

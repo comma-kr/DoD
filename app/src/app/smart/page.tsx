@@ -29,7 +29,7 @@ export default function SmartPickPage() {
             <Clock className="h-3.5 w-3.5" />곧 오픈 예정
           </div>
 
-          <div className="mt-10 rounded-2xl border border-border bg-surface/60 p-6 text-left">
+          <div className="mt-10 rounded-2xl border border-border bg-surface p-6 text-left shadow-sm">
             <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
               <Sparkles className="h-4 w-4 text-secondary" />
               어떤 걸 받아볼 수 있나요?
@@ -62,7 +62,7 @@ export default function SmartPickPage() {
             </ul>
           </div>
 
-          <div className="mt-8 rounded-2xl border border-border bg-surface/40 p-4 text-xs text-foreground-sub">
+          <div className="mt-8 rounded-2xl border border-border bg-surface p-4 text-xs text-foreground-sub shadow-sm">
             <strong className="text-foreground">2,990원</strong>에 제공될 예정이에요. 오픈 시 보관함에서 알림 드릴게요.
           </div>
 

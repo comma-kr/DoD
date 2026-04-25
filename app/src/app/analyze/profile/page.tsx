@@ -69,7 +69,7 @@ export default function ProfileEditPage() {
   if (!authed) {
     return (
       <main className="flex flex-1 items-center justify-center px-6">
-        <div className="w-full max-w-md rounded-3xl border border-border bg-surface/60 p-10 text-center">
+        <div className="w-full max-w-md rounded-3xl border border-border bg-surface p-10 text-center shadow-sm">
           <h1 className="text-xl font-bold">로그인이 필요해요</h1>
           <p className="mt-2 text-sm text-foreground-sub">
             프로필을 수정하려면 먼저 전화번호로 인증해주세요.
@@ -94,7 +94,7 @@ export default function ProfileEditPage() {
         >
           <ArrowLeft className="h-4 w-4" /> 뒤로
         </button>
-        <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-4 py-1.5 text-xs text-foreground-sub">
+        <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-1.5 text-xs text-foreground-sub">
           <Sparkles className="h-3.5 w-3.5 text-secondary" />
           내 프로필 수정
         </div>

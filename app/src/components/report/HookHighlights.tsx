@@ -164,7 +164,7 @@ export default function HookHighlights({
         {cards.map((card) => (
           <div
             key={card.key}
-            className="relative overflow-hidden rounded-2xl border border-border bg-surface/60 p-4 backdrop-blur"
+            className="relative overflow-hidden rounded-2xl border border-border bg-surface p-4 shadow-sm"
           >
             <div className="flex items-center justify-between">
               <div

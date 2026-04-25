@@ -115,7 +115,7 @@ export default function ComparePage() {
     <main className="flex-1">
       <section className="mx-auto max-w-3xl px-6 pt-16 pb-24">
         <div className="mb-10 text-center">
-          <span className="mb-3 inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-4 py-1.5 text-xs text-foreground-sub">
+          <span className="mb-3 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-1.5 text-xs text-foreground-sub">
             <Sparkles className="h-3.5 w-3.5 text-primary" />딱 990원
           </span>
           <h1 className="text-3xl font-bold sm:text-4xl">
@@ -140,7 +140,7 @@ export default function ComparePage() {
             picks.map((p, i) => (
               <div
                 key={p.id}
-                className="flex items-center gap-4 rounded-2xl border border-border bg-surface/60 p-4 backdrop-blur"
+                className="flex items-center gap-4 rounded-2xl border border-border bg-surface p-4 shadow-sm"
               >
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/15 font-bold text-primary">
                   {String.fromCharCode(65 + i)}
@@ -160,13 +160,13 @@ export default function ComparePage() {
             ))
           )}
           {picks.length > 0 && picks.length < MAX_COMPARE ? (
-            <div className="flex items-center justify-center gap-2 rounded-2xl border border-dashed border-border bg-surface/20 p-4 text-xs text-foreground-sub">
+            <div className="flex items-center justify-center gap-2 rounded-2xl border border-dashed border-border bg-surface-soft p-4 text-xs text-foreground-sub">
               <Plus className="h-4 w-4" />한 단지 더 추가할 수 있어요
             </div>
           ) : null}
         </div>
 
-        <div className="mt-10 rounded-3xl border border-border bg-surface/60 p-6 backdrop-blur">
+        <div className="mt-10 rounded-3xl border border-border bg-surface p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
               <div className="text-sm text-foreground-sub">나란히 보기</div>

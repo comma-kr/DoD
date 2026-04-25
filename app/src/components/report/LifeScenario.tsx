@@ -93,7 +93,7 @@ export default function LifeScenario({
   };
 
   return (
-    <section className="rounded-3xl border border-border bg-surface/60 p-6 backdrop-blur">
+    <section className="rounded-3xl border border-border bg-surface p-6 shadow-sm">
       <div className="flex items-center gap-2">
         <h3 className="text-base font-bold">🌅 이 단지 살면 일상이 어떨까</h3>
         <span className="text-[11px] text-foreground-sub">· 데이터로 그려본 하루</span>
@@ -106,7 +106,7 @@ export default function LifeScenario({
         {scenarios.map((s, i) => (
           <div
             key={i}
-            className="rounded-2xl border border-border bg-background/40 p-4"
+            className="rounded-2xl border border-border bg-surface-soft p-4"
           >
             <div className="flex items-center gap-2">
               <div

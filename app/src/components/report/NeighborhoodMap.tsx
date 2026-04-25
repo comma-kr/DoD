@@ -152,8 +152,8 @@ export default function NeighborhoodMap({
   void insights;
 
   return (
-    <div className="overflow-hidden rounded-3xl border border-border bg-surface/60 backdrop-blur">
-      <div className="flex items-center justify-between border-b border-border bg-background/40 px-5 py-3">
+    <div className="overflow-hidden rounded-3xl border border-border bg-surface shadow-sm">
+      <div className="flex items-center justify-between border-b border-border bg-surface-soft px-5 py-3">
         <h3 className="text-sm font-bold text-foreground">
           📍 {apartmentName} 일대
         </h3>
@@ -190,7 +190,7 @@ export default function NeighborhoodMap({
       </div>
 
       {/* 하단 범례 */}
-      <div className="flex flex-wrap items-center gap-3 border-t border-border bg-background/40 px-5 py-2.5 text-[10px] text-foreground-sub">
+      <div className="flex flex-wrap items-center gap-3 border-t border-border bg-surface-soft px-5 py-2.5 text-[10px] text-foreground-sub">
         <span className="inline-flex items-center gap-1.5">
           <span className="inline-block h-2.5 w-2.5 rounded-full bg-primary ring-2 ring-foreground/20" />
           현재 단지
