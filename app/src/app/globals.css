@@ -78,3 +78,8 @@ body {
   background: linear-gradient(180deg, transparent 62%, var(--highlight) 62%);
   padding: 0 2px;
 }
+/* 표 안의 굵음은 형광 제외 (비교표 라벨이 줄줄이 형광이 되는 걸 방지) */
+table .report-highlight {
+  background: none;
+  padding: 0;
+}

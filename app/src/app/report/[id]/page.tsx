@@ -92,7 +92,7 @@ export default async function ReportPage({ params }: PageProps) {
               {formatDate(report.created_at)}
             </span>
           </div>
-          <h1 className="mt-5 text-3xl font-bold leading-tight sm:text-4xl">
+          <h1 className="mt-5 border-l-4 border-primary pl-5 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
             {report.title}
           </h1>
         </header>
