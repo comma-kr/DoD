@@ -9,6 +9,7 @@ import {
 import type { DistrictInsight } from '@/lib/district-insights';
 import type { NearbyApartment } from '@/lib/nearby-apartments';
 import { CARD_TINT, type TintTone } from '@/lib/card-tint';
+import type { Priority } from '@/types/profile';
 
 interface Props {
   apartment: {
@@ -18,9 +19,20 @@ interface Props {
   };
   insights: DistrictInsight;
   nearby: NearbyApartment[];
+  priorities?: Priority[];
 }
 
-export default function InsightCards({ apartment, insights, nearby }: Props) {
+// priority → cardKey 매핑
+const PRIORITY_TO_CARD: Partial<Record<Priority, string>> = {
+  school: 'school',
+  transport: 'transport',
+  convenience: 'commercial',
+  newbuild: 'development',
+  community: 'nearby',
+  // size/quiet/price 는 매핑 없음 (기본 순서)
+};
+
+export default function InsightCards({ apartment, insights, nearby, priorities }: Props) {
   const walkMin = apartment.stationDistanceM
     ? Math.max(1, Math.round(apartment.stationDistanceM / 70))
     : null;
@@ -229,12 +241,25 @@ export default function InsightCards({ apartment, insights, nearby }: Props) {
     },
   ];
 
+  // 우선순위 1순위 → 해당 카드를 가장 앞으로
+  const topPriority = priorities?.[0];
+  const topCardKey = topPriority ? PRIORITY_TO_CARD[topPriority] : undefined;
+  if (topCardKey) {
+    const idx = cards.findIndex((c) => c.key === topCardKey);
+    if (idx > 0) {
+      const [hit] = cards.splice(idx, 1);
+      cards.unshift(hit);
+    }
+  }
+
   return (
     <div className="grid auto-rows-fr gap-3 break-keep sm:grid-cols-2 lg:grid-cols-3">
-      {cards.map((card) => (
+      {cards.map((card, idx) => {
+        const isTop = idx === 0 && !!topCardKey && card.key === topCardKey;
+        return (
         <div
           key={card.key}
-          className={`flex flex-col rounded-2xl border border-border bg-surface p-5 shadow-sm ${CARD_TINT[card.tone]}`}
+          className={`flex flex-col rounded-2xl border border-border bg-surface p-5 shadow-sm ${CARD_TINT[card.tone]} ${isTop ? 'ring-2 ring-primary/30' : ''}`}
         >
           <div className="mb-4 flex items-center gap-2">
             <span
@@ -243,10 +268,16 @@ export default function InsightCards({ apartment, insights, nearby }: Props) {
               {card.icon}
             </span>
             <h3 className="text-sm font-bold text-foreground">{card.title}</h3>
+            {isTop ? (
+              <span className="ml-auto rounded-full bg-primary-soft px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary-ink">
+                ★ 1순위
+              </span>
+            ) : null}
           </div>
           <div className="flex-1">{card.content}</div>
         </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

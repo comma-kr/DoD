@@ -9,6 +9,7 @@ import {
   GraduationCap,
 } from 'lucide-react';
 import { CARD_TINT, type TintTone } from '@/lib/card-tint';
+import type { Priority } from '@/types/profile';
 
 interface Props {
   // 시세
@@ -31,7 +32,18 @@ interface Props {
   // 가족 구성
   totalUnits?: number | null;
   builtYear?: number | null;
+
+  // 프로필 1순위 → 해당 카드를 첫번째로 끌어올림 + 강조
+  priorities?: Priority[];
 }
+
+// priority → cardKey 매핑
+const PRIORITY_TO_CARD: Partial<Record<Priority, string>> = {
+  price: 'price',
+  transport: 'transit',
+  school: 'school',
+  // size/community/quiet/newbuild/convenience 는 매핑 없음 (기본 순서)
+};
 
 function formatEok(manWon: number | null | undefined): string {
   if (!manWon) return '-';
@@ -65,6 +77,7 @@ export default function HookHighlights({
   schoolDistanceM,
   totalUnits,
   builtYear,
+  priorities,
 }: Props) {
   const cards: Array<{
     key: string;
@@ -139,6 +152,17 @@ export default function HookHighlights({
 
   if (cards.length === 0) return null;
 
+  // 우선순위 1순위 → 해당 카드를 가장 앞으로
+  const topPriority = priorities?.[0];
+  const topCardKey = topPriority ? PRIORITY_TO_CARD[topPriority] : undefined;
+  if (topCardKey) {
+    const idx = cards.findIndex((c) => c.key === topCardKey);
+    if (idx > 0) {
+      const [hit] = cards.splice(idx, 1);
+      cards.unshift(hit);
+    }
+  }
+
   // 단지 정체성 한 줄 (세대수 + 연식)
   const identity =
     totalUnits && builtYear
@@ -170,10 +194,12 @@ export default function HookHighlights({
       ) : null}
 
       <div className="grid auto-rows-fr grid-cols-2 gap-3 break-keep lg:grid-cols-4">
-        {cards.map((card) => (
+        {cards.map((card, idx) => {
+          const isTop = idx === 0 && !!topCardKey && card.key === topCardKey;
+          return (
           <div
             key={card.key}
-            className={`relative flex flex-col overflow-hidden rounded-2xl border border-border bg-surface p-4 shadow-sm ${CARD_TINT[toneMap[card.accent]]}`}
+            className={`relative flex flex-col overflow-hidden rounded-2xl border border-border bg-surface p-4 shadow-sm ${CARD_TINT[toneMap[card.accent]]} ${isTop ? 'ring-2 ring-primary/30' : ''}`}
           >
             <div className="flex items-center justify-between">
               <div
@@ -203,7 +229,8 @@ export default function HookHighlights({
             </div>
             <div className="mt-1 text-[11px] text-foreground-sub">{card.sub}</div>
           </div>
-        ))}
+          );
+        })}
       </div>
     </section>
   );

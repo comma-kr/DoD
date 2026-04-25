@@ -14,7 +14,7 @@ import {
 } from '@/lib/kakao-local';
 import { createSupabaseAdminClient } from '@/lib/supabase/server';
 import { calcPricePerPyeong } from '@/lib/utils';
-import type { CommuteArea, HouseholdType } from '@/types/profile';
+import type { CommuteArea, HouseholdType, Priority } from '@/types/profile';
 
 export interface ApartmentLocation {
   id: string;
@@ -33,6 +33,7 @@ interface Props {
   highlightCommuteArea?: CommuteArea | null;
   workplaceAddress?: string | null;
   householdType?: HouseholdType | null;
+  priorities?: Priority[] | null;
 }
 
 export default async function LocationSection({
@@ -40,6 +41,7 @@ export default async function LocationSection({
   highlightCommuteArea,
   workplaceAddress,
   householdType,
+  priorities,
 }: Props) {
   if (!apartments || apartments.length === 0) return null;
 
@@ -133,6 +135,7 @@ export default async function LocationSection({
         schoolDistanceM={nearestSchool?.distanceM ?? null}
         totalUnits={primary.totalUnits ?? null}
         builtYear={primary.builtYear ?? null}
+        priorities={priorities ?? undefined}
       />
 
       {/* 1. 실제 카카오 지도 + 도보 경로 + 리딩단지 구역 + 상권 클러스터 + 학교 */}
@@ -163,6 +166,7 @@ export default async function LocationSection({
         }}
         insights={insights}
         nearby={nearby}
+        priorities={priorities ?? undefined}
       />
 
       {/* 2. 내 출근지 3경로 (프로필 출근지 있을 때만) */}
