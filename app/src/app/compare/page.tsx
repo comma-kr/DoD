@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { Building2, Plus, X, Sparkles } from 'lucide-react';
+import { Building2, Plus, X } from 'lucide-react';
 import SearchBar, { type SearchResult } from '@/components/search/SearchBar';
 import PhoneAuthModal from '@/components/auth/PhoneAuthModal';
 import Button from '@/components/ui/Button';
@@ -115,13 +115,13 @@ export default function ComparePage() {
     <main className="flex-1">
       <section className="mx-auto max-w-3xl px-6 pt-16 pb-24">
         <div className="mb-10 text-center">
-          <span className="mb-3 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-1.5 text-xs text-foreground-sub">
-            <Sparkles className="h-3.5 w-3.5 text-primary" />딱 990원
+          <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-warning-soft px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-warning">
+            990원 · 비교 리포트
           </span>
           <h1 className="text-3xl font-bold sm:text-4xl">
-            옆 단지랑 나란히 보기
+            옆 단지랑 <em className="report-highlight not-italic">나란히</em> 보기
           </h1>
-          <p className="mt-3 text-foreground-sub">
+          <p className="mt-4 leading-relaxed text-foreground-sub">
             2~3개 단지를 골라주시면 데이터로 나란히 비교해드려요.
           </p>
         </div>

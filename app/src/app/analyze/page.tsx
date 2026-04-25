@@ -3,7 +3,7 @@
 import { Suspense, useState, useEffect, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowRight, Building2, Sparkles, ArrowLeft, FileText } from 'lucide-react';
+import { ArrowRight, Building2, ArrowLeft, FileText } from 'lucide-react';
 import SearchBar, { type SearchResult } from '@/components/search/SearchBar';
 import PhoneAuthModal from '@/components/auth/PhoneAuthModal';
 import ProfileForm from '@/components/analyze/ProfileForm';
@@ -200,13 +200,16 @@ function AnalyzeContent() {
           </div>
         ) : null}
 
-        <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-1.5 text-xs text-foreground-sub">
-          <Sparkles className="h-3.5 w-3.5 text-secondary" />
-          3단계 · 약 30초
-        </div>
-        <p className="mb-6 mt-2 text-sm text-foreground-sub">
-          같은 단지도 1인가구와 4인가족에겐 완전히 다르게 보여요. 이 정보는 리포트에
-          어떤 관점으로 풀릴지 결정해요.
+        <span className="mb-3 inline-flex items-center gap-2 rounded-full bg-warning-soft px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-warning">
+          STEP · 3단계 · 약 30초
+        </span>
+        <h1 className="mt-2 text-2xl font-bold sm:text-3xl">
+          어떻게 풀어드릴지 <em className="report-highlight not-italic">정해볼까요</em>
+        </h1>
+        <p className="mb-8 mt-3 text-sm leading-relaxed text-foreground-sub">
+          같은 단지도 1인가구와 4인가족에겐 완전히 다르게 보여요.
+          <br className="hidden sm:block" /> 이 정보는 리포트가 어떤 관점으로 풀릴지
+          결정해요.
         </p>
         <ProfileForm onComplete={handleProfileComplete} />
       </section>
@@ -230,12 +233,13 @@ function AnalyzeContent() {
   return (
     <section className="mx-auto max-w-3xl px-6 pt-16 pb-24">
       <div className="mb-10 text-center">
-        <span className="mb-3 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-1.5 text-xs text-foreground-sub">
-          <Sparkles className="h-3.5 w-3.5 text-secondary" />
-          계정당 1회 무료 심층 분석
+        <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-warning-soft px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-warning">
+          FREE · 계정당 1회
         </span>
-        <h1 className="text-3xl font-bold sm:text-4xl">어떤 단지가 궁금하세요?</h1>
-        <p className="mt-3 text-foreground-sub">
+        <h1 className="text-3xl font-bold sm:text-4xl">
+          어떤 단지가 <em className="report-highlight not-italic">궁금</em>하세요?
+        </h1>
+        <p className="mt-4 leading-relaxed text-foreground-sub">
           단지를 하나 골라주시면 교통, 학군, 시세까지 제대로 정리해드려요.
         </p>
       </div>

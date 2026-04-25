@@ -51,11 +51,16 @@ export default async function MyPage() {
 
   return (
     <main className="flex-1">
-      <section className="mx-auto max-w-3xl px-6 pt-12 pb-20">
+      <section className="mx-auto max-w-3xl px-6 pt-16 pb-20">
         <header className="mb-10 flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold">보관함</h1>
-            <p className="mt-2 text-sm text-foreground-sub">
+            <span className="mb-3 inline-flex items-center gap-2 rounded-full bg-warning-soft px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-warning">
+              MY · 보관함
+            </span>
+            <h1 className="text-3xl font-bold sm:text-4xl">
+              내가 받은 <em className="report-highlight not-italic">리포트</em>
+            </h1>
+            <p className="mt-3 text-sm leading-relaxed text-foreground-sub">
               {maskedPhone} 번호로 받은 리포트를 모아봤어요.
             </p>
           </div>

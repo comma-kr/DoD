@@ -76,24 +76,25 @@ export default async function ReportPage({ params }: PageProps) {
 
   return (
     <main className="flex-1">
-      <article className="mx-auto max-w-3xl px-6 pt-12 pb-20">
-        <header className="mb-8 border-b border-border pb-8">
-          <div className="flex items-center gap-2 text-xs text-foreground-sub">
-            <span className="rounded-full border border-border px-2.5 py-1">
-              {typeName}
-            </span>
+      <article className="mx-auto max-w-3xl px-6 pt-16 pb-20">
+        <header className="mb-10 border-b border-border pb-8">
+          <div className="flex flex-wrap items-center gap-2">
             {isFree ? (
-              <span className="rounded-full border border-accent/40 bg-accent/10 px-2.5 py-1 text-accent">
-                무료
+              <span className="inline-flex items-center gap-1 rounded-full bg-success-soft px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-success">
+                FREE · {typeName}
               </span>
             ) : (
-              <span className="rounded-full border border-primary/40 bg-primary/10 px-2.5 py-1 text-primary">
-                결제 완료
+              <span className="inline-flex items-center gap-1 rounded-full bg-warning-soft px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-warning">
+                PAID · {typeName}
               </span>
             )}
-            <span>{formatDate(report.created_at)}</span>
+            <span className="text-xs text-foreground-sub">
+              {formatDate(report.created_at)}
+            </span>
           </div>
-          <h1 className="mt-4 text-3xl font-bold sm:text-4xl">{report.title}</h1>
+          <h1 className="mt-5 text-3xl font-bold leading-tight sm:text-4xl">
+            {report.title}
+          </h1>
         </header>
 
         {conditions.householdType ? (
