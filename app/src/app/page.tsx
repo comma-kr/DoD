@@ -7,33 +7,32 @@ export default function LandingPage() {
     <main className="flex-1">
       {/* 히어로 */}
       <section className="bg-surface">
-        <div className="mx-auto max-w-5xl px-6 pt-24 pb-20 sm:pt-32 sm:pb-28">
+        <div className="mx-auto max-w-5xl px-6 pt-14 pb-12 sm:pt-20 sm:pb-16">
           <div className="flex flex-col items-center text-center">
-            <span className="mb-6 inline-flex items-center gap-2 rounded-full bg-warning-soft px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-warning">
+            <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-warning-soft px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-warning">
               NEW · 오늘의 큐레이션
             </span>
-            <h1 className="text-balance text-4xl font-bold leading-tight tracking-tight sm:text-6xl">
+            <h1 className="text-balance text-3xl font-bold leading-tight tracking-tight sm:text-5xl">
               내가 아는 단지, <em className="report-highlight not-italic">제대로</em>
               <br />
               옆 단지랑 <em className="report-highlight not-italic">나란히</em>.
             </h1>
-            <p className="mt-6 max-w-2xl text-pretty text-lg text-foreground-sub sm:text-xl">
-              공짜로 만나는 단지 해설.
-              <br className="sm:hidden" /> 옆 단지랑 비교는{' '}
+            <p className="mt-4 max-w-xl text-pretty text-base text-foreground-sub sm:text-lg">
+              공짜로 만나는 단지 해설. 옆 단지랑 비교는{' '}
               <span className="font-semibold text-foreground">딱 990원.</span>
             </p>
 
-            <div className="mt-10 w-full max-w-[520px]">
+            <div className="mt-7 w-full max-w-[520px]">
               <LandingSearch />
             </div>
 
-            <p className="mt-4 text-xs text-foreground-sub">
+            <p className="mt-3 text-xs text-foreground-sub">
               단지를 고르면 바로 분석 시작 · 전화번호 하나면 끝
             </p>
 
             <Link
               href="/analyze"
-              className="mt-6 inline-flex items-center gap-2 text-sm text-foreground-sub hover:text-foreground"
+              className="mt-4 inline-flex items-center gap-2 text-sm text-foreground-sub hover:text-foreground"
             >
               또는 분석 페이지로 이동하기
               <ArrowRight className="h-3.5 w-3.5" />
