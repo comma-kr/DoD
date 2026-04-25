@@ -66,3 +66,14 @@ export function isValidKoreanPhone(phone: string): boolean {
   const normalized = normalizePhone(phone);
   return /^01[016789]\d{7,8}$/.test(normalized);
 }
+
+// 마크다운 헤딩 → URL 슬러그 (한글 보존, 특수문자만 정리)
+export function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w가-힣\s-]/g, '') // 영문/숫자/한글/공백/하이픈만
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+}

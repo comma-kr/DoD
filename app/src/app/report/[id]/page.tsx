@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { createSupabaseAdminClient } from '@/lib/supabase/server';
 import { getSession } from '@/lib/session';
 import ReportMarkdown from '@/components/report/ReportMarkdown';
+import ReportTocBar from '@/components/report/ReportTocBar';
+import ReportByline from '@/components/report/ReportByline';
 import UpsellCTAs from '@/components/report/UpsellCTAs';
 import ProfileBadge from '@/components/report/ProfileBadge';
 import ShareBar from '@/components/report/ShareBar';
@@ -12,7 +14,7 @@ import LocationSection, {
   type ApartmentLocation,
 } from '@/components/report/LocationSection';
 import { PRODUCT_NAMES, type ProductId } from '@/lib/pricing';
-import { formatDate } from '@/lib/utils';
+import { extractH2Headings } from '@/lib/markdown';
 import type {
   HouseholdType,
   Priority,
@@ -80,14 +82,16 @@ export default async function ReportPage({ params }: PageProps) {
   const mainApt = apartments[0];
   const specsTrades = trades.length > 0 ? trades : mainApt?.trades ?? [];
   const specsJeonse = mainApt?.jeonseRatio ?? null;
+  const headings = extractH2Headings(markdown);
   const typeName = PRODUCT_NAMES[report.report_type as ProductId] ?? '리포트';
   const isFree = report.price === 0;
   const conditions = (report.user_conditions ?? {}) as StoredConditions;
 
   return (
     <main className="flex-1">
+      <ReportTocBar headings={headings} />
       <article className="mx-auto max-w-3xl px-6 pt-16 pb-20">
-        <header className="mb-10 border-b border-border pb-8">
+        <header className="mb-8">
           <div className="flex flex-wrap items-center gap-2">
             {isFree ? (
               <span className="inline-flex items-center gap-1 rounded-full bg-success-soft px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-success">
@@ -98,13 +102,16 @@ export default async function ReportPage({ params }: PageProps) {
                 PAID · {typeName}
               </span>
             )}
-            <span className="text-xs text-foreground-sub">
-              {formatDate(report.created_at)}
-            </span>
           </div>
-          <h1 className="mt-5 border-l-4 border-primary pl-5 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
+          <h1 className="mt-4 border-l-4 border-primary pl-5 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
             {report.title}
           </h1>
+          <ReportByline
+            subject={mainApt?.name ?? report.title}
+            householdType={conditions.householdType ?? null}
+            priorityTop={conditions.priorities?.[0] ?? null}
+            createdAt={report.created_at}
+          />
         </header>
 
         {conditions.householdType ? (

@@ -1,26 +1,48 @@
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { slugify } from '@/lib/utils';
 
 interface Props {
   markdown: string;
 }
 
+function getText(children: React.ReactNode): string {
+  if (typeof children === 'string') return children;
+  if (Array.isArray(children)) return children.map(getText).join('');
+  if (children && typeof children === 'object' && 'props' in children) {
+    return getText((children as { props: { children: React.ReactNode } }).props.children);
+  }
+  return '';
+}
+
 export default function ReportMarkdown({ markdown }: Props) {
   return (
-    <div className="prose max-w-none">
+    <div className="prose report-prose max-w-none">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
-          h1: ({ children }) => (
-            <h1 className="mt-12 mb-5 border-l-4 border-primary pl-4 text-3xl font-bold tracking-tight text-foreground first:mt-0">
-              {children}
-            </h1>
-          ),
-          h2: ({ children }) => (
-            <h2 className="mt-14 mb-5 border-l-4 border-primary pl-4 text-2xl font-bold tracking-tight text-foreground first:mt-0">
-              {children}
-            </h2>
-          ),
+          h1: ({ children }) => {
+            const id = slugify(getText(children));
+            return (
+              <h1
+                id={id}
+                className="mt-12 mb-5 text-3xl font-bold tracking-tight text-foreground first:mt-0"
+              >
+                {children}
+              </h1>
+            );
+          },
+          h2: ({ children }) => {
+            const id = slugify(getText(children));
+            return (
+              <h2
+                id={id}
+                className="mt-14 text-2xl font-bold tracking-tight text-foreground first:mt-0 scroll-mt-24"
+              >
+                {children}
+              </h2>
+            );
+          },
           h3: ({ children }) => (
             <h3 className="mt-10 mb-3 text-xl font-semibold tracking-tight text-foreground">
               <span className="mr-2 inline-block h-1.5 w-1.5 -translate-y-1 rounded-full bg-primary align-middle" />
