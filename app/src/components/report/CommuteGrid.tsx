@@ -74,9 +74,9 @@ export default function CommuteGrid({ address, highlightArea }: Props) {
           return (
             <div
               key={area}
-              className={`rounded-2xl border p-3 transition ${
+              className={`rounded-2xl border border-border bg-surface p-3 shadow-sm transition ${
                 active
-                  ? 'border-primary bg-primary/15 shadow-sm ring-2 ring-primary/20'
+                  ? 'border-primary bg-primary/10 ring-2 ring-primary/20'
                   : tint
               }`}
             >

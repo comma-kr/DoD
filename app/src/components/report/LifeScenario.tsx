@@ -115,7 +115,7 @@ export default function LifeScenario({
         {scenarios.map((s, i) => (
           <div
             key={i}
-            className={`rounded-2xl border p-4 ${CARD_TINT[toneMap[s.accent]]}`}
+            className={`rounded-2xl border border-border bg-surface p-4 ${CARD_TINT[toneMap[s.accent]]}`}
           >
             <div className="flex items-center gap-2">
               <div

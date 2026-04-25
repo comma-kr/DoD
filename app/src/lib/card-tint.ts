@@ -1,22 +1,24 @@
-// 카드 그룹에서 각 카드의 성격/accent를 옅은 배경 tint로 반영하는 공용 유틸.
-// 튀지 않도록 -50 톤만 사용해서 스캔 시 "긍정=초록, 주의=빨강" 정도만 감지되게 한다.
+// 카드 그룹에서 각 카드의 성격을 "왼쪽 4px accent bar"로만 표현.
+// E1 코랄 펀치 컨셉: 카드 본체는 흰색으로 깔끔하게 두고, 스캔 힌트만
+// 왼쪽 얇은 색 선으로 제공한다. 배경 전체에 tint를 칠하면 쇼핑몰 느낌이
+// 나서 지양.
 //
 // 사용:
-//   <div className={`rounded-2xl border p-4 ${CARD_TINT[tone]}`}>
+//   <div className={`rounded-2xl border border-border bg-surface p-4 shadow-sm ${CARD_TINT[tone]}`}>
 //
-// 매핑 원칙:
+// 매핑:
 //   success → 초록 (최적·좋음·긍정)
-//   primary → 연 코랄 (편리·관심·포커스)
-//   warning → 노랑 (보통·주의·중립 톤의 강조)
+//   primary → 코랄 (편리·관심·포커스)
+//   warning → 노랑 (보통·주의)
 //   danger  → 빨강 (불편·위험·하락)
-//   neutral → 회색 (특성 없음·기본)
+//   neutral → 기본 (특성 없음)
 
 export type TintTone = 'success' | 'primary' | 'warning' | 'danger' | 'neutral';
 
 export const CARD_TINT: Record<TintTone, string> = {
-  success: 'border-emerald-200 bg-emerald-50',
-  primary: 'border-rose-200 bg-rose-50',
-  warning: 'border-amber-200 bg-amber-50',
-  danger: 'border-red-200 bg-red-50',
-  neutral: 'border-border bg-surface-soft',
+  success: 'border-l-4 border-l-success',
+  primary: 'border-l-4 border-l-primary',
+  warning: 'border-l-4 border-l-warning',
+  danger: 'border-l-4 border-l-danger',
+  neutral: 'border-l-4 border-l-border',
 };

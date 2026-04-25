@@ -245,7 +245,7 @@ export default function InsightCards({ apartment, insights, nearby }: Props) {
       {cards.map((card) => (
         <div
           key={card.key}
-          className={`rounded-2xl border p-5 shadow-sm ${CARD_TINT[card.tone]}`}
+          className={`rounded-2xl border border-border bg-surface p-5 shadow-sm ${CARD_TINT[card.tone]}`}
         >
           <div className="mb-4 flex items-center gap-2">
             <span
