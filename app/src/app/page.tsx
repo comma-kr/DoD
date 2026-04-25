@@ -6,24 +6,20 @@ export default function LandingPage() {
   return (
     <main className="flex-1">
       {/* 히어로 */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-primary-soft" />
-        <div className="relative mx-auto max-w-5xl px-6 pt-24 pb-20 sm:pt-32 sm:pb-28">
+      <section className="bg-surface">
+        <div className="mx-auto max-w-5xl px-6 pt-24 pb-20 sm:pt-32 sm:pb-28">
           <div className="flex flex-col items-center text-center">
-            <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-1.5 text-xs text-foreground-sub">
-              <Sparkles className="h-3.5 w-3.5 text-secondary" />
-              공공데이터 + 내 가족 관점으로 재가공
+            <span className="mb-6 inline-flex items-center gap-2 rounded-full bg-warning-soft px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-warning">
+              NEW · 오늘의 큐레이션
             </span>
             <h1 className="text-balance text-4xl font-bold leading-tight tracking-tight sm:text-6xl">
-              내가 아는 단지,
+              내가 아는 단지, <em className="report-highlight not-italic">제대로</em>
               <br />
-              <span className="text-primary">
-                제대로 한 번 정리해드려요
-              </span>
+              옆 단지랑 <em className="report-highlight not-italic">나란히</em>.
             </h1>
             <p className="mt-6 max-w-2xl text-pretty text-lg text-foreground-sub sm:text-xl">
-              공짜로 단지 하나 제대로.
-              <br className="sm:hidden" /> 옆 단지랑 나란히 보기는{' '}
+              공짜로 만나는 단지 해설.
+              <br className="sm:hidden" /> 옆 단지랑 비교는{' '}
               <span className="font-semibold text-foreground">딱 990원.</span>
             </p>
 
