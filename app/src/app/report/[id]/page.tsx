@@ -126,6 +126,7 @@ export default async function ReportPage({ params }: PageProps) {
               apartments={apartments}
               highlightCommuteArea={conditions.commuteArea ?? null}
               workplaceAddress={conditions.workplaceAddress ?? null}
+              householdType={conditions.householdType ?? null}
             />
           </div>
         ) : null}

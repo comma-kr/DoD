@@ -14,7 +14,7 @@ import {
 } from '@/lib/kakao-local';
 import { createSupabaseAdminClient } from '@/lib/supabase/server';
 import { calcPricePerPyeong } from '@/lib/utils';
-import type { CommuteArea } from '@/types/profile';
+import type { CommuteArea, HouseholdType } from '@/types/profile';
 
 export interface ApartmentLocation {
   id: string;
@@ -32,12 +32,14 @@ interface Props {
   apartments: ApartmentLocation[];
   highlightCommuteArea?: CommuteArea | null;
   workplaceAddress?: string | null;
+  householdType?: HouseholdType | null;
 }
 
 export default async function LocationSection({
   apartments,
   highlightCommuteArea,
   workplaceAddress,
+  householdType,
 }: Props) {
   if (!apartments || apartments.length === 0) return null;
 
@@ -180,7 +182,7 @@ export default async function LocationSection({
         highlightArea={highlightCommuteArea ?? undefined}
       />
 
-      {/* 4. 신혼부부·초보 매수자 시나리오 카드 */}
+      {/* 4. 가구 형태별 라이프 시나리오 카드 */}
       <LifeScenario
         apartmentName={primary.name}
         totalUnits={primary.totalUnits ?? null}
@@ -191,6 +193,7 @@ export default async function LocationSection({
         commercialClusterCount={commercialClusters.length}
         district={district}
         parks={insights.parks ?? []}
+        householdType={householdType}
       />
     </section>
   );
