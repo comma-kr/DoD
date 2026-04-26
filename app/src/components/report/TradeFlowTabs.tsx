@@ -178,13 +178,10 @@ export default function TradeFlowTabs({ trades, apartmentName }: Props) {
               const ppy = calcPricePerPyeong(t.priceM10k, t.areaM2);
               const isMax = realShowExtremes && i === maxIdx;
               const isMin = realShowExtremes && i === minIdx;
-              // 최고는 빨강 계열 (danger), 최저는 파랑 계열 (인라인 — 디자인 토큰에 blue 별도 X)
-              const rowBg = isMax
-                ? 'bg-danger-soft/40'
-                : isMin
-                ? ''
-                : '';
-              const rowStyle = isMin ? { background: '#DBEAFE' } : undefined;
+              // 색 대비: row 배경은 옅게(40%/blue-50), pill 배경은 진하게(blue-100/danger-soft).
+              // 이전 버그: 최저 row 배경과 pill 배경이 같은 #DBEAFE라 pill이 안 보임.
+              const rowBg = isMax ? 'bg-danger-soft/40' : '';
+              const rowStyle = isMin ? { background: '#EFF6FF' } : undefined; // blue-50 (옅음)
               return (
                 <tr key={i} className={`border-b border-border/40 ${rowBg}`} style={rowStyle}>
                   <td className="py-2 pr-3 text-foreground">{t.dealDate.slice(0, 7)}</td>
@@ -198,7 +195,7 @@ export default function TradeFlowTabs({ trades, apartmentName }: Props) {
                     {isMin ? (
                       <span
                         className="ml-1.5 inline-flex items-center rounded-md px-1.5 py-0.5 text-[9px] font-bold"
-                        style={{ background: '#DBEAFE', color: '#1D4ED8' }}
+                        style={{ background: '#DBEAFE', color: '#1D4ED8' }} // blue-100 / blue-700 (진함)
                       >
                         ▼ 최저
                       </span>

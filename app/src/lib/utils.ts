@@ -58,17 +58,21 @@ export function standardPrivateArea(areaM2: number): number {
 }
 
 // 전용 m²를 한국 관용 "공급 평형"으로 근사.
-// 통상 공급면적 = 전용 / 0.77, 평 = 면적 / 3.3058.
-// 시장 호칭 매핑 (네이버부동산·호갱노노 표기 기준):
-//   59㎡ → 24평형 / 74㎡ → 30평형 / 84㎡ → 33평형 / 99㎡ → 39평형 / 114㎡ → 44평형 / 134㎡ → 51평형
+// 통상 공급면적 = 전용 / 0.77, 평 = 공급면적 / 3.3058.
+// 시장 호칭 매핑 (네이버부동산·호갱노노 표기 기준, 전용 → 공급 평형):
+//   39㎡→16평형 / 46㎡→18 / 49㎡→20 / 59㎡→24 / 74㎡→30 / 84㎡→33 / 99㎡→39 / 114㎡→44 / 134㎡→51
+// 이전 버그: 40~64㎡를 모두 24평형으로 반환했음 (46/49도 24로 잘못 표기). 구간 세분화로 수정.
 export function typicalPublicPyeong(areaM2: number): number {
-  if (areaM2 < 40) return Math.max(1, Math.round(areaM2 / 2.6));
-  if (areaM2 < 65) return 24;
-  if (areaM2 < 80) return 30;
-  if (areaM2 < 95) return 33;
-  if (areaM2 < 110) return 39;
-  if (areaM2 < 130) return 44;
-  if (areaM2 < 150) return 51;
+  if (areaM2 < 35) return Math.max(1, Math.round(areaM2 / 2.6));
+  if (areaM2 < 42) return 16;  // 39㎡
+  if (areaM2 < 47) return 18;  // 46㎡
+  if (areaM2 < 54) return 20;  // 49㎡
+  if (areaM2 < 65) return 24;  // 59㎡
+  if (areaM2 < 78) return 30;  // 74㎡
+  if (areaM2 < 92) return 33;  // 84㎡
+  if (areaM2 < 107) return 39; // 99㎡
+  if (areaM2 < 125) return 44; // 114㎡
+  if (areaM2 < 145) return 51; // 134㎡
   return Math.round(areaM2 / 2.6);
 }
 

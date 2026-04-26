@@ -4,6 +4,7 @@ import {
   formatPrice10k,
   formatPricePerPyeong,
   typicalPublicPyeong,
+  standardPrivateArea,
 } from '@/lib/utils';
 import { CARD_TINT } from '@/lib/card-tint';
 import type { TradePoint } from '@/types/apartment';
@@ -58,7 +59,7 @@ function topAreaBuckets(trades: TradePoint[]): AreaBucket[] {
   if (trades.length === 0) return [];
   const map = new Map<number, TradePoint[]>();
   for (const t of trades) {
-    const key = Math.round(t.areaM2);
+    const key = standardPrivateArea(t.areaM2);
     if (!map.has(key)) map.set(key, []);
     map.get(key)!.push(t);
   }

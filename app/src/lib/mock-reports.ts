@@ -19,6 +19,7 @@ import {
   formatPricePerPyeong,
   m2ToPyeong,
   typicalPublicPyeong,
+  standardPrivateArea,
 } from './utils';
 import { estimateCommute as sharedEstimateCommute } from './commute-matrix';
 import type { CommuteEstimate as SharedCommuteEstimate } from './commute-matrix';
@@ -67,12 +68,14 @@ function deriveFacts(apt: ApartmentWithLatestPrice): ApartmentFacts {
   const sortedAsc = [...trades].sort(
     (a, b) => new Date(a.dealDate).getTime() - new Date(b.dealDate).getTime()
   );
-  const areaM2 = apt.latestAreaM2 ?? sortedAsc[sortedAsc.length - 1]?.areaM2 ?? null;
-  const pyeong = areaM2 ? m2ToPyeong(areaM2) : null;                     // 전용 평수 (그대로 환산)
-  const pyeongSupply = areaM2 ? typicalPublicPyeong(areaM2) : null;     // 공급 평형 (시장 호칭, 84㎡→34평)
+  const rawAreaM2 = apt.latestAreaM2 ?? sortedAsc[sortedAsc.length - 1]?.areaM2 ?? null;
+  // 측정값(60.12 등) → 시장 표준 전용 ㎡(59 등)로 정규화. 시세·흐름·평수 표기 모두 일관됨.
+  const areaM2 = rawAreaM2 ? standardPrivateArea(rawAreaM2) : null;
+  const pyeong = areaM2 ? m2ToPyeong(areaM2) : null;                     // 표준 전용 평수
+  const pyeongSupply = areaM2 ? typicalPublicPyeong(areaM2) : null;     // 공급 평형 (시장 호칭)
   const pricePerPyeong =
-    apt.latestPrice10k && areaM2
-      ? calcPricePerPyeong(apt.latestPrice10k, areaM2)                   // 공급면적 기준 (시장 표준 = 호갱노노/네이버부동산)
+    apt.latestPrice10k && rawAreaM2
+      ? calcPricePerPyeong(apt.latestPrice10k, rawAreaM2)                // 평당가 계산은 측정값 그대로 (정확)
       : null;
 
   // 상승률: 가장 오래된 것 vs 가장 최근. 기간 설정
@@ -654,14 +657,14 @@ function buildPrice(f: ApartmentFacts, _profile: UserProfile | null): string {
     ? `\n\n- **평당가**: 약 **${formatPricePerPyeong(f.pricePerPyeong)}** (공급면적 기준 · 시장 표준)`
     : '';
 
-  // 면적: 전용/공급 둘 다 명시. 시장에서 "84타입=34평"이라 부르는 호칭 보존.
+  // 면적: 시장 표준 전용 ㎡로 표기 (측정값 84.97 → 84). 전용 평수와 공급 평형 같이.
   const sizeLine = f.areaM2
-    ? `\n- **기준 면적**: 전용 **${f.areaM2}㎡** (전용 ${f.pyeong}평 / 공급 약 ${f.pyeongSupply}평형)`
+    ? `\n- **기준 면적**: 전용 **${f.areaM2}㎡** (전용 약 ${f.pyeong}평 / 공급 ${f.pyeongSupply}평형)`
     : '';
 
-  // 메인 문장도 "전용 84㎡" 명시 + 공급평형 같이 표기 (시장 호칭 보존).
+  // 메인 문장도 표준 호칭 그대로 사용 — 시세·흐름·평수 모두 동일.
   const sizeIntro = f.areaM2
-    ? `**전용 ${Math.round(f.areaM2)}㎡** (공급 ${f.pyeongSupply}평형)`
+    ? `**전용 ${f.areaM2}㎡** (공급 ${f.pyeongSupply}평형)`
     : '기준 평형';
 
   return `${heading}

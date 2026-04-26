@@ -5,6 +5,7 @@
 // 호갱노노/아실에서도 자주 보여주는 지표.
 
 import type { TradePoint } from '@/types/apartment';
+import { standardPrivateArea } from './utils';
 
 export interface RentPoint {
   dealDate: string;
@@ -48,13 +49,13 @@ export function calcJeonseRatio(
   // 평형 버킷 (정수 m²)
   const saleByArea = new Map<number, TradePoint[]>();
   for (const t of saleMarket) {
-    const k = Math.round(t.areaM2);
+    const k = standardPrivateArea(t.areaM2);
     if (!saleByArea.has(k)) saleByArea.set(k, []);
     saleByArea.get(k)!.push(t);
   }
   const jeonseByArea = new Map<number, RentPoint[]>();
   for (const r of jeonseMarket) {
-    const k = Math.round(r.areaM2);
+    const k = standardPrivateArea(r.areaM2);
     if (!jeonseByArea.has(k)) jeonseByArea.set(k, []);
     jeonseByArea.get(k)!.push(r);
   }
