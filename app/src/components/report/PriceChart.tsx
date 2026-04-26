@@ -9,6 +9,7 @@ import {
   ResponsiveContainer,
   CartesianGrid,
   ReferenceLine,
+  ReferenceDot,
 } from 'recharts';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { formatPrice10k } from '@/lib/utils';
@@ -46,6 +47,11 @@ export default function PriceChart({ trades, apartmentName }: Props) {
     data.reduce((sum, d) => sum + d.price, 0) / data.length
   );
 
+  // 최저·최고 거래 포인트 (데이터 중)
+  const minPoint = data.reduce((m, d) => (d.price < m.price ? d : m), data[0]);
+  const maxPoint = data.reduce((m, d) => (d.price > m.price ? d : m), data[0]);
+  const showExtremes = data.length >= 3 && minPoint.price !== maxPoint.price;
+
   const trendIcon =
     absDelta > 1 ? (
       <TrendingUp className="h-4 w-4 text-success" />
@@ -62,7 +68,7 @@ export default function PriceChart({ trades, apartmentName }: Props) {
     <div className="rounded-3xl border border-border bg-surface p-6 shadow-sm">
       <div className="mb-5 flex items-start justify-between gap-3">
         <div>
-          <h3 className="text-lg font-bold">📊 가격 흐름 차트</h3>
+          <h3 className="text-lg font-bold">📊 실거래 흐름</h3>
           <p className="mt-1 text-xs text-foreground-sub">
             {apartmentName ? `${apartmentName} · ` : ''}
             84㎡ 기준 실거래가 · {data.length}건
@@ -77,8 +83,13 @@ export default function PriceChart({ trades, apartmentName }: Props) {
         </div>
       </div>
 
-      <div className="h-56 w-full">
-        <ResponsiveContainer>
+      <div className="h-56 w-full min-w-0">
+        <ResponsiveContainer
+          width="100%"
+          height="100%"
+          minWidth={0}
+          initialDimension={{ width: 600, height: 224 }}
+        >
           <LineChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
             <CartesianGrid stroke="#EDEDED" strokeDasharray="3 3" vertical={false} />
             <XAxis
@@ -128,6 +139,42 @@ export default function PriceChart({ trades, apartmentName }: Props) {
               dot={{ fill: '#E25555', r: 4 }}
               activeDot={{ r: 6, fill: '#C13C3C' }}
             />
+            {showExtremes ? (
+              <>
+                <ReferenceDot
+                  x={maxPoint.date}
+                  y={maxPoint.price}
+                  r={7}
+                  fill="#2F6B3D"
+                  stroke="#fff"
+                  strokeWidth={2}
+                  label={{
+                    value: '최고',
+                    position: 'top',
+                    fill: '#2F6B3D',
+                    fontSize: 10,
+                    fontWeight: 700,
+                    offset: 8,
+                  }}
+                />
+                <ReferenceDot
+                  x={minPoint.date}
+                  y={minPoint.price}
+                  r={7}
+                  fill="#C13C3C"
+                  stroke="#fff"
+                  strokeWidth={2}
+                  label={{
+                    value: '최저',
+                    position: 'bottom',
+                    fill: '#C13C3C',
+                    fontSize: 10,
+                    fontWeight: 700,
+                    offset: 8,
+                  }}
+                />
+              </>
+            ) : null}
           </LineChart>
         </ResponsiveContainer>
       </div>

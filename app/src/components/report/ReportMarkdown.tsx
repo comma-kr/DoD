@@ -1,3 +1,4 @@
+import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { slugify } from '@/lib/utils';
@@ -13,6 +14,58 @@ function getText(children: React.ReactNode): string {
     return getText((children as { props: { children: React.ReactNode } }).props.children);
   }
   return '';
+}
+
+// 표 셀 안 〔▲최고〕/〔▼최저〕 토큰 → 색상 pill 변환.
+// 빨강 위세모(최고) / 파랑 아래세모(최저) — verdict pill과 같은 톤.
+const PILL_RE = /(〔▲최고〕|〔▼최저〕)/g;
+
+function renderPill(token: string, key: string | number): React.ReactNode {
+  const isMax = token === '〔▲최고〕';
+  return (
+    <span
+      key={key}
+      className="ml-1 inline-flex items-center gap-1 rounded-md border px-1.5 py-0.5 align-middle text-[10px] font-bold leading-tight"
+      style={
+        isMax
+          ? { background: '#FEE2E2', color: '#B91C1C', borderColor: 'rgba(185,28,28,0.35)' }
+          : { background: '#DBEAFE', color: '#1D4ED8', borderColor: 'rgba(29,78,216,0.35)' }
+      }
+    >
+      <span style={{ fontSize: '9px', lineHeight: 1 }}>{isMax ? '▲' : '▼'}</span>
+      <span>{isMax ? '최고' : '최저'}</span>
+    </span>
+  );
+}
+
+function processString(text: string): React.ReactNode {
+  if (!text.includes('〔')) return text;
+  PILL_RE.lastIndex = 0;
+  const parts: React.ReactNode[] = [];
+  let lastIdx = 0;
+  let m: RegExpExecArray | null;
+  while ((m = PILL_RE.exec(text)) !== null) {
+    if (m.index > lastIdx) parts.push(text.slice(lastIdx, m.index));
+    parts.push(renderPill(m[1], `pill-${m.index}`));
+    lastIdx = m.index + m[1].length;
+  }
+  if (lastIdx < text.length) parts.push(text.slice(lastIdx));
+  return <>{parts}</>;
+}
+
+function enhanceCellChildren(node: React.ReactNode): React.ReactNode {
+  return React.Children.map(node, (child) => {
+    if (typeof child === 'string') return processString(child);
+    if (React.isValidElement(child)) {
+      const props = child.props as { children?: React.ReactNode };
+      return React.cloneElement(
+        child,
+        {} as Record<string, never>,
+        enhanceCellChildren(props.children)
+      );
+    }
+    return child;
+  });
 }
 
 export default function ReportMarkdown({ markdown }: Props) {
@@ -96,7 +149,7 @@ export default function ReportMarkdown({ markdown }: Props) {
           ),
           td: ({ children }) => (
             <td className="border-b border-border/60 px-4 py-3 text-foreground/90">
-              {children}
+              {enhanceCellChildren(children)}
             </td>
           ),
           code: ({ children }) => (

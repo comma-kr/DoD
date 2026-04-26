@@ -94,8 +94,10 @@ async function fetchKaptBasis(kaptCode) {
 // ============================================================
 // 카카오 지오코딩 + 역
 // ============================================================
-async function geocode(address) {
-  if (!KAKAO_REST_KEY) return null;
+// 단지 좌표는 카카오 keyword 검색('아파트' 카테고리 우선)으로 조회 — 카카오맵에 보이는
+// 단지 마커 위치와 일치. 주소검색 API는 토지 centroid·노인정·상가 위치를 반환해 어긋남.
+// keyword 결과 없을 시 도로명 주소 → 지번 주소 순으로 fallback.
+async function geocodeByAddress(address) {
   const url = new URL('https://dapi.kakao.com/v2/local/search/address.json');
   url.searchParams.set('query', address);
   const res = await fetch(url.toString(), {
@@ -106,6 +108,42 @@ async function geocode(address) {
   const doc = data.documents?.[0];
   if (!doc) return null;
   return { lat: parseFloat(doc.y), lng: parseFloat(doc.x) };
+}
+
+async function geocodeByApartmentName(name, address) {
+  if (!name) return null;
+  const district = address?.match(/\S+(구|시(?!\s*\S+\s*구)|군)/)?.[0] ?? '';
+  const url = new URL('https://dapi.kakao.com/v2/local/search/keyword.json');
+  url.searchParams.set('query', district ? `${name} ${district}` : name);
+  url.searchParams.set('size', '15');
+  const res = await fetch(url.toString(), {
+    headers: { Authorization: `KakaoAK ${KAKAO_REST_KEY}` },
+  });
+  if (!res.ok) return null;
+  const data = await res.json();
+  const aptOnly = (data.documents ?? []).filter((d) =>
+    d.category_name?.includes('아파트')
+  );
+  if (aptOnly.length === 0) return null;
+  const norm = (s) => s.replace(/아파트$/, '').replace(/\s+/g, '').toLowerCase();
+  const target = norm(name);
+  const pick =
+    aptOnly.find((d) => norm(d.place_name) === target) ??
+    aptOnly.find((d) => norm(d.place_name).startsWith(target)) ??
+    aptOnly.find((d) => norm(d.place_name).includes(target)) ??
+    aptOnly[0];
+  return { lat: parseFloat(pick.y), lng: parseFloat(pick.x) };
+}
+
+// 통합 진입점: 단지명 keyword 우선, 실패 시 주소 검색 fallback.
+async function geocode(address, name) {
+  if (!KAKAO_REST_KEY) return null;
+  if (name) {
+    const byName = await geocodeByApartmentName(name, address);
+    if (byName) return byName;
+  }
+  if (address) return await geocodeByAddress(address);
+  return null;
 }
 
 async function findNearestStation(lat, lng) {
@@ -177,7 +215,8 @@ async function seedAptsForSigungu(sigunguCode) {
     const builtYear = parseUseDateYear(basis.kaptUsedate);
     const totalUnits = basis.kaptdaCnt ? Math.floor(basis.kaptdaCnt) : null;
 
-    const coord = basis.doroJuso ? await geocode(basis.doroJuso) : null;
+    // keyword(단지명) 우선 → 도로명 주소 fallback
+    const coord = await geocode(basis.doroJuso ?? basis.kaptAddr ?? null, basis.kaptName);
     await new Promise((r) => setTimeout(r, 100));
 
     let station = null;
@@ -242,6 +281,10 @@ function normalize(name) {
   for (const [from, to] of Object.entries(ROMAN_MAP)) {
     n = n.replace(new RegExp(from, 'g'), to);
   }
+  // API가 가끔 동/단지 범위 표기를 단지명에 붙임 (예: "옥수파크힐스101동~116동").
+  // 이게 그대로 들어오면 normalize 결과가 너무 길어져 fuzzy 매칭 50% 임계값을 못 넘김 → 매칭 실패.
+  n = n.replace(/\s*\d+\s*동\s*[-~~]\s*\d+\s*동/g, '');
+  n = n.replace(/\s*\d+\s*단지\s*[-~~]\s*\d+\s*단지/g, '');
   n = n.replace(/[0-9]+차/g, (m) => m.replace('차', ''));
   n = n.replace(/\s+/g, '').replace(/[·.,_-]/g, '');
   n = n.replace(/아파트$/, '').replace(/주상복합$/, '');
@@ -249,6 +292,8 @@ function normalize(name) {
 }
 
 // 단지 nameMap 생성 (시군구 단위)
+// alias 충돌 방지: 동 prefix 떼면 같아지는 단지가 2개 이상이면 alias 미등록.
+// (예: 옥수파크힐스 + 성수파크힐스 둘 다 strip하면 "파크힐스" → 충돌 → 미등록)
 async function buildNameMap(sigunguCode) {
   const { data: apts } = await sb
     .from('apartments')
@@ -257,13 +302,30 @@ async function buildNameMap(sigunguCode) {
 
   if (!apts || apts.length === 0) return { nameMap: new Map(), apts: [] };
 
+  const PREFIX_RE = /^(여의도?|잠실|대치|반포|서초|마포|목동|성수|압구정|문정|가락|신천|올림픽|한남|성수|상수|망원|연남|공덕|왕십리|행당|옥수|영등포|당산|문래|신길|대흥|아현|용강)/;
+
+  // 1단계: stripped form 충돌 카운트
+  const strippedCount = new Map();
+  for (const apt of apts) {
+    const norm = normalize(apt.name);
+    const stripped = norm.replace(PREFIX_RE, '');
+    if (stripped !== norm && stripped.length >= 4) {
+      strippedCount.set(stripped, (strippedCount.get(stripped) ?? 0) + 1);
+    }
+  }
+
+  // 2단계: 정확 norm은 항상 등록, stripped는 충돌 없을 때만 등록
   const nameMap = new Map();
   for (const apt of apts) {
     const norm = normalize(apt.name);
     nameMap.set(norm, apt.id);
-    // 권역 접두어 제거 버전 (여의도, 잠실, 마포, 성수 등)
-    const stripped = norm.replace(/^(여의도?|잠실|대치|반포|서초|마포|목동|성수|압구정|문정|가락|신천|올림픽|한남|성수|상수|망원|연남|공덕|왕십리|행당|옥수|영등포|당산|문래|신길|대흥|아현|용강)/, '');
-    if (stripped.length >= 2 && !nameMap.has(stripped)) {
+    const stripped = norm.replace(PREFIX_RE, '');
+    if (
+      stripped !== norm &&
+      stripped.length >= 4 &&
+      strippedCount.get(stripped) === 1 &&
+      !nameMap.has(stripped)
+    ) {
       nameMap.set(stripped, apt.id);
     }
   }
@@ -272,11 +334,18 @@ async function buildNameMap(sigunguCode) {
 
 function matchApt(apiName, nameMap) {
   const norm = normalize(apiName);
+  // 1순위: 정확 매칭
   if (nameMap.has(norm)) return nameMap.get(norm);
+  // 2순위: 권역 prefix 제거 후 정확 매칭
   const stripped = norm.replace(/^(여의도?|잠실|대치|반포|서초|마포|목동|성수|압구정|문정|가락|신천|올림픽|한남|성수|상수|망원|연남|공덕|왕십리|행당|옥수|영등포|당산|문래|신길|대흥|아현|용강)/, '');
-  if (stripped.length >= 2 && nameMap.has(stripped)) return nameMap.get(stripped);
+  if (stripped.length >= 4 && nameMap.has(stripped)) return nameMap.get(stripped);
+  // 3순위: 부분 매칭 (5자 이상만, 양쪽 길이 차이 50% 미만 — 짧은 이름 잘못 매칭 방지)
   for (const [dbNorm, id] of nameMap.entries()) {
-    if (dbNorm.length >= 3 && (norm.includes(dbNorm) || dbNorm.includes(norm))) return id;
+    if (dbNorm.length < 5 || norm.length < 5) continue;
+    const longer = Math.max(dbNorm.length, norm.length);
+    const shorter = Math.min(dbNorm.length, norm.length);
+    if (shorter / longer < 0.5) continue;
+    if (norm.includes(dbNorm) || dbNorm.includes(norm)) return id;
   }
   return null;
 }

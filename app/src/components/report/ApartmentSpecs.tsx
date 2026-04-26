@@ -129,8 +129,12 @@ export default function ApartmentSpecs({
             <Users className="h-3.5 w-3.5" />
             세대 구성
           </div>
-          <div className="mt-2 text-lg font-bold text-foreground">
-            {totalUnits ? `${totalUnits.toLocaleString()}세대` : '정보 없음'}
+          <div className="mt-2 text-lg font-extrabold text-foreground">
+            {totalUnits ? (
+              <span className="report-highlight">{totalUnits.toLocaleString()}세대</span>
+            ) : (
+              '정보 없음'
+            )}
           </div>
           <div className="mt-1 text-[11px] leading-relaxed text-foreground-sub">
             {age !== null ? `${builtYear}년 입주 · ${age}년 차` : ''}
@@ -138,7 +142,9 @@ export default function ApartmentSpecs({
           <div className="mt-auto pt-2 text-[11px] text-foreground-sub">
             {hasJeonse ? (
               <>
-                <span className="font-semibold text-foreground">전세가율 {jeonseRatio.pct}%</span>
+                <span className="font-semibold text-foreground">
+                  전세가율 <span className="report-highlight">{jeonseRatio.pct}%</span>
+                </span>
                 <br />
                 전세 {formatPrice10k(jeonseRatio.jeonseAvg10k)} · 매매 {formatPrice10k(jeonseRatio.saleAvg10k)} (전용 {jeonseRatio.areaM2}㎡)
               </>
@@ -159,14 +165,14 @@ export default function ApartmentSpecs({
                 {i === 0 ? <Home className="h-3.5 w-3.5" /> : <Ruler className="h-3.5 w-3.5" />}
                 대표 평형 {i === 0 ? 'A' : 'B'}
               </div>
-              <div className="mt-2 text-lg font-bold text-foreground">
+              <div className="mt-2 text-lg font-extrabold text-foreground">
                 전용 {b.areaM2}㎡
               </div>
               <div className="mt-1 text-[11px] text-foreground-sub">
                 약 {typicalPublicPyeong(b.areaM2)}평형 · {b.trades.length}건
               </div>
-              <div className="mt-auto pt-2 text-[11px] font-semibold text-primary">
-                {formatPricePerPyeong(b.avgPricePerPyeong)}
+              <div className="mt-auto pt-2 text-[11px] font-bold text-foreground">
+                <span className="report-highlight">{formatPricePerPyeong(b.avgPricePerPyeong)}</span>
               </div>
             </div>
           ))
@@ -188,8 +194,8 @@ export default function ApartmentSpecs({
               <Receipt className="h-3.5 w-3.5" />
               매수 초기비용
             </div>
-            <div className="mt-2 text-lg font-bold text-foreground">
-              약 {formatPrice10k(initialCost)}
+            <div className="mt-2 text-lg font-extrabold text-foreground">
+              약 <span className="report-highlight">{formatPrice10k(initialCost)}</span>
             </div>
             <div className="mt-1 text-[11px] leading-relaxed text-foreground-sub">
               취득세 {formatPrice10k(acquisitionTax)} · 중개수수료 {formatPrice10k(brokerage)}
@@ -209,8 +215,14 @@ export default function ApartmentSpecs({
               <Wallet className="h-3.5 w-3.5" />
               갭투자 시 필요자금
             </div>
-            <div className="mt-2 text-lg font-bold text-foreground">
-              {gapAmount !== null ? `약 ${formatPrice10k(gapAmount)}` : '정보 준비 중'}
+            <div className="mt-2 text-lg font-extrabold text-foreground">
+              {gapAmount !== null ? (
+                <>
+                  약 <span className="report-highlight">{formatPrice10k(gapAmount)}</span>
+                </>
+              ) : (
+                '정보 준비 중'
+              )}
             </div>
             <div className="mt-1 text-[11px] leading-relaxed text-foreground-sub">
               {hasJeonse && jeonseRatio

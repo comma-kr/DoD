@@ -50,7 +50,7 @@
     padding: 10px 0;
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 1000;
   }
   .topbar-inner {
     max-width: 1280px;
@@ -59,7 +59,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
     font-size: 11px;
     letter-spacing: 0.04em;
   }
@@ -78,7 +78,7 @@
   .header { padding: 80px 0 60px; border-bottom: 1px solid var(--line); }
 
   .kicker {
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
     font-size: 11px;
     font-weight: 500;
     letter-spacing: 0.18em;
@@ -123,7 +123,7 @@
     padding: 16px 0;
     border-top: 1px solid var(--line);
     border-bottom: 1px solid var(--line);
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
     font-size: 11px;
     color: var(--ink-3);
     flex-wrap: wrap;
@@ -135,7 +135,7 @@
     text-transform: uppercase;
     color: var(--ink-3);
   }
-  .byline-value { color: var(--ink); font-weight: 500; font-size: 12px; }
+  .byline-value { color: var(--ink); font-weight: 500; font-size: 12px; font-family: 'Noto Sans KR', sans-serif; }
 
   .stats-row {
     display: grid;
@@ -156,7 +156,7 @@
   }
 
   .stat-label {
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
     font-size: 10px;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -192,7 +192,7 @@
   @media (max-width: 600px) { .sec-head { grid-template-columns: 1fr; gap: 8px; } }
 
   .sec-num {
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
     font-size: 13px;
     font-weight: 600;
     letter-spacing: 0.05em;
@@ -238,7 +238,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
     font-size: 10px;
     letter-spacing: 0.1em;
     flex-wrap: wrap;
@@ -280,7 +280,7 @@
   }
   .nmap-info .sub {
     color: #a8a8a0;
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
     font-size: 10px;
     letter-spacing: 0.05em;
     display: block;
@@ -295,7 +295,7 @@
   .pin-label {
     background: var(--bg-dark);
     color: #fff;
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
     font-size: 10px;
     font-weight: 600;
     letter-spacing: 0.04em;
@@ -306,12 +306,43 @@
     background-clip: padding-box;
   }
   .pin-label.accent { background: var(--accent-2); }
-  .pin-label.station { background: #fff; color: var(--ink); border: 1px solid var(--line) !important; }
+  .pin-label.belt {
+    background: var(--accent-3);
+    color: #fff;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0;
+    padding: 4px 9px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+  }
+  .pin-label.station {
+    background: rgba(26, 29, 36, 0.95) !important;
+    color: #fff !important;
+    font-family: 'Noto Sans KR', sans-serif !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0 !important;
+    padding: 4px 10px !important;
+    border: none !important;
+    border-radius: 3px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.22), 0 0 0 1px rgba(255,255,255,0.08) inset;
+    text-shadow: none !important;
+    display: inline-block;
+  }
+  .pin-label.station.highlight {
+    background: var(--accent-2) !important;
+    color: #fff !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    padding: 5px 12px !important;
+    box-shadow: 0 3px 10px rgba(168,64,30,0.35), 0 0 0 1px rgba(255,255,255,0.15) inset;
+  }
   
   .zone-label-marker {
     background: rgba(26,29,36,0.95);
     color: #fff;
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
     font-size: 13px;
     font-weight: 700;
     width: 30px;
@@ -328,25 +359,20 @@
 
   .dist-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--line);
     border: 1px solid var(--line);
-    background: var(--bg-card);
     margin-top: 32px;
   }
   @media (max-width: 800px) { .dist-grid { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 480px) { .dist-grid { grid-template-columns: 1fr; } }
 
-  .dist { padding: 24px; border-right: 1px solid var(--line); }
-  .dist:last-child { border-right: none; }
-  @media (max-width: 800px) {
-    .dist { border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-    .dist:nth-child(2n) { border-right: none; }
-  }
+  .dist { padding: 24px; background: var(--bg-card); }
 
   .dist-name { font-weight: 700; font-size: 15px; color: var(--ink); margin-bottom: 4px; }
   .dist-en {
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
     font-size: 10px;
     letter-spacing: 0.1em;
     color: var(--ink-3);
@@ -401,7 +427,7 @@
     padding: 28px;
   }
   .sidebar-tag {
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
     font-size: 10px;
     letter-spacing: 0.15em;
     text-transform: uppercase;
@@ -428,7 +454,7 @@
   }
   .sidebar ul li::before {
     content: counter(side-c, decimal-leading-zero);
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
     color: var(--accent-2);
     font-weight: 600;
     font-size: 11px;
@@ -447,7 +473,7 @@
   }
   .quote-source {
     margin-top: 12px;
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
     font-size: 10px;
     letter-spacing: 0.1em;
     color: var(--ink-3);
@@ -487,7 +513,7 @@
   .route-label {
     background: var(--route);
     color: #fff;
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
     font-size: 10px;
     font-weight: 700;
     padding: 4px 9px;
@@ -513,8 +539,8 @@
   .zones-hint {
     font-size: 12px;
     color: var(--ink-2);
-    font-family: 'IBM Plex Mono', monospace;
-    letter-spacing: 0.03em;
+    font-family: 'Noto Sans KR', sans-serif;
+    letter-spacing: 0.01em;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -534,7 +560,7 @@
     background: transparent;
     border: 1px solid var(--line);
     padding: 7px 14px;
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
     font-size: 11px;
     color: var(--ink-2);
     cursor: pointer;
@@ -557,14 +583,14 @@
     border-bottom: 1px solid var(--line-soft);
   }
   .zone-no {
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
     font-weight: 600;
     font-size: 11px;
     letter-spacing: 0.08em;
     color: var(--ink-3);
   }
   .zone-status {
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
     font-size: 9px;
     font-weight: 600;
     letter-spacing: 0.08em;
@@ -579,6 +605,50 @@
   .zone-status.s-prep { background: var(--s-prep); }
   .zone-status.s-demo { background: var(--s-demo); }
   .zone-status.s-construct { background: var(--s-construct); }
+  .zone-status.s-pending { background: transparent; color: #999; border: 1px dashed #bbb; }
+
+  .zone.zone-pending {
+    background: repeating-linear-gradient(
+      45deg,
+      rgba(0,0,0,0.015),
+      rgba(0,0,0,0.015) 6px,
+      transparent 6px,
+      transparent 12px
+    );
+    border: 1px dashed var(--rule);
+    box-shadow: none;
+    cursor: default;
+  }
+  .zone.zone-pending:hover { transform: none; box-shadow: none; }
+  .zone.zone-pending .zone-no { color: #aaa; }
+  .zone.zone-pending .zone-name { color: #888; font-style: italic; }
+  .zone-pending-body {
+    margin-top: 14px;
+    padding: 14px 0 4px;
+    border-top: 1px dotted var(--rule);
+    text-align: center;
+  }
+  .zone-pending-icon {
+    font-size: 28px;
+    color: #c5c5be;
+    margin-bottom: 8px;
+    line-height: 1;
+  }
+  .zone-pending-msg {
+    font-size: 11.5px;
+    color: var(--ink-2);
+    line-height: 1.55;
+    margin: 0 0 10px;
+  }
+  .zone-pending-msg strong { color: var(--ink); }
+  .zone-pending-sub {
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
+    font-size: 9.5px;
+    letter-spacing: 0.04em;
+    color: var(--ink-3);
+    margin: 0;
+    line-height: 1.4;
+  }
 
   .zone-name {
     font-family: 'Noto Serif KR', serif;
@@ -598,13 +668,36 @@
   }
   .zone-row:last-child { border-bottom: none; }
   .zone-row span:first-child {
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
     font-size: 10px;
     letter-spacing: 0.05em;
     color: var(--ink-3);
     text-transform: uppercase;
   }
   .zone-row span:last-child { font-weight: 500; color: var(--ink); }
+
+  /* 한강뷰 표시 */
+  .zone-view {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line-soft);
+    font-size: 11px;
+    color: var(--ink-2);
+    line-height: 1.4;
+  }
+  .view-icon {
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .view-icon.full { color: var(--accent); }
+  .view-icon.partial { color: var(--s-move); }
+  .view-icon.limited { color: var(--ink-3); opacity: 0.6; }
 
   .table-wrap { overflow-x: auto; margin-top: 24px; }
   .table {
@@ -624,7 +717,7 @@
   .table th {
     background: var(--ink);
     color: #fff;
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
     font-size: 10px;
     font-weight: 600;
     letter-spacing: 0.1em;
@@ -639,7 +732,7 @@
   .table tr:hover:not(.highlight):not(:first-child) { background: #faf9f5; }
 
   .table .num {
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
     font-weight: 600;
     color: var(--ink-3);
     font-size: 11px;
@@ -651,7 +744,7 @@
     color: var(--ink);
   }
   .badge {
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
     font-size: 9px;
     font-weight: 600;
     letter-spacing: 0.08em;
@@ -699,7 +792,7 @@
     left: -37px;
   }
   .tl-year {
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
     font-weight: 600;
     font-size: 13px;
     color: var(--accent);
@@ -732,7 +825,7 @@
     .summary-item:last-child { border-bottom: none; }
   }
   .summary-item-num {
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.1em;
@@ -758,7 +851,7 @@
   footer .wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
   @media (max-width: 700px) { footer .wrap { grid-template-columns: 1fr; } }
   footer h5 {
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
     font-size: 10px;
     font-weight: 600;
     letter-spacing: 0.15em;
@@ -768,6 +861,644 @@
   }
   footer p { color: #a8a8a0; }
   footer strong { color: #fff; }
+
+  /* ============ 시공사 매트릭스 ============ */
+  .builders-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-top: 24px;
+  }
+  @media (max-width: 900px) { .builders-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 500px) { .builders-grid { grid-template-columns: 1fr; } }
+
+  .builder {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .builder::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--accent-2);
+  }
+  .builder.posco::before { background: var(--accent); }
+  .builder.dl::before { background: var(--s-construct); }
+  .builder.gs::before { background: var(--s-prep); }
+  .builder.daewoo::before { background: var(--s-mp); }
+  .builder.sk::before { background: var(--s-move); }
+
+  .builder-name {
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .builder-brand {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1;
+    margin-bottom: 6px;
+    letter-spacing: -0.01em;
+  }
+  .builder-brand-en {
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
+    font-size: 11px;
+    color: var(--ink-3);
+    letter-spacing: 0.05em;
+    margin-bottom: 18px;
+  }
+  .builder-zones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line-soft);
+  }
+  .builder-zone {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    background: var(--bg);
+    font-size: 11px;
+    border: 1px solid var(--line);
+  }
+  .builder-zone strong {
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    color: var(--accent-2);
+  }
+
+  .builder-stats {
+    display: flex;
+    gap: 0;
+    margin-top: 32px;
+    border: 1px solid var(--line);
+    background: var(--bg-card);
+  }
+  .builder-stat {
+    flex: 1;
+    padding: 20px;
+    text-align: center;
+    border-right: 1px solid var(--line);
+  }
+  .builder-stat:last-child { border-right: none; }
+  .builder-stat-num {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .builder-stat-label {
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--ink-3);
+    text-transform: uppercase;
+  }
+  @media (max-width: 600px) {
+    .builder-stats { flex-direction: column; }
+    .builder-stat { border-right: none; border-bottom: 1px solid var(--line); }
+    .builder-stat:last-child { border-bottom: none; }
+  }
+
+  /* ============ 공사비 차트 ============ */
+  .cost-comparison {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 24px;
+  }
+
+  .cost-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    padding: 28px;
+  }
+
+  .cost-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--line-soft);
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .cost-card-title {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .cost-card-num {
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--ink-3);
+    text-transform: uppercase;
+  }
+  .cost-card-name {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+
+  .cost-card-change {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+  }
+  .cost-pct {
+    font-family: 'Noto Serif KR', serif;
+    font-weight: 700;
+    font-size: 36px;
+    color: var(--accent-2);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .cost-delta {
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
+    font-size: 11px;
+    color: var(--ink-3);
+    letter-spacing: 0.05em;
+  }
+
+  .cost-cells {
+    display: grid;
+    grid-template-columns: 1fr 50px 1fr;
+    gap: 8px;
+    align-items: stretch;
+  }
+
+  .cost-cell {
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 160px;
+  }
+  .cost-cell.before {
+    background: var(--bg);
+    border: 1px solid var(--line);
+  }
+  .cost-cell.after {
+    background: rgba(168, 64, 30, 0.05);
+    border: 2px solid var(--accent-2);
+    padding: 19px 23px;
+    position: relative;
+  }
+  .cost-cell.after::before {
+    content: '★';
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    color: var(--accent-2);
+    font-size: 14px;
+  }
+
+  .cost-cell-stage {
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .cost-cell.after .cost-cell-stage { color: var(--accent-2); }
+
+  .cost-cell-year {
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
+    font-size: 13px;
+    color: var(--ink-3);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+
+  .cost-cell-amount {
+    font-family: 'Noto Serif KR', serif;
+    font-weight: 700;
+    font-size: 44px;
+    color: var(--ink);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .cost-cell.after .cost-cell-amount { color: var(--accent-2); }
+  .cost-cell-amount small {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-3);
+    margin-left: 6px;
+    letter-spacing: 0;
+  }
+  .cost-cell.after .cost-cell-amount small {
+    color: var(--accent-2);
+    opacity: 0.65;
+  }
+
+  .cost-cell-bar {
+    margin-top: 16px;
+    background: rgba(0,0,0,0.06);
+    height: 4px;
+    overflow: hidden;
+  }
+  .cost-cell-bar-fill {
+    height: 100%;
+    background: var(--ink-3);
+    transition: width 0.8s ease;
+  }
+  .cost-cell.after .cost-cell-bar-fill { background: var(--accent-2); }
+
+  .cost-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-3);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 20px;
+    font-weight: 300;
+    line-height: 1;
+  }
+
+  .cost-card-note {
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--line-soft);
+    font-size: 11px;
+    color: var(--ink-3);
+    line-height: 1.6;
+  }
+  .cost-card-note strong { color: var(--ink-2); }
+
+  @media (max-width: 700px) {
+    .cost-cells { grid-template-columns: 1fr; gap: 8px; }
+    .cost-arrow { padding: 4px 0; transform: rotate(90deg); }
+    .cost-cell-amount { font-size: 36px; }
+    .cost-cell { min-height: auto; padding: 18px; }
+    .cost-cell.after { padding: 17px; }
+    .cost-pct { font-size: 28px; }
+  }
+
+  /* ============ 시세 표 ============ */
+  .price-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+    margin-top: 24px;
+  }
+  @media (max-width: 800px) { .price-grid { grid-template-columns: 1fr; } }
+
+  .price-table-wrap {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    overflow: hidden;
+  }
+  .price-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .price-table th {
+    background: var(--ink);
+    color: #fff;
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 12px 14px;
+    text-align: left;
+  }
+  .price-table td {
+    padding: 14px;
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: middle;
+  }
+  .price-table tr:last-child td { border-bottom: none; }
+  .price-table tr.section-divider td {
+    background: var(--bg);
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--accent-2);
+    text-transform: uppercase;
+    padding: 8px 14px;
+    font-weight: 600;
+  }
+  .price-name {
+    font-family: 'Noto Serif KR', serif;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .price-name small { 
+    display: block; 
+    font-family: 'Noto Sans KR'; 
+    font-size: 11px; 
+    color: var(--ink-3); 
+    font-weight: 400;
+    margin-top: 2px;
+  }
+  .price-amount {
+    font-family: 'Noto Serif KR', serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--accent);
+    text-align: right;
+  }
+  .price-trend {
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
+    font-size: 11px;
+    text-align: right;
+  }
+  .price-trend.up { color: var(--accent-2); font-weight: 600; }
+  .price-trend.high { color: var(--s-mp); font-weight: 600; }
+
+  .price-summary {
+    background: var(--ink);
+    color: #fff;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .price-summary h4 {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.4;
+    margin-bottom: 16px;
+  }
+  .price-summary p {
+    font-size: 13px;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.65;
+  }
+  .price-summary p strong { color: #fff; }
+  .price-summary-key {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.15);
+  }
+  .price-summary-num {
+    font-family: 'Noto Serif KR', serif;
+    font-weight: 700;
+    font-size: 36px;
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .price-summary-num small {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+    color: rgba(255,255,255,0.6);
+    margin-left: 4px;
+    font-weight: 400;
+  }
+  .price-summary-label {
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.6);
+    text-transform: uppercase;
+  }
+
+  /* ============ 서부선 노선도 ============ */
+  .seobu-line {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    padding: 28px;
+    margin-top: 24px;
+  }
+
+  .seobu-map-frame {
+    height: 520px;
+    width: 100%;
+    background: #e8e5dc;
+    margin-top: 20px;
+    border: 1px solid var(--line);
+  }
+  @media (max-width: 600px) {
+    .seobu-map-frame { height: 400px; }
+  }
+
+  /* 역 리스트 그리드 */
+  .seobu-stations {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line-soft);
+  }
+  .seobu-stations-title {
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .seobu-stations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 8px 12px;
+  }
+  .seobu-station {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    background: var(--bg);
+    border: 1px solid var(--line-soft);
+    font-size: 13px;
+  }
+  .seobu-station.highlight {
+    background: rgba(168,64,30,0.04);
+    border-color: var(--accent-2);
+    border-left: 3px solid var(--accent-2);
+    padding-left: 9px;
+  }
+  .seobu-station-num {
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    color: #246B73;
+    background: #fff;
+    border: 1px solid #246B73;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .seobu-station-name {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 500;
+    color: var(--ink);
+    flex: 1;
+  }
+  .seobu-station.highlight .seobu-station-name {
+    font-weight: 700;
+    color: var(--accent-2);
+  }
+  .seobu-station-tags {
+    display: flex;
+    gap: 4px;
+  }
+  .seobu-tag {
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    color: #fff;
+    line-height: 1.2;
+    min-width: 18px;
+    text-align: center;
+  }
+  .seobu-tag.l1 { background: #0052A4; }
+  .seobu-tag.l2 { background: #00A84D; }
+  .seobu-tag.l5 { background: #996CAC; }
+  .seobu-tag.l6 { background: #CD7C2F; }
+  .seobu-tag.l7 { background: #747F00; }
+  .seobu-tag.l9 { background: #BDB092; color: #1a1d24; }
+  .seobu-tag.lsl { background: #6789CA; }
+
+  .seobu-title {
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .seobu-headline {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 16px;
+  }
+  .seobu-meta {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line-soft);
+  }
+  .seobu-meta-item { padding: 0 12px; border-right: 1px solid var(--line-soft); }
+  .seobu-meta-item:first-child { padding-left: 0; }
+  .seobu-meta-item:last-child { border-right: none; padding-right: 0; }
+  .seobu-meta-num {
+    font-family: 'Noto Serif KR', serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .seobu-meta-label {
+    font-size: 11px;
+    color: var(--ink-3);
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  @media (max-width: 600px) {
+    .seobu-meta { grid-template-columns: 1fr; gap: 12px; }
+    .seobu-meta-item { border-right: none; padding: 8px 0; border-bottom: 1px solid var(--line-soft); }
+    .seobu-meta-item:last-child { border-bottom: none; }
+  }
+
+  /* ============ Sticky 목차 ============ */
+  .toc-nav {
+    position: fixed;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 90;
+    background: rgba(255,255,255,0.92);
+    border: 1px solid var(--line);
+    padding: 16px 18px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    transition: opacity 0.3s;
+  }
+  .toc-title {
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .toc-list { list-style: none; }
+  .toc-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
+    cursor: pointer;
+    color: var(--ink-3);
+    font-size: 12px;
+    transition: color 0.2s;
+    text-decoration: none;
+  }
+  .toc-item:hover { color: var(--ink); }
+  .toc-item.active { color: var(--accent-2); font-weight: 600; }
+  .toc-num {
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    width: 16px;
+    color: inherit;
+  }
+  .toc-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--line);
+    flex-shrink: 0;
+    transition: background 0.2s;
+  }
+  .toc-item:hover .toc-dot { background: var(--ink-3); }
+  .toc-item.active .toc-dot { background: var(--accent-2); }
+
+  @media (max-width: 1280px) {
+    .toc-nav { display: none; }
+  }
+
+  /* 모바일 진행 바 */
+  .progress-bar {
+    position: fixed;
+    top: 41px;
+    left: 0;
+    height: 2px;
+    background: var(--accent-2);
+    z-index: 99;
+    width: 0%;
+    transition: width 0.1s linear;
+  }
 
   /* 범례 박스 */
   .map-frame-wrap { position: relative; }
@@ -787,7 +1518,7 @@
   .legend-section { margin-bottom: 10px; }
   .legend-section:last-child { margin-bottom: 0; }
   .legend-title {
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace, sans-serif;
     font-size: 9px;
     letter-spacing: 0.12em;
     color: var(--ink-3);
@@ -822,6 +1553,24 @@
 </style>
 </head>
 <body>
+
+<!-- 진행 바 (모바일용) -->
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- Sticky 목차 (데스크탑) -->
+<nav class="toc-nav" id="tocNav">
+  <div class="toc-title">CONTENTS</div>
+  <ul class="toc-list">
+    <li><a href="#positioning" class="toc-item" data-target="positioning"><span class="toc-num">01</span><span class="toc-dot"></span><span>위치 분석</span></a></li>
+    <li><a href="#plan" class="toc-item" data-target="plan"><span class="toc-num">02</span><span class="toc-dot"></span><span>도시계획</span></a></li>
+    <li><a href="#zones" class="toc-item" data-target="zones"><span class="toc-num">03</span><span class="toc-dot"></span><span>8개 구역</span></a></li>
+    <li><a href="#builders" class="toc-item" data-target="builders"><span class="toc-num">04</span><span class="toc-dot"></span><span>시공사</span></a></li>
+    <li><a href="#economics" class="toc-item" data-target="economics"><span class="toc-num">05</span><span class="toc-dot"></span><span>경제 분석</span></a></li>
+    <li><a href="#comparison" class="toc-item" data-target="comparison"><span class="toc-num">06</span><span class="toc-dot"></span><span>뉴타운 비교</span></a></li>
+    <li><a href="#timeline" class="toc-item" data-target="timeline"><span class="toc-num">07</span><span class="toc-dot"></span><span>타임라인</span></a></li>
+    <li><a href="#synthesis" class="toc-item" data-target="synthesis"><span class="toc-num">08</span><span class="toc-dot"></span><span>결론</span></a></li>
+  </ul>
+</nav>
 
 <div class="topbar">
   <div class="topbar-inner">
@@ -889,59 +1638,67 @@
   </div>
 </header>
 
-<section>
+<section id="positioning">
   <div class="wrap">
     <div class="sec-head">
       <div class="sec-num">01<small>POSITIONING</small></div>
       <div>
-        <h2 class="sec-title">서울 4대 업무지구의 기하학적 중심</h2>
-        <p class="sec-deck">노량진은 광화문(CBD)·여의도(YBD)·용산·강남(GBD)을 잇는 사각형의 중심부에 위치한다. 한강 남안, 1·9·7호선이 교차하는 결절점이며, 지금까지 낙후 이미지로 저평가됐던 입지다.</p>
+        <h2 class="sec-title">서울 주요 업무권역의 기하학적 중심</h2>
+        <p class="sec-deck">노량진은 광화문(CBD)·여의도(YBD)·강남(GBD)·왕십리(뉴오피스)·구로/가산(G밸리)·판교(테크밸리) 등 서울 6대 업무권역의 결절점에 위치한다. 한강 남안, 1·9·7호선이 교차하며 지금까지 낙후 이미지로 저평가됐던 입지다.</p>
       </div>
     </div>
 
     <div class="map-wrapper">
-      <div class="map-meta">
-        <span>FIG.01 / SEOUL METROPOLITAN — KEY DISTRICTS</span>
-        <span class="map-meta-tag">● NORYANGJIN</span>
-      </div>
       <div id="map-seoul" class="map-frame"></div>
       <div class="map-caption">
-        <strong>그림 1.</strong> 서울 4대 업무지구와 노량진 위치. 노량진은 4대 거점이 이루는 사각형의 중심부에 위치하며, 한강 남안에 면해 있다. 다른 한강벨트 정비구역(한남·성수·압구정·흑석)도 함께 표시. · 지도: OpenStreetMap / Carto
+        <strong>그림 1.</strong> 서울 6대 업무권역과 노량진 위치. 광화문(CBD)·여의도(YBD)·강남(GBD)·왕십리(뉴오피스)·구로/가산(G밸리)·판교(테크밸리)가 노량진 주변에 분포하며, 다른 한강벨트 정비구역(한남·성수·압구정·흑석)도 함께 표시.
       </div>
     </div>
 
-    <h3 style="font-family:'Noto Serif KR'; font-size:20px; font-weight:700; margin-top:48px; margin-bottom:8px;">4대 업무지구 접근성 (지하철 기준)</h3>
-    <p style="color:var(--ink-3); font-size:13px; margin-bottom:24px;">노량진역(1·9호선) 또는 장승배기역(7호선) 출발 기준 환승 포함 소요시간.</p>
+    <h3 style="font-family:'Noto Serif KR'; font-size:20px; font-weight:700; margin-top:48px; margin-bottom:8px;">6대 업무권역 접근성 (지하철 기준)</h3>
+    <p style="color:var(--ink-3); font-size:13px; margin-bottom:24px;">노량진역(1·9호선) 또는 장승배기역(7호선)에서 출발, 환승 포함 소요시간 기준.</p>
     <div class="dist-grid">
       <div class="dist">
         <div class="dist-name">여의도</div>
         <div class="dist-en">YBD · 금융</div>
         <div class="dist-time">3<small>분</small></div>
-        <div class="dist-detail">9호선 1정거장. 한강대교 도보 접근도 가능.</div>
+        <div class="dist-detail">9호선 1정거장. 한강대교 도보 접근도 가능. 증권·금융·방송 본사.</div>
       </div>
       <div class="dist">
-        <div class="dist-name">용산</div>
-        <div class="dist-en">YS · 국제업무</div>
+        <div class="dist-name">구로/가산</div>
+        <div class="dist-en">G밸리 · IT</div>
         <div class="dist-time">8<small>분</small></div>
-        <div class="dist-detail">1호선 직결. 용산국제업무지구 개발 직접 수혜.</div>
+        <div class="dist-detail">1호선 직결, 환승 없음. 구로디지털·가산디지털, IT 중견·제조업 클러스터.</div>
       </div>
       <div class="dist">
-        <div class="dist-name">서울역·광화문</div>
+        <div class="dist-name">광화문·시청</div>
         <div class="dist-en">CBD · 도심</div>
-        <div class="dist-time">12<small>분</small></div>
-        <div class="dist-detail">1호선 환승 없이 서울역. 광화문 도보 추가 5분.</div>
+        <div class="dist-time">15<small>분</small></div>
+        <div class="dist-detail">1호선 환승 없이 시청·종로. 대기업 본사·언론·공공 밀집지.</div>
       </div>
       <div class="dist">
         <div class="dist-name">강남</div>
-        <div class="dist-en">GBD · 테헤란로</div>
+        <div class="dist-en">GBD · 대기업</div>
         <div class="dist-time">23<small>분</small></div>
-        <div class="dist-detail">9호선 급행 환승 없음. GBC·삼성동 직결.</div>
+        <div class="dist-detail">9호선 급행. 강남·역삼·삼성·선릉, 대기업·컨설팅·금융 본사.</div>
+      </div>
+      <div class="dist">
+        <div class="dist-name">성수·왕십리</div>
+        <div class="dist-en">뉴오피스 · 스타트업</div>
+        <div class="dist-time">28<small>분</small></div>
+        <div class="dist-detail">7호선 장승배기역 직결. 스타트업·패션·F&amp;B 본사 신흥 거점.</div>
+      </div>
+      <div class="dist">
+        <div class="dist-name">판교·분당</div>
+        <div class="dist-en">테크밸리 · IT</div>
+        <div class="dist-time">50<small>분</small></div>
+        <div class="dist-detail">9호선 급행→신분당선 환승. IT 대기업·게임·핀테크 집적지.</div>
       </div>
     </div>
   </div>
 </section>
 
-<section>
+<section id="plan">
   <div class="wrap">
     <div class="sec-head">
       <div class="sec-num">02<small>MASTER PLAN</small></div>
@@ -953,7 +1710,7 @@
 
     <div class="body-grid">
       <div class="body-text">
-        <h3>한강벨트 19.8만 가구 공급의 신호탄</h3>
+        <h3>한강벨트 19만 8천 가구 공급의 신호탄</h3>
         <p>
           <strong>2040 서울도시기본계획</strong>은 향후 20년의 서울 공간 미래상을 그린 최상위 법정계획이다.
           7대 공간목표 가운데 핵심 중 하나가 <strong>수변 중심 공간 재편</strong> — 그동안 도로와 철로로 단절됐던 한강변을 다시 잇고 시민의 일상으로 끌어오는 것이다.
@@ -966,12 +1723,12 @@
         <h3>4대 신성장 혁신축의 결정적 노드</h3>
         <p>
           서울시는 동시에 <strong>서울역·용산·영등포·여의도·청량리·삼성·마곡·한강변</strong>을 묶는 '4대 신성장 혁신축'을 설정했다.
-          노량진은 이 축에서 <strong>여의도(금융특구)–용산(국제업무)–강남(GBC)을 잇는 결정적 위치</strong>에 있다. 세 업무지구가 어느 한쪽으로 치우치지 않은, 등거리에 가까운 결절점이다.
+          노량진은 이 축에서 <strong>여의도(금융특구)–도심(CBD)–강남(GBC)–판교(테크밸리)를 잇는 결정적 위치</strong>에 있다. 주요 업무권역이 어느 한쪽으로 치우치지 않은, 등거리에 가까운 결절점이다.
         </p>
 
-        <h3>박원순 시정의 '출구전략' 속에서</h3>
+        <h3>'뉴타운 출구전략' 속에서 살아남다</h3>
         <p>
-          2012년 박원순 시정은 사업성이 떨어지는 뉴타운들을 대거 해제하는 <strong>'뉴타운 출구전략'</strong>을 펼쳤다.
+          2012년 박원순 시장 재임기에 서울시는 사업성이 떨어지는 뉴타운들을 대거 해제하는 <strong>'뉴타운 출구전략'</strong>을 펼쳤다.
           서울시 26개 뉴타운 가운데 절반 가까이가 해제·축소되는 사이, 노량진은 <strong>단 한 구역도 해제되지 않은 예외적 사례</strong>로 남았다. 입지의 본질적 가치가 행정 변동을 견뎌낸 셈이다.
         </p>
       </div>
@@ -995,10 +1752,56 @@
       "노량진 재정비촉진지구는 2003년 2차 뉴타운으로 지정된 이후 사업이 어려운 상황에서도 단 한 곳의 구역해제 없이 추진됐다. 8개 구역 모두 2027년까지 첫 삽을 뜨는 것이 목표다. 노량진 재개발 사업은 서울시가 추진 중인 한강벨트 19만 8천 가구 공급의 신호탄 역할을 할 전망이다."
       <div class="quote-source">— 서울시 / 2025.11.19</div>
     </div>
+
+    <!-- 서부선 노선도 -->
+    <div class="seobu-line">
+      <div class="seobu-title">FIG.A / SEOUL LIGHT RAIL · SEOBU LINE</div>
+      <div class="seobu-headline">서부선 경전철 — 노량진뉴타운을 남북으로 관통</div>
+      <p style="font-size:13px; color:var(--ink-2); line-height:1.65; margin-bottom:20px; max-width:800px;">
+        새절역(은평)에서 서울대입구역(관악)까지 약 16km, 13개 역을 잇는 경전철. 여의도와 노량진을 거쳐 강남 외곽까지 새 남북축이 만들어진다. <strong>노량진역(1·9호선)과 장승배기역(7호선)에 환승역이 추가되면서</strong>, 노량진뉴타운은 <strong>3개 노선이 교차하는 결절점</strong>으로 격상된다. 우선협상대상자 선정(2023) 이후 협상 진행 중, <strong>2027~2028년 착공·2031년 이후 개통</strong>을 목표로 한다.
+      </p>
+      <!-- 네이버 지도 기반 — 실제 지리 좌표로 서부선 경로 표시 -->
+      <div id="map-seobu" class="seobu-map-frame"></div>
+
+      <!-- 역 리스트 그리드 -->
+      <div class="seobu-stations">
+        <div class="seobu-stations-title">SEOBU LINE · 13개 역 / 환승 정보</div>
+        <div class="seobu-stations-grid">
+          <div class="seobu-station"><span class="seobu-station-num">1</span><span class="seobu-station-name">새절</span><span class="seobu-station-tags"><span class="seobu-tag l6">6</span></span></div>
+          <div class="seobu-station"><span class="seobu-station-num">2</span><span class="seobu-station-name">명지대</span></div>
+          <div class="seobu-station"><span class="seobu-station-num">3</span><span class="seobu-station-name">연희중앙</span></div>
+          <div class="seobu-station"><span class="seobu-station-num">4</span><span class="seobu-station-name">신촌세브란스</span></div>
+          <div class="seobu-station"><span class="seobu-station-num">5</span><span class="seobu-station-name">광흥창</span><span class="seobu-station-tags"><span class="seobu-tag l6">6</span></span></div>
+          <div class="seobu-station"><span class="seobu-station-num">6</span><span class="seobu-station-name">국회대로</span></div>
+          <div class="seobu-station"><span class="seobu-station-num">7</span><span class="seobu-station-name">여의도</span><span class="seobu-station-tags"><span class="seobu-tag l5">5</span><span class="seobu-tag l9">9</span></span></div>
+          <div class="seobu-station highlight"><span class="seobu-station-num">8</span><span class="seobu-station-name">노량진 ★</span><span class="seobu-station-tags"><span class="seobu-tag l1">1</span><span class="seobu-tag l9">9</span></span></div>
+          <div class="seobu-station highlight"><span class="seobu-station-num">9</span><span class="seobu-station-name">장승배기 ★</span><span class="seobu-station-tags"><span class="seobu-tag l7">7</span></span></div>
+          <div class="seobu-station"><span class="seobu-station-num">10</span><span class="seobu-station-name">보라매</span><span class="seobu-station-tags"><span class="seobu-tag l7">7</span></span></div>
+          <div class="seobu-station"><span class="seobu-station-num">11</span><span class="seobu-station-name">보라매공원</span></div>
+          <div class="seobu-station"><span class="seobu-station-num">12</span><span class="seobu-station-name">신림</span><span class="seobu-station-tags"><span class="seobu-tag l2">2</span><span class="seobu-tag lsl">신림선</span></span></div>
+          <div class="seobu-station"><span class="seobu-station-num">13</span><span class="seobu-station-name">서울대입구</span><span class="seobu-station-tags"><span class="seobu-tag l2">2</span></span></div>
+        </div>
+      </div>
+
+      <div class="seobu-meta">
+        <div class="seobu-meta-item">
+          <div class="seobu-meta-num">16<small style="font-size:14px; color:var(--ink-3); font-weight:400; margin-left:4px;">km</small></div>
+          <div class="seobu-meta-label">총 노선 길이 · 13개 역</div>
+        </div>
+        <div class="seobu-meta-item">
+          <div class="seobu-meta-num">3<small style="font-size:14px; color:var(--ink-3); font-weight:400; margin-left:4px;">개 노선</small></div>
+          <div class="seobu-meta-label">노량진 환승 노선 (1·9·서부선)</div>
+        </div>
+        <div class="seobu-meta-item">
+          <div class="seobu-meta-num">2031<small style="font-size:14px; color:var(--ink-3); font-weight:400; margin-left:4px;">~</small></div>
+          <div class="seobu-meta-label">개통 목표 (착공 2027~2028)</div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
-<section>
+<section id="zones">
   <div class="wrap">
     <div class="sec-head">
       <div class="sec-num">03<small>ZONES</small></div>
@@ -1009,10 +1812,6 @@
     </div>
 
     <div class="map-wrapper">
-      <div class="map-meta">
-        <span>FIG.02 / NORYANGJIN NEWTOWN — 8 REDEVELOPMENT ZONES</span>
-        <span class="map-meta-tag">사업 단계별 색상 표시 · 카드 클릭 시 도보 경로</span>
-      </div>
       <div class="map-frame-wrap">
         <div id="map-zones" class="map-frame"></div>
         <div class="legend">
@@ -1021,7 +1820,6 @@
             <div class="legend-grid">
               <div class="legend-row"><span class="legend-sw s-plan"></span><span>사업시행</span></div>
               <div class="legend-row"><span class="legend-sw s-mp"></span><span>관리처분</span></div>
-              <div class="legend-row"><span class="legend-sw s-move"></span><span>이주중</span></div>
               <div class="legend-row"><span class="legend-sw s-prep"></span><span>철거준비</span></div>
               <div class="legend-row"><span class="legend-sw s-demo"></span><span>철거중</span></div>
               <div class="legend-row"><span class="legend-sw s-construct"></span><span>시공중</span></div>
@@ -1037,7 +1835,7 @@
         </div>
       </div>
       <div class="map-caption">
-        <strong>그림 2.</strong> 노량진뉴타운 8개 정비구역 위치도 — 사업 단계별 색상으로 구분(좌측 하단 범례 참고). 폴리곤·번호 클릭 시 상세 정보. · 구역 경계는 개략적이며 정확한 도면은 서울시 정비사업 정보몽땅(cleanup.seoul.go.kr) 참고.
+        <strong>그림 2.</strong> 노량진뉴타운 정비구역 위치도 — 사업 단계별 색상으로 구분(좌측 하단 범례 참고). 폴리곤·번호 클릭 시 상세 정보. · 구역 경계는 <strong>서울 열린데이터광장 「서울시 의제처리구역 위치정보」(UQ181, 2026.03 기준)</strong> 공식 데이터 기반(~1m 정밀도). · <strong>7구역은 데이터셋 미수록(이주 진행 중·경계 미확정)으로 표시 제외</strong>. 노량진뉴타운은 본래 8개 구역으로 구성됨.
       </div>
     </div>
 
@@ -1057,6 +1855,7 @@
         <div class="zone-row"><span>세대</span><span>2,992</span></div>
         <div class="zone-row"><span>최고층</span><span>45F (예정)</span></div>
         <div class="zone-row"><span>특징</span><span>대장주·한강뷰</span></div>
+        <div class="zone-view"><span class="view-icon full">◉</span><span>한강뷰 가능 · 대장주 한강 인접</span></div>
       </div>
       <div class="zone" data-zone="2">
         <div class="zone-head"><span class="zone-no">ZONE 02</span><span class="zone-status s-construct">시공중</span></div>
@@ -1065,6 +1864,7 @@
         <div class="zone-row"><span>세대</span><span>404</span></div>
         <div class="zone-row"><span>최고층</span><span>45F</span></div>
         <div class="zone-row"><span>입주</span><span>2029.11</span></div>
+        <div class="zone-view"><span class="view-icon partial">◐</span><span>45F 고층 일부 가능</span></div>
       </div>
       <div class="zone" data-zone="3">
         <div class="zone-head"><span class="zone-no">ZONE 03</span><span class="zone-status s-mp">관리처분</span></div>
@@ -1073,6 +1873,7 @@
         <div class="zone-row"><span>세대</span><span>1,250</span></div>
         <div class="zone-row"><span>최고층</span><span>49F (예정)</span></div>
         <div class="zone-row"><span>착공</span><span>2028년 목표</span></div>
+        <div class="zone-view"><span class="view-icon partial">◐</span><span>49F 고층 일부 가능</span></div>
       </div>
       <div class="zone" data-zone="4">
         <div class="zone-head"><span class="zone-no">ZONE 04</span><span class="zone-status s-demo">철거중</span></div>
@@ -1081,6 +1882,7 @@
         <div class="zone-row"><span>세대</span><span>844</span></div>
         <div class="zone-row"><span>최고층</span><span>35F (예정)</span></div>
         <div class="zone-row"><span>착공</span><span>2026년</span></div>
+        <div class="zone-view"><span class="view-icon partial">◐</span><span>35F 고층 일부 가능</span></div>
       </div>
       <div class="zone" data-zone="5">
         <div class="zone-head"><span class="zone-no">ZONE 05</span><span class="zone-status s-prep">철거준비</span></div>
@@ -1089,6 +1891,7 @@
         <div class="zone-row"><span>세대</span><span>727</span></div>
         <div class="zone-row"><span>이주</span><span>완료</span></div>
         <div class="zone-row"><span>현재</span><span>철거 준비</span></div>
+        <div class="zone-view"><span class="view-icon limited">○</span><span>한강뷰 제한적</span></div>
       </div>
       <div class="zone" data-zone="6">
         <div class="zone-head"><span class="zone-no">ZONE 06</span><span class="zone-status s-construct">시공중</span></div>
@@ -1097,14 +1900,20 @@
         <div class="zone-row"><span>세대</span><span>1,499</span></div>
         <div class="zone-row"><span>최고층</span><span>28F</span></div>
         <div class="zone-row"><span>입주</span><span>2028.11</span></div>
+        <div class="zone-view"><span class="view-icon partial">◐</span><span>북향·한강 근접</span></div>
       </div>
-      <div class="zone" data-zone="7">
-        <div class="zone-head"><span class="zone-no">ZONE 07</span><span class="zone-status s-move">이주중</span></div>
+      <div class="zone zone-pending" data-zone="7">
+        <div class="zone-head"><span class="zone-no">ZONE 07</span><span class="zone-status s-pending">미확정</span></div>
         <div class="zone-name">7구역</div>
-        <div class="zone-brand">SK에코플랜트 · 드파인</div>
-        <div class="zone-row"><span>세대</span><span>576</span></div>
-        <div class="zone-row"><span>관처</span><span>완료</span></div>
-        <div class="zone-row"><span>현재</span><span>이주 진행</span></div>
+        <div class="zone-pending-body">
+          <div class="zone-pending-icon">⊘</div>
+          <p class="zone-pending-msg">
+            현재 <strong>이주 진행 중</strong>으로 정비구역 경계가 확정되지 않은 상태입니다.
+          </p>
+          <p class="zone-pending-sub">
+            사업 진행에 따라 추후 갱신 예정
+          </p>
+        </div>
       </div>
       <div class="zone" data-zone="8">
         <div class="zone-head"><span class="zone-no">ZONE 08</span><span class="zone-status s-construct">시공중</span></div>
@@ -1113,18 +1922,299 @@
         <div class="zone-row"><span>세대</span><span>987</span></div>
         <div class="zone-row"><span>최고층</span><span>29F</span></div>
         <div class="zone-row"><span>입주</span><span>2029 하반기</span></div>
+        <div class="zone-view"><span class="view-icon partial">◐</span><span>대방동·29F 일부 가능</span></div>
       </div>
     </div>
   </div>
 </section>
 
-<section>
+<!-- 04. 시공사·브랜드 매트릭스 -->
+<section id="builders">
   <div class="wrap">
     <div class="sec-head">
-      <div class="sec-num">04<small>COMPARISON</small></div>
+      <div class="sec-num">04<small>BUILDERS</small></div>
+      <div>
+        <h2 class="sec-title">6대 건설사·하이엔드 브랜드 총정리</h2>
+        <p class="sec-deck">노량진뉴타운의 가장 두드러진 특징은 <strong>비강남권 최초로 8개 구역 전체에 하이엔드 브랜드</strong>가 적용된다는 점이다. 6대 메이저 건설사가 8개 구역에 하이엔드를 일제히 투입한 사례는 이전에 없었다.</p>
+      </div>
+    </div>
+
+    <div class="builders-grid">
+      <div class="builder hyundai">
+        <div class="builder-name">현대건설 / Hyundai E&C</div>
+        <div class="builder-brand">디에이치</div>
+        <div class="builder-brand-en">THE H</div>
+        <div class="builder-zones">
+          <span class="builder-zone"><strong>4구역</strong> 디에이치 씨엘스타</span>
+        </div>
+      </div>
+
+      <div class="builder dl">
+        <div class="builder-name">DL이앤씨 / DL E&C</div>
+        <div class="builder-brand">아크로</div>
+        <div class="builder-brand-en">ACRO</div>
+        <div class="builder-zones">
+          <span class="builder-zone"><strong>8구역</strong> 아크로 리버스카이</span>
+        </div>
+      </div>
+
+      <div class="builder posco">
+        <div class="builder-name">포스코이앤씨 / POSCO E&C</div>
+        <div class="builder-brand">오티에르</div>
+        <div class="builder-brand-en">HAUTERRE</div>
+        <div class="builder-zones">
+          <span class="builder-zone"><strong>1구역</strong> 오티에르 동작</span>
+          <span class="builder-zone"><strong>3구역</strong> (협의 중)</span>
+        </div>
+      </div>
+
+      <div class="builder sk">
+        <div class="builder-name">SK에코플랜트 / SK Eco Plant</div>
+        <div class="builder-brand">드파인</div>
+        <div class="builder-brand-en">DEFINE</div>
+        <div class="builder-zones">
+          <span class="builder-zone"><strong>2구역</strong> 드파인 아르티아</span>
+          <span class="builder-zone"><strong>7구역</strong> (예정)</span>
+          <span class="builder-zone"><strong>6구역</strong> GS와 합작</span>
+        </div>
+      </div>
+
+      <div class="builder gs">
+        <div class="builder-name">GS건설 / GS E&C</div>
+        <div class="builder-brand">자이</div>
+        <div class="builder-brand-en">XI · 자이드파인</div>
+        <div class="builder-zones">
+          <span class="builder-zone"><strong>6구역</strong> 라클라체 자이드파인</span>
+        </div>
+      </div>
+
+      <div class="builder daewoo">
+        <div class="builder-name">대우건설 / Daewoo E&C</div>
+        <div class="builder-brand">써밋</div>
+        <div class="builder-brand-en">SUMMIT</div>
+        <div class="builder-zones">
+          <span class="builder-zone"><strong>5구역</strong> 써밋 더 트레시아</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="builder-stats">
+      <div class="builder-stat">
+        <div class="builder-stat-num">6</div>
+        <div class="builder-stat-label">참여 시공사</div>
+      </div>
+      <div class="builder-stat">
+        <div class="builder-stat-num">8/8</div>
+        <div class="builder-stat-label">하이엔드 적용 구역</div>
+      </div>
+      <div class="builder-stat">
+        <div class="builder-stat-num">100%</div>
+        <div class="builder-stat-label">프리미엄 브랜드 비율</div>
+      </div>
+      <div class="builder-stat">
+        <div class="builder-stat-num">1<small style="font-size:14px; color:var(--ink-3); font-weight:400;">위</small></div>
+        <div class="builder-stat-label">비강남 뉴타운 최초</div>
+      </div>
+    </div>
+
+    <p style="margin-top:24px; font-size:12px; color:var(--ink-3); line-height:1.65; max-width:800px;">
+      ※ 6구역은 GS건설과 SK에코플랜트의 컨소시엄 시공으로, 단지명 '라클라체 자이드파인'은 GS의 '자이' 브랜드와 SK의 '드파인' 브랜드를 결합한 것이다.
+      3구역은 포스코이앤씨와 '오티에르' 적용 협의 중이며 최종 확정 시 1구역과 함께 동일 브랜드 단지가 된다.
+      자료: 시사저널e, 한국경제, 각 시공사 공시.
+    </p>
+  </div>
+</section>
+
+<!-- 05. 경제 분석 (공사비 + 시세) -->
+<section id="economics">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">05<small>ECONOMICS</small></div>
+      <div>
+        <h2 class="sec-title">공사비 폭등과 시세 상승</h2>
+        <p class="sec-deck">22년 표류의 가장 최근 변수는 공사비다. 그러나 공사비 인상에도 인근 시세가 가파르게 오르며 <strong>"비싸도 짓는다"는 공감대</strong>가 형성됐다.</p>
+      </div>
+    </div>
+
+    <h3 style="font-family:'Noto Serif KR'; font-size:20px; font-weight:700; margin-top:8px; margin-bottom:8px;">평당 공사비 변동 — 최초 vs 최종 합의</h3>
+    <p style="color:var(--ink-3); font-size:13px; margin-bottom:16px;">최초 시공사 계약 시점과 2025년 최종 합의 시점 비교 (단위: 만원/평)</p>
+
+    <div class="cost-comparison">
+      <!-- 6구역 -->
+      <div class="cost-card">
+        <div class="cost-card-header">
+          <div class="cost-card-title">
+            <span class="cost-card-num">ZONE 06 / 라클라체 자이드파인</span>
+            <span class="cost-card-name">GS건설 · SK에코플랜트 컨소시엄</span>
+          </div>
+          <div class="cost-card-change">
+            <span class="cost-pct">+49%</span>
+            <span class="cost-delta">+244만원/평</span>
+          </div>
+        </div>
+
+        <div class="cost-cells">
+          <div class="cost-cell before">
+            <div>
+              <div class="cost-cell-stage">최초 계약</div>
+              <div class="cost-cell-year">2014년 시공사 선정</div>
+            </div>
+            <div>
+              <div class="cost-cell-amount">495<small>만원/평</small></div>
+              <div class="cost-cell-bar"><div class="cost-cell-bar-fill" style="width:60%;"></div></div>
+            </div>
+          </div>
+
+          <div class="cost-arrow">→</div>
+
+          <div class="cost-cell after">
+            <div>
+              <div class="cost-cell-stage">최종 합의</div>
+              <div class="cost-cell-year">2025년 5월 협상 타결</div>
+            </div>
+            <div>
+              <div class="cost-cell-amount">739<small>만원/평</small></div>
+              <div class="cost-cell-bar"><div class="cost-cell-bar-fill" style="width:90%;"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cost-card-note">
+          ※ 11년간 평당 244만원 인상. 2025년 6월 27일 착공 직전 협상 타결되며 사업 본격화. 노량진뉴타운 8개 구역 중 첫 착공 사례.
+        </div>
+      </div>
+
+      <!-- 8구역 -->
+      <div class="cost-card">
+        <div class="cost-card-header">
+          <div class="cost-card-title">
+            <span class="cost-card-num">ZONE 08 / 아크로 리버스카이</span>
+            <span class="cost-card-name">DL이앤씨</span>
+          </div>
+          <div class="cost-card-change">
+            <span class="cost-pct">+64%</span>
+            <span class="cost-delta">+318만원/평</span>
+          </div>
+        </div>
+
+        <div class="cost-cells">
+          <div class="cost-cell before">
+            <div>
+              <div class="cost-cell-stage">최초 계약</div>
+              <div class="cost-cell-year">2018년 시공사 선정</div>
+            </div>
+            <div>
+              <div class="cost-cell-amount">498<small>만원/평</small></div>
+              <div class="cost-cell-bar"><div class="cost-cell-bar-fill" style="width:55%;"></div></div>
+            </div>
+          </div>
+
+          <div class="cost-arrow">→</div>
+
+          <div class="cost-cell after">
+            <div>
+              <div class="cost-cell-stage">최종 합의</div>
+              <div class="cost-cell-year">2025년 협상 타결</div>
+            </div>
+            <div>
+              <div class="cost-cell-amount">816<small>만원/평</small></div>
+              <div class="cost-cell-bar"><div class="cost-cell-bar-fill" style="width:90%;"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cost-card-note">
+          ※ <strong>두 차례 인상</strong> — 2018년 498만원 → 2021년 관리처분 단계 592만원(+19%) → 2025년 최종 816만원(+38% 추가). 6개월 협상 끝 타결, 총 공사비 3,037억 → 4,187억(+1,150억). 하이엔드 ACRO 적용에 따른 자재 업그레이드도 인상 요인.
+        </div>
+      </div>
+    </div>
+
+    <p style="margin-top:16px; font-size:12px; color:var(--ink-3); line-height:1.65; max-width:900px;">
+      ※ 강남권 일반 아파트 공사비 평균이 2025년 기준 약 700~800만원/평임을 감안하면, 노량진뉴타운의 최종 공사비는 강남권 수준에 도달했다. 
+      공사비 인상은 조합원 추가 분담금으로 직결되지만, 인근 시세가 가파르게 오르며 이를 상쇄하고 있다는 평가다 (아래 표 참고). 
+      자료: 시사저널e, 한국경제, 각 조합 공시.
+    </p>
+
+    <h3 style="font-family:'Noto Serif KR'; font-size:20px; font-weight:700; margin-top:48px; margin-bottom:8px;">인근 단지 실거래가 — '노량진 효과'의 증거</h3>
+    <p style="color:var(--ink-3); font-size:13px; margin-bottom:16px;">2026년 초 기준 84㎡(전용면적) 실거래가 / 자료: 국토교통부 실거래가 공개시스템, 한국경제, 헤럴드경제</p>
+
+    <div class="price-grid">
+      <div class="price-table-wrap">
+        <table class="price-table">
+          <thead>
+            <tr>
+              <th>단지</th>
+              <th style="text-align:right;">실거래가</th>
+              <th style="text-align:right;">변동·비고</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="section-divider"><td colspan="3">━ 인근 기존 단지 (84㎡ 신고가) ━</td></tr>
+            <tr>
+              <td><div class="price-name">신동아리버파크<small>2001년 입주 · 동작구</small></div></td>
+              <td class="price-amount">16.2억</td>
+              <td class="price-trend up">↑ +1.7억 (2개월)</td>
+            </tr>
+            <tr>
+              <td><div class="price-name">대방1차e편한세상<small>2003년 입주 · 동작구</small></div></td>
+              <td class="price-amount">17.29억</td>
+              <td class="price-trend high">★ 신고가</td>
+            </tr>
+            <tr>
+              <td><div class="price-name">삼성래미안<small>2004년 입주 · 동작구</small></div></td>
+              <td class="price-amount">14.85억</td>
+              <td class="price-trend high">★ 신고가</td>
+            </tr>
+            <tr>
+              <td><div class="price-name">상도파크자이<small>2020년 입주 · 동작구</small></div></td>
+              <td class="price-amount">19.8억</td>
+              <td class="price-trend up">↑ 20억 임박</td>
+            </tr>
+            <tr class="section-divider"><td colspan="3">━ 노량진뉴타운 입주권 시세 (조합원) ━</td></tr>
+            <tr>
+              <td><div class="price-name">1구역 (오티에르 동작)<small>입주권 · 2,992세대 대장주</small></div></td>
+              <td class="price-amount">15억+</td>
+              <td class="price-trend up">↑ 프리미엄</td>
+            </tr>
+            <tr>
+              <td><div class="price-name">4구역 (디에이치 씨엘스타)<small>조합원 매물 · 철거 중</small></div></td>
+              <td class="price-amount">18.7억</td>
+              <td class="price-trend up">↑ 매물 호가</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="price-summary">
+        <div>
+          <h4>"두 달 만에 1.7억"</h4>
+          <p>
+            인근 기존 단지인 <strong>신동아리버파크 84㎡</strong>는 2025년 말 14.5억에서 2026년 2월 16.2억으로 거래되며 두 달 사이 1.7억이 올랐다. 다른 인근 단지들도 일제히 신고가를 경신하고 있다.
+          </p>
+          <p style="margin-top:12px;">
+            노량진뉴타운 <strong>입주권 자체</strong>는 더 가파르다. 4구역 84㎡ 조합원 매물은 18.7억, 1구역은 프리미엄만 15억을 넘었다.
+          </p>
+        </div>
+        <div class="price-summary-key">
+          <div class="price-summary-num">+1.7<small>억 / 2개월</small></div>
+          <div class="price-summary-label">신동아리버파크 84㎡ 상승폭</div>
+        </div>
+      </div>
+    </div>
+
+    <p style="margin-top:24px; font-size:12px; color:var(--ink-3); line-height:1.65; max-width:900px;">
+      ※ 입주권 시세는 매물 호가·중개업소 전언 기반으로 실거래가와 차이가 있을 수 있음. 노량진뉴타운은 2018년 1월 24일까지 사업시행인가 신청을 마친 구역(2·4·6·7·8)에 한해 조합원 지위 양도가 가능하나, 토지거래허가 대상이라 실거주 의무가 부과된다. 1·3구역은 관리처분계획 이전 단계로 양도·실거주 의무 모두 해당되지 않는다. 자료: 한국경제, 헤럴드경제, 국토교통부.
+    </p>
+  </div>
+</section>
+
+<section id="comparison">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">06<small>COMPARISON</small></div>
       <div>
         <h2 class="sec-title">서울 26개 뉴타운, 그중 살아남은 자들</h2>
-        <p class="sec-deck">2002년 시범 3곳에서 시작해 26개까지 확장됐던 서울 뉴타운. 박원순 시정 출구전략으로 절반이 해제·축소되었다. 노량진은 단 한 곳도 해제되지 않은 예외다.</p>
+        <p class="sec-deck">2002년 시범 3곳에서 시작해 26개까지 확장됐던 서울 뉴타운. 2012년 '뉴타운 출구전략'으로 절반이 해제·축소되었다. 노량진은 단 한 곳도 해제되지 않은 예외다.</p>
       </div>
     </div>
 
@@ -1226,17 +2316,17 @@
     </div>
 
     <p style="margin-top:24px; font-size:12px; color:var(--ink-3); line-height:1.65; max-width:900px;">
-      ※ 서울시 뉴타운은 총 26개 지구로 지정됐으며, 2012년 이후 박원순 시정의 출구전략으로 약 절반이 해제·축소되었다.
+      ※ 서울시 뉴타운은 총 26개 지구로 지정됐으며, 2012년 이후 서울시의 '뉴타운 출구전략'으로 약 절반이 해제·축소되었다.
       노량진뉴타운은 그 사이에서도 단 한 구역도 해제 없이 8개 구역 전체가 살아남은 예외적 사례다.
       자료: 서울정책아카이브, 한국민족문화대백과사전, 각 자치구 자료.
     </p>
   </div>
 </section>
 
-<section>
+<section id="timeline">
   <div class="wrap">
     <div class="sec-head">
-      <div class="sec-num">05<small>TIMELINE</small></div>
+      <div class="sec-num">07<small>TIMELINE</small></div>
       <div>
         <h2 class="sec-title">28년의 기록 — 2003 to 2031</h2>
         <p class="sec-deck">노량진뉴타운이 걸어온, 그리고 걸어갈 길.</p>
@@ -1275,7 +2365,7 @@
       <div class="tl-item">
         <div class="tl-year">2012</div>
         <div class="tl-content">
-          <h4>박원순 시정 '뉴타운 출구전략'</h4>
+          <h4>서울시 '뉴타운 출구전략' 발표</h4>
           <p>서울시 뉴타운 절반 가까이 해제. 노량진은 단 한 곳도 해제되지 않음.</p>
         </div>
       </div>
@@ -1297,7 +2387,7 @@
         <div class="tl-year">2025.06</div>
         <div class="tl-content">
           <h4>첫 착공 — 6구역</h4>
-          <p>2003년 지정 후 22년 만의 첫 삽. 8구역(10월), 2구역(12월) 연이어 착공. 한강벨트 신호탄.</p>
+          <p>2003년 지정 후 22년 만의 첫 삽. 6구역(6월)에 이어 8구역(10월), 2구역(12월) 연이어 착공. 한강벨트 신호탄.</p>
         </div>
       </div>
       <div class="tl-item">
@@ -1332,17 +2422,17 @@
         <div class="tl-year">2031</div>
         <div class="tl-content">
           <h4>전체 준공 — 한강벨트 1만 가구</h4>
-          <p>8개 구역 전 단지 완공. 한강벨트 19.8만 가구 공급의 첫 결실.</p>
+          <p>8개 구역 전 단지 완공. 한강벨트 19만 8천 가구 공급의 첫 결실.</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<section>
+<section id="synthesis">
   <div class="wrap">
     <div class="sec-head">
-      <div class="sec-num">06<small>SYNTHESIS</small></div>
+      <div class="sec-num">08<small>SYNTHESIS</small></div>
       <div>
         <h2 class="sec-title">왜 노량진인가 — 세 가지 결정 변수</h2>
         <p class="sec-deck">고시촌과 수산시장의 도시가 한강벨트의 핵으로 변화하는 이유는 세 가지로 압축된다.</p>
@@ -1353,17 +2443,17 @@
       <div class="summary-item">
         <div class="summary-item-num">VARIABLE 01</div>
         <h4>입지의 본질적 가치</h4>
-        <p>서울 4대 업무지구의 기하학적 중심. 광화문·여의도·용산·강남 어디든 30분 내. 한강뷰까지 가능한 입지가 그동안 '여의도의 그늘'이라는 낙후 이미지에 가려져 있었을 뿐이다.</p>
+        <p>서울 주요 업무권역의 결절점. 광화문·여의도·강남·구로/가산 어디든 30분 내. 한강뷰까지 가능한 입지가 그동안 '여의도의 그늘'이라는 낙후 이미지에 가려져 있었을 뿐이다.</p>
       </div>
       <div class="summary-item">
         <div class="summary-item-num">VARIABLE 02</div>
         <h4>전 구역 하이엔드 — 비강남 최초</h4>
-        <p>THE H, ACRO, 오티에르, 드파인, 써밋. 6대 건설사 최고급 브랜드가 8개 구역에 일제히 들어온다. 비(非)강남권 뉴타운 중 전 구역 하이엔드 적용은 노량진이 처음이다.</p>
+        <p>THE H, ACRO, 오티에르, 드파인, 써밋. 6대 건설사 최고급 브랜드가 8개 구역에 일제히 들어온다. 비강남권 뉴타운 중 전 구역 하이엔드 적용은 노량진이 처음이다.</p>
       </div>
       <div class="summary-item">
         <div class="summary-item-num">VARIABLE 03</div>
         <h4>한강벨트 마스터플랜의 핵</h4>
-        <p>서울시 19.8만 가구 한강벨트 공급의 신호탄. 2040 도시기본계획 수변재편·4대 신성장 혁신축의 결정적 노드. 서부선 경전철 신설로 교통도 진화 중.</p>
+        <p>서울시 19만 8천 가구 한강벨트 공급의 신호탄. 2040 도시기본계획 수변재편·4대 신성장 혁신축의 결정적 노드. 서부선 경전철 신설로 교통도 진화 중.</p>
       </div>
     </div>
   </div>
@@ -1375,14 +2465,17 @@
       <h5>About this Briefing</h5>
       <p>
         본 보고서는 공개된 도시계획·정비사업 자료를 정리한 분석 자료입니다.
-        구역 경계 도면은 개략적으로 표시되었으며, 정확한 도면은 <strong>서울시 정비사업 정보몽땅</strong>(cleanup.seoul.go.kr)에서 확인하시기 바랍니다.
+        그림 2의 정비구역 경계(1·2·3·4·5·6·8구역)는 <strong>서울 열린데이터광장</strong>의 공식 공간정보 데이터를 사용했습니다. 7구역 좌표와 일부 도면 정보의 정확한 확인은 <strong>서울시 정비사업 정보몽땅</strong>(cleanup.seoul.go.kr)을 참고하시기 바랍니다.
         본 자료는 투자 권유 또는 판단의 근거가 아닙니다.
       </p>
     </div>
     <div>
       <h5>Sources</h5>
       <p>
-        2040 서울도시기본계획(서울시) · 서울시 정비사업 정보몽땅 · 서울정책아카이브 · 한국경제 · 시사저널e · 하우징헤럴드 · 동작구청 · 한국민족문화대백과사전 · 나무위키
+        2040 서울도시기본계획(서울시) · <strong>서울 열린데이터광장 「서울시 의제처리구역 위치정보」(UQ181, 2026.03)</strong> · 서울시 정비사업 정보몽땅 · 서울정책아카이브 · 한국경제 · 시사저널e · 하우징헤럴드 · 동작구청 · 한국민족문화대백과사전 · 나무위키
+      </p>
+      <p style="margin-top:12px; font-size:11px; color:#888;">
+        공간정보 라이선스: 공공누리 제4유형(출처표시 + 상업적 이용금지 + 변경금지)
       </p>
       <p style="margin-top:16px; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.1em; color:#666;">
         ⓒ SEOUL URBAN BRIEFING — 2026.04 / NO. 04
@@ -1411,20 +2504,22 @@ window.addEventListener('load', function() {
   try {
     // ============ 지도 1: 서울 광역 ============
     const mapSeoul = new naver.maps.Map('map-seoul', {
-      center: new naver.maps.LatLng(37.5400, 126.9780),
-      zoom: 12,
+      center: new naver.maps.LatLng(37.4900, 126.9956),
+      zoom: 11,
       scaleControl: true,
       mapDataControl: false,
       logoControl: true,
       logoControlOptions: { position: naver.maps.Position.BOTTOM_RIGHT }
     });
 
-    // 4대 업무지구
+    // 6대 업무권역
     const districts = [
       { name: '광화문/CBD', en: 'Central Business District', lat: 37.5704, lng: 126.9768 },
       { name: '여의도', en: 'Yeouido Financial District', lat: 37.5215, lng: 126.9244 },
-      { name: '용산', en: 'Yongsan International Hub', lat: 37.5300, lng: 126.9650 },
-      { name: '강남', en: 'Gangnam Business District', lat: 37.5050, lng: 127.0420 }
+      { name: '왕십리', en: 'Wangsimni New Office', lat: 37.5613, lng: 127.0379 },
+      { name: '강남', en: 'Gangnam Business District', lat: 37.5050, lng: 127.0420 },
+      { name: '구로/가산', en: 'G-Valley · IT Hub', lat: 37.4818, lng: 126.8826 },
+      { name: '판교', en: 'Pangyo Tech Valley', lat: 37.4014, lng: 127.1086 }
     ];
 
     districts.forEach(d => {
@@ -1456,70 +2551,49 @@ window.addEventListener('load', function() {
       naver.maps.Event.addListener(dotMarker, 'click', () => dInfo.open(mapSeoul, dotMarker));
     });
 
-    // 노량진 강조 원
-    new naver.maps.Circle({
-      map: mapSeoul,
-      center: new naver.maps.LatLng(37.5125, 126.9425),
-      radius: 800,
-      fillColor: '#a8401e',
-      fillOpacity: 0.12,
-      strokeColor: '#a8401e',
-      strokeOpacity: 0.6,
-      strokeWeight: 1.5,
-      strokeStyle: 'shortdash'
-    });
-
-    const noryangjinMarker = new naver.maps.Marker({
-      position: new naver.maps.LatLng(37.5125, 126.9425),
-      map: mapSeoul,
-      icon: {
-        content: '<div style="width:28px;height:28px;border-radius:50%;background:#a8401e;border:3px solid #fff;box-shadow:0 3px 8px rgba(0,0,0,0.3);"></div>',
-        anchor: new naver.maps.Point(17, 17)
-      },
-      zIndex: 100
-    });
-
+    // 노량진뉴타운 — 다른 표기 지역과 동일한 간단 마커·라벨로 표시
     new naver.maps.Marker({
       position: new naver.maps.LatLng(37.5125, 126.9425),
       map: mapSeoul,
       icon: {
-        content: '<div class="pin-label accent" style="margin-left:20px;margin-top:-4px;">노량진뉴타운</div>',
-        anchor: new naver.maps.Point(0, 0)
+        content: '<div style="width:14px;height:14px;border-radius:50%;background:#a8401e;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,0.25);"></div>',
+        anchor: new naver.maps.Point(8, 8)
+      },
+      zIndex: 80
+    });
+    new naver.maps.Marker({
+      position: new naver.maps.LatLng(37.5125, 126.9425),
+      map: mapSeoul,
+      icon: {
+        content: '<div class="pin-label accent">노량진뉴타운</div>',
+        anchor: new naver.maps.Point(-12, 30)
       }
     });
 
-    const njInfo = new naver.maps.InfoWindow({
-      content: '<div class="nmap-info"><b>노량진뉴타운</b><span class="sub">NORYANGJIN NEWTOWN</span><div class="meta">73.8만㎡ · 8개 구역 · ~10,000 세대</div></div>',
-      borderWidth: 0,
-      backgroundColor: 'transparent',
-      disableAnchor: true,
-      pixelOffset: new naver.maps.Point(0, -14)
-    });
-    naver.maps.Event.addListener(noryangjinMarker, 'click', () => njInfo.open(mapSeoul, noryangjinMarker));
-    njInfo.open(mapSeoul, noryangjinMarker);
-
-    // 한강벨트 다른 정비구역
+    // 한강벨트 다른 정비구역 — 모두 visible 라벨 표시
     const beltRefs = [
-      { name: '한남', lat: 37.5375, lng: 127.0010 },
-      { name: '성수', lat: 37.5440, lng: 127.0570 },
+      { name: '한남',   lat: 37.5375, lng: 127.0010 },
+      { name: '성수',   lat: 37.5440, lng: 127.0570 },
       { name: '압구정', lat: 37.5275, lng: 127.0275 },
-      { name: '흑석', lat: 37.5085, lng: 126.9620 }
+      { name: '흑석',   lat: 37.5085, lng: 126.9620 }
     ];
     beltRefs.forEach(r => {
-      const m = new naver.maps.Marker({
+      new naver.maps.Marker({
         position: new naver.maps.LatLng(r.lat, r.lng),
         map: mapSeoul,
         icon: {
-          content: '<div style="width:14px;height:14px;border-radius:50%;background:#2d5a3d;border:1.5px solid #fff;"></div>',
-          anchor: new naver.maps.Point(8, 8)
+          content: '<div style="width:12px;height:12px;border-radius:50%;background:#2d5a3d;border:1.5px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></div>',
+          anchor: new naver.maps.Point(7, 7)
         }
       });
-      const i = new naver.maps.InfoWindow({
-        content: '<div class="nmap-info"><b>' + r.name + '뉴타운</b><span class="sub">한강벨트 정비사업</span></div>',
-        borderWidth: 0, backgroundColor: 'transparent', disableAnchor: true,
-        pixelOffset: new naver.maps.Point(0, -8)
+      new naver.maps.Marker({
+        position: new naver.maps.LatLng(r.lat, r.lng),
+        map: mapSeoul,
+        icon: {
+          content: '<div class="pin-label belt">' + r.name + '</div>',
+          anchor: new naver.maps.Point(-10, 28)
+        }
       });
-      naver.maps.Event.addListener(m, 'click', () => i.open(mapSeoul, m));
     });
 
     // ============ 지도 2: 노량진 상세 ============
@@ -1542,26 +2616,32 @@ window.addEventListener('load', function() {
 
     const zones = [
       { no: 1, name: '오티에르 동작', sedae: 2992, stage: 'plan', label: '사업시행 단계 · 대장주 (2,992세대)',
-        coords: [[37.5070,126.9388],[37.5078,126.9385],[37.5087,126.9395],[37.5092,126.9420],[37.5083,126.9430],[37.5070,126.9425],[37.5063,126.9410],[37.5063,126.9395]] },
+        coords: [[37.508193,126.938758],[37.508205,126.939086],[37.508382,126.939097],[37.509038,126.939119],[37.509038,126.940001],[37.509334,126.940014],[37.511123,126.940043],[37.511795,126.940063],[37.51182,126.939149],[37.511881,126.939091],[37.511904,126.936317],[37.511546,126.936306],[37.511325,126.93628],[37.511208,126.936256],[37.509839,126.935946],[37.509717,126.935928],[37.509534,126.935918],[37.509377,126.935925],[37.509238,126.935944],[37.50908,126.93598],[37.50908,126.935931],[37.509047,126.935934],[37.509002,126.935995],[37.508932,126.936019],[37.508901,126.935997],[37.508846,126.935985],[37.508832,126.936097],[37.50869,126.93608],[37.508671,126.936178],[37.508593,126.936148],[37.508573,126.936163],[37.508529,126.936359],[37.508499,126.936377],[37.508487,126.936374],[37.50845,126.93645],[37.508389,126.936837],[37.508228,126.937152],[37.508214,126.937341],[37.508185,126.937455],[37.508157,126.937604],[37.508196,126.938173],[37.508189,126.938452],[37.508193,126.938758]] },
       { no: 2, name: '드파인 아르티아', sedae: 404, stage: 'construct', label: '시공중 · 45F · 2029.11 입주',
-        coords: [[37.5045,126.9395],[37.5057,126.9390],[37.5060,126.9412],[37.5050,126.9418],[37.5040,126.9408]] },
+        coords: [[37.506043,126.939508],[37.506589,126.939647],[37.506767,126.939673],[37.506849,126.939694],[37.507451,126.93981],[37.507445,126.939639],[37.507461,126.939519],[37.507468,126.939519],[37.507479,126.939502],[37.507591,126.939508],[37.5076,126.939218],[37.50773,126.939238],[37.507793,126.939236],[37.507863,126.939251],[37.507896,126.939246],[37.507966,126.939226],[37.508072,126.939217],[37.508088,126.939213],[37.508116,126.939197],[37.508125,126.939198],[37.508124,126.938988],[37.508105,126.938987],[37.508083,126.939009],[37.507769,126.938895],[37.507234,126.938648],[37.506936,126.93853],[37.506919,126.938524],[37.506919,126.938532],[37.506911,126.938521],[37.506566,126.938396],[37.506528,126.938312],[37.506502,126.938485],[37.50642,126.938714],[37.50602,126.93941],[37.506043,126.939508]] },
       { no: 3, name: '3구역', sedae: 1250, stage: 'mp', label: '관리처분인가 · 49F 예정',
-        coords: [[37.5095,126.9438],[37.5108,126.9438],[37.5113,126.9460],[37.5102,126.9472],[37.5092,126.9465]] },
+        coords: [[37.511178,126.942542],[37.511157,126.942526],[37.511137,126.942541],[37.51093,126.942524],[37.510865,126.942482],[37.510836,126.942401],[37.510828,126.942351],[37.510839,126.942277],[37.510877,126.942196],[37.510872,126.942172],[37.510897,126.94217],[37.510969,126.941912],[37.510963,126.941888],[37.510972,126.941849],[37.51105,126.941864],[37.51116,126.941929],[37.511286,126.942015],[37.511317,126.941989],[37.511356,126.941835],[37.511585,126.941835],[37.511881,126.941878],[37.511891,126.941588],[37.511902,126.941471],[37.51191,126.941211],[37.511864,126.941209],[37.511896,126.940346],[37.51078,126.940324],[37.510049,126.940317],[37.509855,126.940308],[37.509688,126.940309],[37.50914,126.940299],[37.508383,126.940239],[37.508113,126.940206],[37.508113,126.941049],[37.508155,126.941115],[37.508113,126.941156],[37.508113,126.941292],[37.508182,126.941399],[37.508113,126.941485],[37.508113,126.941508],[37.509152,126.941507],[37.509204,126.941447],[37.50924,126.941507],[37.509265,126.941507],[37.509265,126.941549],[37.509297,126.941588],[37.509265,126.94163],[37.509265,126.941784],[37.50925,126.941798],[37.50931,126.941901],[37.509285,126.941925],[37.509272,126.941953],[37.509277,126.941994],[37.509351,126.942168],[37.509315,126.942175],[37.509344,126.942263],[37.509376,126.942341],[37.509398,126.942319],[37.509481,126.942441],[37.509443,126.94247],[37.509484,126.94254],[37.509456,126.942563],[37.509509,126.942676],[37.50953,126.942661],[37.509628,126.942815],[37.509695,126.94293],[37.509705,126.942923],[37.50974,126.942983],[37.509795,126.942935],[37.50989,126.942865],[37.509867,126.942839],[37.510091,126.942809],[37.510234,126.942827],[37.510391,126.943001],[37.510624,126.943394],[37.510828,126.943942],[37.511178,126.942542]] },
       { no: 4, name: '디에이치 씨엘스타', sedae: 844, stage: 'demo', label: '철거중 · THE H · 2026 착공',
-        coords: [[37.5108,126.9476],[37.5120,126.9478],[37.5122,126.9500],[37.5108,126.9505],[37.5098,126.9492]] },
+        coords: [[37.509376,126.942341],[37.509368,126.942323],[37.509206,126.942499],[37.509311,126.942633],[37.509357,126.942716],[37.509043,126.943072],[37.508907,126.943044],[37.508705,126.942989],[37.508695,126.943],[37.508662,126.94298],[37.50848,126.94301],[37.508431,126.942903],[37.508487,126.942862],[37.508478,126.942856],[37.50858,126.942781],[37.508583,126.942786],[37.508579,126.942713],[37.508665,126.942593],[37.508728,126.942523],[37.508843,126.942378],[37.508907,126.942287],[37.508944,126.942229],[37.508991,126.942122],[37.50907,126.942062],[37.509171,126.942],[37.509288,126.942181],[37.509351,126.942168],[37.509277,126.941994],[37.509272,126.941953],[37.509285,126.941925],[37.50931,126.941901],[37.50925,126.941798],[37.509265,126.941784],[37.509265,126.94163],[37.509297,126.941588],[37.509265,126.941549],[37.509265,126.941507],[37.50924,126.941507],[37.509204,126.941447],[37.509149,126.94151],[37.508113,126.941508],[37.508113,126.941485],[37.508182,126.941399],[37.508113,126.941292],[37.508113,126.941156],[37.508155,126.941115],[37.508113,126.941049],[37.508113,126.940892],[37.508082,126.940932],[37.508041,126.940933],[37.508004,126.940876],[37.507947,126.940921],[37.507926,126.94093],[37.507748,126.940923],[37.507158,126.940877],[37.507159,126.940868],[37.50689,126.940842],[37.506889,126.940854],[37.506827,126.940847],[37.506789,126.941452],[37.506746,126.941577],[37.506781,126.941611],[37.506762,126.941635],[37.506822,126.941743],[37.506818,126.941868],[37.506797,126.94198],[37.50681,126.941992],[37.506808,126.94209],[37.506795,126.942171],[37.507085,126.942495],[37.507166,126.94257],[37.507435,126.94287],[37.507564,126.943005],[37.507653,126.943071],[37.507839,126.943181],[37.507945,126.943253],[37.508091,126.943074],[37.508135,126.943081],[37.508203,126.943119],[37.508384,126.94311],[37.508518,126.94307],[37.508688,126.943067],[37.508894,126.943109],[37.508891,126.943123],[37.509173,126.943206],[37.509336,126.943227],[37.509534,126.943146],[37.50974,126.942983],[37.509705,126.942923],[37.509695,126.94293],[37.509628,126.942815],[37.50953,126.942661],[37.509509,126.942676],[37.509456,126.942563],[37.509484,126.94254],[37.509443,126.94247],[37.509481,126.942441],[37.509398,126.942319],[37.509376,126.942341]] },
       { no: 5, name: '써밋 더 트레시아', sedae: 727, stage: 'prep', label: '철거 준비 · 이주 완료',
-        coords: [[37.5085,126.9478],[37.5095,126.9478],[37.5095,126.9498],[37.5082,126.9500],[37.5078,126.9485]] },
+        coords: [[37.509079,126.934873],[37.50908,126.93598],[37.509247,126.935942],[37.509421,126.935921],[37.509587,126.935919],[37.509761,126.935933],[37.509899,126.935958],[37.511302,126.936276],[37.511421,126.936294],[37.511541,126.936305],[37.511904,126.936317],[37.511909,126.936002],[37.511922,126.9359],[37.511944,126.9358],[37.511971,126.935713],[37.512005,126.93563],[37.512205,126.935242],[37.512259,126.935112],[37.512291,126.93501],[37.512315,126.934905],[37.512331,126.934797],[37.512338,126.934698],[37.512018,126.934756],[37.51145,126.934822],[37.511277,126.934829],[37.510971,126.934812],[37.510858,126.934802],[37.509079,126.934873]] },
       { no: 6, name: '라클라체 자이드파인', sedae: 1499, stage: 'construct', label: '시공중 · 1,499세대 · 2028.11 입주',
-        coords: [[37.5090,126.9410],[37.5100,126.9408],[37.5108,126.9420],[37.5105,126.9438],[37.5095,126.9438],[37.5085,126.9425]] },
-      { no: 7, name: '7구역', sedae: 576, stage: 'move', label: '이주 진행 중',
-        coords: [[37.5063,126.9478],[37.5077,126.9478],[37.5077,126.9498],[37.5063,126.9500],[37.5060,126.9488]] },
+        coords: [[37.506528,126.938312],[37.506566,126.938396],[37.506911,126.938521],[37.506919,126.938532],[37.506919,126.938524],[37.506936,126.93853],[37.507234,126.938648],[37.507769,126.938895],[37.508083,126.939009],[37.508105,126.938987],[37.508201,126.938992],[37.50819,126.93863],[37.50819,126.938272],[37.508196,126.938173],[37.508155,126.937572],[37.508185,126.937455],[37.508183,126.937425],[37.508193,126.937425],[37.508217,126.9373],[37.508228,126.937152],[37.508389,126.936837],[37.508448,126.936455],[37.508487,126.936374],[37.508499,126.936377],[37.508529,126.936359],[37.508579,126.936142],[37.508671,126.936178],[37.50869,126.93608],[37.508832,126.936097],[37.508846,126.935985],[37.508901,126.935997],[37.508932,126.936019],[37.509002,126.935995],[37.509047,126.935934],[37.50908,126.935931],[37.509079,126.934839],[37.508839,126.934713],[37.508245,126.934675],[37.508067,126.9347],[37.507891,126.93479],[37.507483,126.934882],[37.507446,126.934899],[37.507414,126.934923],[37.507057,126.935141],[37.50688,126.935146],[37.506883,126.935183],[37.506864,126.935189],[37.506598,126.935116],[37.506466,126.935066],[37.506461,126.935513],[37.506445,126.935626],[37.506584,126.935773],[37.50655,126.936068],[37.506682,126.93607],[37.506591,126.936369],[37.506525,126.936661],[37.506546,126.936699],[37.506593,126.936765],[37.506716,126.936973],[37.506739,126.937029],[37.506764,126.937148],[37.506768,126.937232],[37.506761,126.937402],[37.506744,126.937473],[37.50658,126.937902],[37.506539,126.938187],[37.506528,126.938312]] },
       { no: 8, name: '아크로 리버스카이', sedae: 987, stage: 'construct', label: '시공중 · 29F · 2029 하반기 입주',
-        coords: [[37.5118,126.9275],[37.5135,126.9275],[37.5138,126.9305],[37.5128,126.9315],[37.5115,126.9305],[37.5113,126.9285]] }
+        coords: [[37.512338,126.934698],[37.512335,126.934529],[37.512312,126.934361],[37.51227,126.934198],[37.512209,126.934046],[37.512137,126.933915],[37.51205,126.933793],[37.511984,126.933689],[37.511912,126.933608],[37.51173,126.933364],[37.511668,126.933236],[37.511601,126.933065],[37.511562,126.933081],[37.511516,126.932996],[37.511514,126.932962],[37.511494,126.932925],[37.511502,126.932858],[37.51153,126.932766],[37.511538,126.932764],[37.511534,126.932751],[37.511554,126.932741],[37.511545,126.932712],[37.511599,126.932522],[37.511633,126.932523],[37.511633,126.932344],[37.511652,126.932345],[37.511643,126.932212],[37.511646,126.932145],[37.511697,126.932081],[37.51139,126.932099],[37.511029,126.93213],[37.510319,126.932176],[37.510023,126.932202],[37.509808,126.932213],[37.509806,126.932307],[37.509884,126.932308],[37.509889,126.932598],[37.509823,126.932562],[37.509796,126.933288],[37.509739,126.933458],[37.509708,126.933584],[37.509604,126.933531],[37.509554,126.933651],[37.509253,126.933651],[37.509223,126.93359],[37.509145,126.933652],[37.509071,126.933652],[37.50906,126.934828],[37.509079,126.934838],[37.509079,126.934873],[37.510858,126.934801],[37.510971,126.934812],[37.511277,126.934829],[37.51145,126.934822],[37.512017,126.934756],[37.512338,126.934698]] }
     ];
 
     const zonePolygons = {};
     const zoneCenters = {};
     const zonesData = {};
+
+    // 공유 InfoWindow — 클릭 시마다 내용만 갱신 (버그 수정)
+    const sharedInfoZones = new naver.maps.InfoWindow({
+      borderWidth: 0,
+      backgroundColor: 'transparent',
+      disableAnchor: true,
+      pixelOffset: new naver.maps.Point(0, -14)
+    });
 
     zones.forEach(z => {
       const style = stageStyles[z.stage];
@@ -1581,14 +2661,6 @@ window.addEventListener('load', function() {
       });
 
       const infoContent = '<div class="nmap-info"><b>' + z.no + '구역 / ' + z.name + '</b><span class="sub">[' + style.name + '] ' + z.label + '</span><div class="meta">세대: ' + z.sedae.toLocaleString() + '호<br>단계: ' + style.name + '</div></div>';
-      
-      const infoWindow = new naver.maps.InfoWindow({
-        content: infoContent,
-        borderWidth: 0,
-        backgroundColor: 'transparent',
-        disableAnchor: true,
-        pixelOffset: new naver.maps.Point(0, -14)
-      });
 
       // 폴리곤 중심
       let cLat = 0, cLng = 0;
@@ -1596,7 +2668,13 @@ window.addEventListener('load', function() {
       cLat /= z.coords.length; cLng /= z.coords.length;
       const center = new naver.maps.LatLng(cLat, cLng);
 
-      naver.maps.Event.addListener(polygon, 'click', () => infoWindow.open(mapZones, center));
+      // 클릭 시 공유 InfoWindow 내용 갱신 후 표시
+      const showInfo = () => {
+        sharedInfoZones.setContent(infoContent);
+        sharedInfoZones.open(mapZones, center);
+      };
+
+      naver.maps.Event.addListener(polygon, 'click', showInfo);
 
       // 번호 라벨 마커 (시공중일 경우 강조 색상)
       const labelMarker = new naver.maps.Marker({
@@ -1609,7 +2687,7 @@ window.addEventListener('load', function() {
         zIndex: 50
       });
 
-      naver.maps.Event.addListener(labelMarker, 'click', () => infoWindow.open(mapZones, center));
+      naver.maps.Event.addListener(labelMarker, 'click', showInfo);
 
       // 참조 저장
       zonePolygons[z.no] = polygon;
@@ -1617,11 +2695,15 @@ window.addEventListener('load', function() {
       zonesData[z.no] = z;
     });
 
+    // 빈 영역 클릭 시 InfoWindow 닫기
+    naver.maps.Event.addListener(mapZones, 'click', () => sharedInfoZones.close());
+
     // 지하철역
     const stations = [
-      { name: '노량진역', lines: '1·9호선', lat: 37.51371, lng: 126.94264 },
-      { name: '대방역', lines: '1호선·신림선', lat: 37.51324, lng: 126.92668 },
-      { name: '장승배기역', lines: '7호선', lat: 37.50457, lng: 126.93923 }
+      { name: '노량진역',   lines: '1·9호선',     lat: 37.51371, lng: 126.94264, labelDir: 'tr' },
+      { name: '대방역',     lines: '1호선·신림선', lat: 37.51324, lng: 126.92668, labelDir: 'tr' },
+      // 장승배기역: 우측 위에 2구역 폴리곤이 있어 라벨 가림 → 좌측 위로 이동
+      { name: '장승배기역', lines: '7호선',       lat: 37.50457, lng: 126.93923, labelDir: 'tl' }
     ];
     stations.forEach(s => {
       const sm = new naver.maps.Marker({
@@ -1633,12 +2715,29 @@ window.addEventListener('load', function() {
         },
         zIndex: 80
       });
+
+      // 라벨 방향에 따라 anchor 계산
+      const dir = s.labelDir || 'tr';
+      let labelAnchor;
+      if (dir === 'tl') {
+        // 좌측 위 — 라벨 너비 추정(글자수 × 14 + 패딩 18)
+        const approxWidth = s.name.length * 14 + 18;
+        labelAnchor = new naver.maps.Point(approxWidth, 30);
+      } else if (dir === 'br') {
+        labelAnchor = new naver.maps.Point(-12, -8);  // 우측 아래
+      } else if (dir === 'bl') {
+        const approxWidth = s.name.length * 14 + 18;
+        labelAnchor = new naver.maps.Point(approxWidth, -8);  // 좌측 아래
+      } else {
+        labelAnchor = new naver.maps.Point(-12, 30);  // 'tr' 기본값
+      }
+
       new naver.maps.Marker({
         position: new naver.maps.LatLng(s.lat, s.lng),
         map: mapZones,
         icon: {
-          content: '<div class="pin-label station" style="margin-left:12px;margin-top:-4px;">' + s.name + '</div>',
-          anchor: new naver.maps.Point(0, 0)
+          content: '<div class="pin-label station">' + s.name + '</div>',
+          anchor: labelAnchor
         }
       });
       const si = new naver.maps.InfoWindow({
@@ -1648,6 +2747,107 @@ window.addEventListener('load', function() {
       });
       naver.maps.Event.addListener(sm, 'click', () => si.open(mapZones, sm));
     });
+
+    // ============ 지도 3: 서부선 노선도 ============
+    const mapSeobu = new naver.maps.Map('map-seobu', {
+      center: new naver.maps.LatLng(37.5400, 126.9320),
+      zoom: 12,
+      scaleControl: true,
+      mapDataControl: false,
+      scrollWheelZoom: false,
+      zoomControl: false
+    });
+
+    const seobuStations = [
+      { no: 1, name: '새절',         lat: 37.6024, lng: 126.9133, tier: 'transfer' },
+      { no: 2, name: '명지대',       lat: 37.5874, lng: 126.9223, tier: 'normal' },
+      { no: 3, name: '연희중앙',     lat: 37.5717, lng: 126.9318, tier: 'normal' },
+      { no: 4, name: '신촌세브란스', lat: 37.5618, lng: 126.9384, tier: 'normal' },
+      { no: 5, name: '광흥창',       lat: 37.5475, lng: 126.9320, tier: 'transfer' },
+      { no: 6, name: '국회대로',     lat: 37.5341, lng: 126.9148, tier: 'normal' },
+      { no: 7, name: '여의도',       lat: 37.5215, lng: 126.9244, tier: 'transfer' },
+      { no: 8, name: '노량진',       lat: 37.5137, lng: 126.9426, tier: 'highlight' },
+      { no: 9, name: '장승배기',     lat: 37.5045, lng: 126.9392, tier: 'highlight' },
+      { no:10, name: '보라매',       lat: 37.4994, lng: 126.9244, tier: 'transfer' },
+      { no:11, name: '보라매공원',   lat: 37.4974, lng: 126.9286, tier: 'normal' },
+      { no:12, name: '신림',         lat: 37.4842, lng: 126.9295, tier: 'transfer' },
+      { no:13, name: '서울대입구',   lat: 37.4814, lng: 126.9525, tier: 'transfer' }
+    ];
+
+    // 서부선 경로 폴리라인
+    const seobuPath = seobuStations.map(s => new naver.maps.LatLng(s.lat, s.lng));
+    new naver.maps.Polyline({
+      map: mapSeobu,
+      path: seobuPath,
+      strokeColor: '#246B73',
+      strokeWeight: 5,
+      strokeOpacity: 0.9,
+      strokeLineCap: 'round',
+      strokeLineJoin: 'round'
+    });
+
+    // 노량진뉴타운 영역 강조
+    new naver.maps.Circle({
+      map: mapSeobu,
+      center: new naver.maps.LatLng(37.5095, 126.9410),
+      radius: 600,
+      fillColor: '#a8401e',
+      fillOpacity: 0.08,
+      strokeColor: '#a8401e',
+      strokeWeight: 1.5,
+      strokeStyle: 'shortdash'
+    });
+
+    // 역 마커
+    seobuStations.forEach(s => {
+      let dotHtml, anchor;
+      if (s.tier === 'highlight') {
+        dotHtml = '<div style="background:#a8401e;width:18px;height:18px;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.3);"></div>';
+        anchor = new naver.maps.Point(9, 9);
+      } else if (s.tier === 'transfer') {
+        dotHtml = '<div style="background:#fff;width:14px;height:14px;border-radius:50%;border:3px solid #246B73;box-shadow:0 1px 3px rgba(0,0,0,0.2);"></div>';
+        anchor = new naver.maps.Point(7, 7);
+      } else {
+        dotHtml = '<div style="background:#246B73;width:8px;height:8px;border-radius:50%;border:1.5px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,0.15);"></div>';
+        anchor = new naver.maps.Point(4, 4);
+      }
+
+      new naver.maps.Marker({
+        position: new naver.maps.LatLng(s.lat, s.lng),
+        map: mapSeobu,
+        icon: { content: dotHtml, anchor: anchor },
+        zIndex: s.tier === 'highlight' ? 100 : (s.tier === 'transfer' ? 50 : 10)
+      });
+
+      // 환승역 + highlight만 라벨 표시
+      if (s.tier !== 'normal') {
+        const isHl = s.tier === 'highlight';
+        // 통일된 말풍선 스타일 사용 (map-zones와 동일한 클래스)
+        const bubble = '<div class="pin-label station' + (isHl ? ' highlight' : '') + '">' +
+          s.name + (isHl ? ' ★' : '') +
+        '</div>';
+
+        new naver.maps.Marker({
+          position: new naver.maps.LatLng(s.lat, s.lng),
+          map: mapSeobu,
+          icon: {
+            content: bubble,
+            // 마커 우측 위로 오프셋 — 인접한 다른 마커·역 정보와 겹치지 않도록
+            anchor: new naver.maps.Point(-12, isHl ? 34 : 30)
+          },
+          zIndex: isHl ? 110 : 60
+        });
+      }
+    });
+
+    // 모든 역이 보이도록 bounds 조정
+    setTimeout(() => {
+      const seobuBounds = new naver.maps.LatLngBounds(
+        new naver.maps.LatLng(37.4750, 126.9050),
+        new naver.maps.LatLng(37.6100, 126.9600)
+      );
+      mapSeobu.fitBounds(seobuBounds);
+    }, 100);
 
     // ============ 카드 ↔ 지도 인터랙션 ============
     let activeZoneNo = null;
@@ -1767,7 +2967,7 @@ window.addEventListener('load', function() {
     }
 
     // 카드 클릭 핸들러
-    const zoneCards = document.querySelectorAll('.zone[data-zone]');
+    const zoneCards = document.querySelectorAll('.zone[data-zone]:not(.zone-pending)');
     const zonesGrid = document.querySelector('.zones-grid');
     const resetBtn = document.getElementById('zones-reset');
     const mapWrap = document.querySelector('.map-frame-wrap');
@@ -1809,6 +3009,63 @@ window.addEventListener('load', function() {
         resetMapView();
       });
     }
+
+    // ============ 스크롤 스파이 + 진행바 ============
+    const tocItems = document.querySelectorAll('.toc-item');
+    const sections = document.querySelectorAll('section[id]');
+    const progressBar = document.getElementById('progressBar');
+
+    // 진행바 업데이트
+    function updateProgress() {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      if (progressBar) progressBar.style.width = pct + '%';
+    }
+
+    // 스크롤 스파이 — 현재 보이는 섹션 강조
+    function updateActiveTOC() {
+      let current = '';
+      const scrollY = window.scrollY + 200; // offset
+      sections.forEach(sec => {
+        if (scrollY >= sec.offsetTop) {
+          current = sec.id;
+        }
+      });
+      tocItems.forEach(item => {
+        item.classList.toggle('active', item.dataset.target === current);
+      });
+    }
+
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          updateProgress();
+          updateActiveTOC();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    });
+
+    // 목차 클릭 시 부드럽게 스크롤
+    tocItems.forEach(item => {
+      item.addEventListener('click', e => {
+        e.preventDefault();
+        const target = document.getElementById(item.dataset.target);
+        if (target) {
+          window.scrollTo({
+            top: target.offsetTop - 60,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+
+    // 초기 호출
+    updateProgress();
+    updateActiveTOC();
 
   } catch (err) {
     console.error('Map initialization error:', err);

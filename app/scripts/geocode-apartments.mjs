@@ -42,17 +42,30 @@ async function searchAddress(query) {
   return data.documents?.[0] ?? null;
 }
 
-// 카카오 키워드 검색 (주소 검색 실패 시 fallback)
-async function searchKeyword(query) {
+// 카카오 keyword 검색 — 단지명 + 시군구. 카테고리 '아파트' 결과만 사용.
+// 카카오맵 마커 위치와 일치하는 좌표 확보 (주소검색은 토지 centroid 반환).
+async function searchKeyword(name, address) {
+  const district = address?.match(/\S+(구|시(?!\s*\S+\s*구)|군)/)?.[0] ?? '';
   const url = new URL('https://dapi.kakao.com/v2/local/search/keyword.json');
-  url.searchParams.set('query', query);
-  url.searchParams.set('size', '5');
+  url.searchParams.set('query', district ? `${name} ${district}` : name);
+  url.searchParams.set('size', '15');
   const res = await fetch(url.toString(), {
     headers: { Authorization: `KakaoAK ${KAKAO_REST_KEY}` },
   });
   if (!res.ok) return null;
   const data = await res.json();
-  return data.documents?.[0] ?? null;
+  const aptOnly = (data.documents ?? []).filter((d) =>
+    d.category_name?.includes('아파트')
+  );
+  if (aptOnly.length === 0) return null;
+  const norm = (s) => s.replace(/아파트$/, '').replace(/\s+/g, '').toLowerCase();
+  const target = norm(name);
+  return (
+    aptOnly.find((d) => norm(d.place_name) === target) ??
+    aptOnly.find((d) => norm(d.place_name).startsWith(target)) ??
+    aptOnly.find((d) => norm(d.place_name).includes(target)) ??
+    aptOnly[0]
+  );
 }
 
 async function main() {
@@ -77,27 +90,26 @@ async function main() {
 
   for (const apt of apts) {
     const doro = apt.raw_data?.doroJuso;
+    const addr = doro ?? apt.address;
     let result = null;
     let via = null;
 
-    // 1순위: 도로명 주소
-    if (doro) {
+    // 1순위: 단지명 keyword 검색 (카카오맵 마커 위치와 일치하는 좌표)
+    result = await searchKeyword(apt.name, addr);
+    if (result) via = 'keyword';
+
+    // 2순위: 도로명 주소 (keyword 실패 시 fallback)
+    if (!result && doro) {
+      await new Promise((r) => setTimeout(r, 150));
       result = await searchAddress(doro);
       if (result) via = 'road';
     }
 
-    // 2순위: 지번 주소
+    // 3순위: 지번 주소
     if (!result && apt.address) {
       await new Promise((r) => setTimeout(r, 150));
       result = await searchAddress(apt.address);
       if (result) via = 'jibun';
-    }
-
-    // 3순위: 단지명 키워드 검색
-    if (!result) {
-      await new Promise((r) => setTimeout(r, 150));
-      result = await searchKeyword(`${apt.name} 영등포구`);
-      if (result) via = 'keyword';
     }
 
     if (!result) {

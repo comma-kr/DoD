@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/server';
+import { displayApartmentName } from '@/lib/utils';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -23,7 +24,7 @@ export async function GET(request: Request) {
   return NextResponse.json({
     items: (data ?? []).map((row) => ({
       id: row.id,
-      name: row.name,
+      name: displayApartmentName(row.name, row.address),
       address: row.address,
       totalUnits: row.total_units,
       builtYear: row.built_year,

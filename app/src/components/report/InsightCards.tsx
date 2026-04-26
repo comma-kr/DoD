@@ -50,8 +50,8 @@ export default function InsightCards({ apartment, insights, nearby, priorities, 
       content: (
         <div className="space-y-2">
           {insights.schoolDistrictLabel ? (
-            <div className="text-sm font-semibold text-foreground">
-              {insights.schoolDistrictLabel}
+            <div className="text-sm font-bold text-foreground">
+              <span className="report-highlight">{insights.schoolDistrictLabel}</span>
             </div>
           ) : null}
           {insights.academyCluster ? (
@@ -84,8 +84,8 @@ export default function InsightCards({ apartment, insights, nearby, priorities, 
         <div className="space-y-2">
           {apartment.nearestStation ? (
             <>
-              <div className="text-sm font-semibold text-foreground">
-                {apartment.nearestStation}
+              <div className="text-sm font-bold text-foreground">
+                <span className="report-highlight">{apartment.nearestStation}</span>
               </div>
               <div className="text-xs text-foreground-sub">
                 {walkMin ? `도보 ${walkMin}분` : ''}
@@ -108,8 +108,8 @@ export default function InsightCards({ apartment, insights, nearby, priorities, 
       content: (
         <div className="space-y-2">
           {insights.commercialArea ? (
-            <div className="text-sm font-semibold text-foreground">
-              {insights.commercialArea}
+            <div className="text-sm font-bold text-foreground">
+              <span className="report-highlight">{insights.commercialArea}</span>
             </div>
           ) : null}
           {insights.majorStores && insights.majorStores.length > 0 ? (
@@ -289,8 +289,8 @@ export default function InsightCards({ apartment, insights, nearby, priorities, 
       content: (
         <div className="space-y-2">
           {insights.academyCluster ? (
-            <div className="text-sm font-semibold text-foreground">
-              {insights.academyCluster}
+            <div className="text-sm font-bold text-foreground">
+              <span className="report-highlight">{insights.academyCluster}</span>
             </div>
           ) : null}
           {insights.schoolNotes && insights.schoolNotes.length > 0 ? (

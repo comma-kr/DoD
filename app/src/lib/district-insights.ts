@@ -253,6 +253,7 @@ export function getDistrictInsights(district: string, dong: string): DistrictIns
 import { createSupabaseAdminClient } from './supabase/server';
 
 interface RegionInsightRow {
+  region_code: string;
   district_name: string;
   dong_name: string | null;
   scope: 'sgg' | 'dong';
@@ -293,7 +294,7 @@ export async function getDistrictInsightsAsync(
     const { data: rows } = await supabase
       .from('region_insights')
       .select(
-        'district_name, dong_name, scope, school_district_label, school_notes, academy_cluster, commercial_area, major_stores, parks, hospitals, developments, hobby_spots, shuttles'
+        'region_code, district_name, dong_name, scope, school_district_label, school_notes, academy_cluster, commercial_area, major_stores, parks, hospitals, developments, hobby_spots, shuttles'
       )
       .eq('district_name', district)
       .or(`scope.eq.sgg,and(scope.eq.dong,dong_name.eq.${dong})`);
@@ -318,6 +319,53 @@ export async function getDistrictInsightsAsync(
     // DB 실패 → 코드 fallback
   }
   return getDistrictInsights(district, dong);
+}
+
+/**
+ * region_code(시군구 5자리) 우선 매칭. 같은 이름의 자치구가 여러 광역시에 존재하는
+ * 케이스(중구·동구·서구·남구 등) 충돌 회피용.
+ *
+ * @param regionCode apartments.dong_code 앞 5자리 (예: '11140' = 서울 중구, '28110' = 인천 중구)
+ * @param dong       동명 (override 조회용)
+ * @param districtFallback regionCode가 없을 때(주소 파싱 실패 등) 이름 기반 fallback
+ */
+export async function getDistrictInsightsByCodeAsync(
+  regionCode: string | null | undefined,
+  dong: string,
+  districtFallback: string
+): Promise<DistrictInsight> {
+  if (!regionCode) {
+    return getDistrictInsightsAsync(districtFallback, dong);
+  }
+
+  try {
+    const supabase = createSupabaseAdminClient();
+    const { data: rows } = await supabase
+      .from('region_insights')
+      .select(
+        'region_code, district_name, dong_name, scope, school_district_label, school_notes, academy_cluster, commercial_area, major_stores, parks, hospitals, developments, hobby_spots, shuttles'
+      )
+      .eq('region_code', regionCode);
+
+    if (rows && rows.length > 0) {
+      const sggRow = rows.find((r) => r.scope === 'sgg');
+      const dongRow = rows.find((r) => r.scope === 'dong' && r.dong_name === dong);
+      const base = sggRow ? rowToInsight(sggRow as RegionInsightRow) : {};
+      const overlay = dongRow ? rowToInsight(dongRow as RegionInsightRow) : null;
+      if (overlay) {
+        return {
+          ...base,
+          ...Object.fromEntries(
+            Object.entries(overlay).filter(([, v]) => v !== undefined)
+          ),
+        };
+      }
+      if (sggRow) return base;
+    }
+  } catch {
+    // DB 실패 → 이름 기반 fallback
+  }
+  return getDistrictInsightsAsync(districtFallback, dong);
 }
 
 export function parseDistrictDong(address: string): { district: string; dong: string } {

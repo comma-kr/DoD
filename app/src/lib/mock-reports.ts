@@ -255,7 +255,6 @@ function legacyEstimate(
       yeouido: { minMinutes: 35, maxMinutes: 55, transferCount: 1, verdict: '보통', description: '2호선 환승으로 45분 내외' },
       gwanghwamun: { minMinutes: 30, maxMinutes: 50, transferCount: 1, verdict: '보통', description: '2호선→5호선 환승' },
       pangyo: { minMinutes: 25, maxMinutes: 40, transferCount: 0, verdict: '편리', description: '8호선→신분당선 환승 또는 자차' },
-      mapo: { minMinutes: 40, maxMinutes: 60, transferCount: 1, verdict: '불편', description: '환승 포함 한 시간 내외' },
       seongsu: { minMinutes: 20, maxMinutes: 35, transferCount: 0, verdict: '편리', description: '2호선 직결' },
     },
     강남구: {
@@ -264,7 +263,6 @@ function legacyEstimate(
       yeouido: { minMinutes: 25, maxMinutes: 40, transferCount: 0, verdict: '편리', description: '9호선 직결' },
       gwanghwamun: { minMinutes: 25, maxMinutes: 45, transferCount: 1, verdict: '보통', description: '3호선→5호선 환승' },
       pangyo: { minMinutes: 20, maxMinutes: 35, transferCount: 0, verdict: '편리', description: '신분당선 직결' },
-      mapo: { minMinutes: 30, maxMinutes: 45, transferCount: 1, verdict: '보통', description: '환승 1회' },
       seongsu: { minMinutes: 15, maxMinutes: 25, transferCount: 0, verdict: '편리', description: '2호선 직결' },
     },
     서초구: {
@@ -628,12 +626,32 @@ function buildTrend(f: ApartmentFacts, _profile: UserProfile | null): string {
   );
 
   // 테이블용 최근 8개 (너무 길면 가독성↓)
-  const tableRows = sortedAsc
-    .slice(-8)
-    .map((t) => {
+  // 최고/최저 row 강조 — 거래가 셀 전체 strong (report-highlight 노랑 적용) + 이모지 + 라벨
+  const slice = sortedAsc.slice(-8);
+  const maxIdx = slice.length >= 3
+    ? slice.reduce((mi, t, i) => (t.priceM10k > slice[mi].priceM10k ? i : mi), 0)
+    : -1;
+  const minIdx = slice.length >= 3
+    ? slice.reduce((mi, t, i) => (t.priceM10k < slice[mi].priceM10k ? i : mi), 0)
+    : -1;
+  // 최고와 최저가 같은 row면(평탄) 강조 안 함
+  const showExtremes = maxIdx !== minIdx;
+
+  const tableRows = slice
+    .map((t, i) => {
       const ppy = calcPricePerPyeong(t.priceM10k, t.areaM2);
       const date = t.dealDate.slice(0, 7); // YYYY-MM
-      return `| ${date} | ${formatPrice10k(t.priceM10k)} | ${formatPricePerPyeong(ppy)} | ${t.floor ?? '-'}층 |`;
+      const price = formatPrice10k(t.priceM10k);
+      const pyeong = formatPricePerPyeong(ppy);
+      const floor = `${t.floor ?? '-'}층`;
+      // 〔▲최고〕/〔▼최저〕 토큰은 ReportMarkdown td 렌더러가 색상 pill로 변환.
+      if (showExtremes && i === maxIdx) {
+        return `| **${date}** | **${price}** 〔▲최고〕 | **${pyeong}** | **${floor}** |`;
+      }
+      if (showExtremes && i === minIdx) {
+        return `| **${date}** | **${price}** 〔▼최저〕 | **${pyeong}** | **${floor}** |`;
+      }
+      return `| ${date} | ${price} | ${pyeong} | ${floor} |`;
     })
     .join('\n');
 

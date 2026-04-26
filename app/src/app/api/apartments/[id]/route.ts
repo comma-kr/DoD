@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/server';
+import { displayApartmentName } from '@/lib/utils';
 
 export async function GET(
   _request: Request,
@@ -28,7 +29,7 @@ export async function GET(
   return NextResponse.json({
     apartment: {
       id: apt.id,
-      name: apt.name,
+      name: displayApartmentName(apt.name, apt.address),
       address: apt.address,
       totalUnits: apt.total_units,
       builtYear: apt.built_year,

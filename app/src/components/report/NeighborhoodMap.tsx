@@ -10,11 +10,11 @@ import type {
 } from './KakaoMapClient';
 import type { DistrictInsight } from '@/lib/district-insights';
 import type {
-  CommercialCluster,
   NearbySchool,
   WalkingRouteResult,
   StationCoordResult,
 } from '@/lib/kakao-local';
+import type { OfficialZone } from '@/lib/commercial-zones-official';
 import { formatPricePerPyeong } from '@/lib/utils';
 
 // 카카오맵 SDK는 window 의존 → 클라이언트 전용 동적 로드
@@ -48,7 +48,7 @@ interface Props {
   stationDistanceM?: number | null;
   stationCoord?: StationCoordResult | null;
   insights: DistrictInsight;
-  commercialClusters?: CommercialCluster[];
+  commercialClusters?: OfficialZone[];
   nearbySchools?: NearbySchool[];
   walkingRouteResult?: WalkingRouteResult | null;
 }
@@ -153,16 +153,8 @@ export default function NeighborhoodMap({
 
   return (
     <div className="overflow-hidden rounded-3xl border border-border bg-surface shadow-sm">
-      <div className="flex items-center justify-between border-b border-border bg-surface-soft px-5 py-3">
-        <h3 className="text-sm font-bold text-foreground">
-          📍 {apartmentName} 일대
-        </h3>
-        <span className="text-[10px] text-foreground-sub">
-          카카오맵 기반
-        </span>
-      </div>
-
-      <div className="relative h-[460px] w-full">
+      {/* 지도 + 범례 오버레이 (상단 메타 바 제거) */}
+      <div className="map-frame-wrap relative h-[460px] w-full">
         <KakaoMap
           center={{ lat: apartmentLat, lng: apartmentLng }}
           points={points}
@@ -173,6 +165,8 @@ export default function NeighborhoodMap({
             centroid: c.centroid,
             count: c.count,
             polygon: c.polygon,
+            name: c.name,
+            seName: c.seName,
           }))}
           schools={(nearbySchools ?? []).map((s) => ({
             id: s.id,
@@ -184,36 +178,57 @@ export default function NeighborhoodMap({
           }))}
         />
 
-        {/* 우측 상단 오버레이는 제거 — 상단 HookHighlights 카드로 대체 */}
-
-        {/* 하단 비교하기 CTA 제거됨 — 리포트 하단 UpsellCTAs로 통합 */}
+        {/* 좌측 하단 범례 박스 — 섹션 제목 없이 항목만 */}
+        <div className="pointer-events-none absolute bottom-4 left-4 z-[500] max-w-[340px] border border-border bg-surface/97 px-3.5 py-3 text-[11px] shadow-md backdrop-blur-sm">
+          <div className="grid grid-cols-2 gap-x-3.5 gap-y-1.5">
+            <div className="flex items-center gap-2 text-foreground">
+              <span className="inline-block h-3 w-3" style={{ background: '#A8401E' }} aria-hidden />
+              <span>현재 단지</span>
+            </div>
+            <div className="flex items-center gap-2 text-foreground">
+              <span className="inline-block h-3 w-3" style={{ background: 'rgba(26,29,36,0.85)' }} aria-hidden />
+              <span>주변단지</span>
+            </div>
+            <div className="flex items-center gap-2 text-foreground">
+              <span className="inline-block h-3 w-3" style={{ background: 'rgba(168,64,30,0.22)', border: '1px dashed #A8401E' }} aria-hidden />
+              <span>상권</span>
+            </div>
+            <div className="flex items-center gap-2 text-foreground">
+              <span className="inline-block h-3 w-3" style={{ background: 'rgba(184,155,62,0.25)', border: '1px dashed #B89B3E' }} aria-hidden />
+              <span>전통시장</span>
+            </div>
+            <div className="flex items-center gap-2 text-foreground">
+              <span className="inline-block h-3 w-3" style={{ background: 'rgba(31,58,95,0.22)', border: '1px dashed #1F3A5F' }} aria-hidden />
+              <span>관광특구</span>
+            </div>
+            <div className="flex items-center gap-2 text-foreground">
+              <span className="inline-block h-3 w-3" style={{ background: '#2D5A3D' }} aria-hidden />
+              <span>학교</span>
+            </div>
+            <div className="flex items-center gap-2 text-foreground">
+              <span
+                className="inline-block h-3 w-3 rounded-full border-2"
+                style={{ background: '#fff', borderColor: '#111418' }}
+                aria-hidden
+              />
+              <span>지하철역</span>
+            </div>
+            <div className="flex items-center gap-2 text-foreground">
+              <span
+                className="inline-block h-0 w-4 border-t-2 border-dashed"
+                style={{ borderColor: '#0070CA' }}
+                aria-hidden
+              />
+              <span>도보 경로</span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* 하단 범례 */}
-      <div className="flex flex-wrap items-center gap-3 border-t border-border bg-surface-soft px-5 py-2.5 text-[10px] text-foreground-sub">
-        <span className="inline-flex items-center gap-1.5">
-          <span className="inline-block h-2.5 w-2.5 rounded-full bg-primary ring-2 ring-foreground/20" />
-          현재 단지
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <span className="inline-block h-2.5 w-2.5 rounded-full border-2 border-primary bg-primary/20" />
-          리딩단지 ({apartmentZones.length})
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <span className="inline-block h-2.5 w-2.5 rounded-full border-2 border-warning bg-warning/20" />
-          상권 ({commercialClusters?.length ?? 0})
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <span className="inline-block h-2.5 w-2.5 rounded-full border-2 border-success bg-success/20" />
-          학교 ({nearbySchools?.length ?? 0})
-        </span>
-        {walkingRoute ? (
-          <span className="inline-flex items-center gap-1.5">
-            <span className="inline-block h-0.5 w-3 bg-primary" />
-            도보 {walkingRoute.distanceM}m·{walkingRoute.walkMin}분
-          </span>
-        ) : null}
-        <span className="ml-auto">© Kakao Map</span>
+      {/* 하단 캡션 — 한 줄 간결, 상권 폴리곤은 SBA 공식 출처 표시 */}
+      <div className="border-t border-border bg-surface-soft px-5 py-3 text-[11.5px] leading-relaxed text-foreground-sub break-keep">
+        <strong className="text-foreground">{apartmentName}</strong> 일대 위치도 — 마커 색상으로 종류 구분.
+        상권 영역: <strong className="text-foreground">서울시 상권분석서비스(SBA)</strong>.
       </div>
     </div>
   );

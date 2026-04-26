@@ -78,8 +78,9 @@ async function fetchKaptBasis(kaptCode) {
 // ============================================================
 // 카카오 지오코딩 + 역 매핑
 // ============================================================
-async function geocode(address) {
-  if (!KAKAO_REST_KEY) return null;
+// 단지 좌표는 카카오 keyword 검색('아파트' 카테고리)을 우선 사용 — 카카오맵 마커 위치와 일치.
+// 주소검색 API는 토지 centroid·노인정·상가 위치를 반환해 어긋나는 케이스 多.
+async function geocodeByAddress(address) {
   const url = new URL('https://dapi.kakao.com/v2/local/search/address.json');
   url.searchParams.set('query', address);
   const res = await fetch(url.toString(), {
@@ -90,6 +91,41 @@ async function geocode(address) {
   const doc = data.documents?.[0];
   if (!doc) return null;
   return { lat: parseFloat(doc.y), lng: parseFloat(doc.x) };
+}
+
+async function geocodeByApartmentName(name, address) {
+  if (!name) return null;
+  const district = address?.match(/\S+(구|시(?!\s*\S+\s*구)|군)/)?.[0] ?? '';
+  const url = new URL('https://dapi.kakao.com/v2/local/search/keyword.json');
+  url.searchParams.set('query', district ? `${name} ${district}` : name);
+  url.searchParams.set('size', '15');
+  const res = await fetch(url.toString(), {
+    headers: { Authorization: `KakaoAK ${KAKAO_REST_KEY}` },
+  });
+  if (!res.ok) return null;
+  const data = await res.json();
+  const aptOnly = (data.documents ?? []).filter((d) =>
+    d.category_name?.includes('아파트')
+  );
+  if (aptOnly.length === 0) return null;
+  const norm = (s) => s.replace(/아파트$/, '').replace(/\s+/g, '').toLowerCase();
+  const target = norm(name);
+  const pick =
+    aptOnly.find((d) => norm(d.place_name) === target) ??
+    aptOnly.find((d) => norm(d.place_name).startsWith(target)) ??
+    aptOnly.find((d) => norm(d.place_name).includes(target)) ??
+    aptOnly[0];
+  return { lat: parseFloat(pick.y), lng: parseFloat(pick.x) };
+}
+
+async function geocode(address, name) {
+  if (!KAKAO_REST_KEY) return null;
+  if (name) {
+    const byName = await geocodeByApartmentName(name, address);
+    if (byName) return byName;
+  }
+  if (address) return await geocodeByAddress(address);
+  return null;
 }
 
 async function findNearestStation(lat, lng) {
@@ -154,7 +190,8 @@ async function seedOneDong(dongName, bjdCode) {
     const totalUnits = basis.kaptdaCnt ? Math.floor(basis.kaptdaCnt) : null;
 
     // 3. 지오코딩
-    const coord = basis.doroJuso ? await geocode(basis.doroJuso) : null;
+    // keyword(단지명) 우선 → 도로명 주소 fallback
+    const coord = await geocode(basis.doroJuso ?? basis.kaptAddr ?? null, basis.kaptName);
     await new Promise((r) => setTimeout(r, 100));
 
     // 4. 가까운 역
@@ -213,6 +250,9 @@ function normalizeAptName(name) {
   for (const [from, to] of Object.entries(romanMap)) {
     n = n.replace(new RegExp(from, 'g'), to);
   }
+  // API의 동/단지 범위 표기 제거 (예: "옥수파크힐스101동~116동")
+  n = n.replace(/\s*\d+\s*동\s*[-~~]\s*\d+\s*동/g, '');
+  n = n.replace(/\s*\d+\s*단지\s*[-~~]\s*\d+\s*단지/g, '');
   n = n.replace(/[0-9]+차/g, (m) => m.replace('차', ''));
   n = n.replace(/\s+/g, '').replace(/[·.,_-]/g, '');
   n = n.replace(/아파트$/, '');
@@ -251,14 +291,28 @@ async function seedTradesForSgg(sggCode, months = 12) {
 
   console.log(`   DB 단지: ${apts.length}개`);
 
-  // 단지명 → ID 매핑 (정규화 + 접두어 제거)
-  const nameMap = new Map();
+  // 단지명 → ID 매핑. alias 충돌 방지: stripped form이 같은 단지가 2+면 미등록
+  // (예: 옥수파크힐스 + 성수파크힐스 → "파크힐스" 충돌 → 양쪽 다 alias 미등록)
   const PREFIXES = /^여의도?|^잠실|^대치|^반포|^서초|^마포|^목동|^성수|^압구정|^문정|^가락|^신천|^올림픽/;
+  const strippedCount = new Map();
+  for (const apt of apts) {
+    const norm = normalizeAptName(apt.name);
+    const stripped = norm.replace(PREFIXES, '');
+    if (stripped !== norm && stripped.length >= 4) {
+      strippedCount.set(stripped, (strippedCount.get(stripped) ?? 0) + 1);
+    }
+  }
+  const nameMap = new Map();
   for (const apt of apts) {
     const norm = normalizeAptName(apt.name);
     nameMap.set(norm, apt.id);
     const stripped = norm.replace(PREFIXES, '');
-    if (stripped.length >= 2 && !nameMap.has(stripped)) {
+    if (
+      stripped !== norm &&
+      stripped.length >= 4 &&
+      strippedCount.get(stripped) === 1 &&
+      !nameMap.has(stripped)
+    ) {
       nameMap.set(stripped, apt.id);
     }
   }
@@ -267,9 +321,14 @@ async function seedTradesForSgg(sggCode, months = 12) {
     const norm = normalizeAptName(apiName);
     if (nameMap.has(norm)) return nameMap.get(norm);
     const stripped = norm.replace(PREFIXES, '');
-    if (stripped.length >= 2 && nameMap.has(stripped)) return nameMap.get(stripped);
+    if (stripped.length >= 4 && nameMap.has(stripped)) return nameMap.get(stripped);
+    // 부분 매칭은 5자 이상 + 길이비 50%↑만 허용 (짧은 이름 충돌 방지)
     for (const [dbNorm, id] of nameMap.entries()) {
-      if (dbNorm.length >= 2 && (norm.includes(dbNorm) || dbNorm.includes(norm))) return id;
+      if (dbNorm.length < 5 || norm.length < 5) continue;
+      const longer = Math.max(dbNorm.length, norm.length);
+      const shorter = Math.min(dbNorm.length, norm.length);
+      if (shorter / longer < 0.5) continue;
+      if (norm.includes(dbNorm) || dbNorm.includes(norm)) return id;
     }
     return null;
   }

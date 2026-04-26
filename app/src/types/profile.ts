@@ -23,7 +23,6 @@ export type CommuteArea =
   | 'gwanghwamun'
   | 'pangyo'
   | 'jamsil'
-  | 'mapo'
   | 'seongsu'
   | 'etc'
   | 'none';
@@ -99,10 +98,9 @@ export const COMMUTE_LABELS: Record<CommuteArea, string> = {
   gwanghwamun: '광화문·종로',
   pangyo: '판교',
   jamsil: '잠실',
-  mapo: '마포·공덕',
   seongsu: '성수',
   etc: '그 외',
-  none: '재택·해당 없음',
+  none: '🌿 출퇴근 안 해요',
 };
 
 export const TRANSPORT_LABELS: Record<TransportMode, string> = {
@@ -143,7 +141,6 @@ export function isValidCommuteArea(v: string): v is CommuteArea {
     'gwanghwamun',
     'pangyo',
     'jamsil',
-    'mapo',
     'seongsu',
     'etc',
     'none',

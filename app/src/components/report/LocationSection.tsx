@@ -4,15 +4,16 @@ import CommuteGrid from './CommuteGrid';
 import NeighborhoodMap from './NeighborhoodMap';
 import HookHighlights, { calcMonthlyMortgage } from './HookHighlights';
 import LifeScenario from './LifeScenario';
-import ShuttleCard from './ShuttleCard';
-import { getDistrictInsightsAsync, parseDistrictDong } from '@/lib/district-insights';
+import NearbySchoolsCard from './NearbySchoolsCard';
+import CommuteFreeCard from './CommuteFreeCard';
+import { getDistrictInsightsByCodeAsync, parseDistrictDong } from '@/lib/district-insights';
 import { findNearbyLargeApartments } from '@/lib/nearby-apartments';
 import {
-  fetchCommercialClusters,
   fetchNearbySchools,
   fetchWalkingRoute,
   fetchNearestStationCoord,
 } from '@/lib/kakao-local';
+import { getNearbyOfficialZones } from '@/lib/commercial-zones-official';
 import { createSupabaseAdminClient } from '@/lib/supabase/server';
 import { calcPricePerPyeong } from '@/lib/utils';
 import type { CommuteArea, HouseholdType, Priority } from '@/types/profile';
@@ -27,6 +28,9 @@ export interface ApartmentLocation {
   stationDistanceM: number | null;
   totalUnits?: number | null;
   builtYear?: number | null;
+  // 시군구 5자리 (apartments.dong_code 앞 5자리). 광역시 충돌(중구·동구) 회피용 정확 매칭 키.
+  // 옛날 리포트(content에 dongCode 없음)는 undefined → 이름 기반 fallback.
+  dongCode?: string | null;
 }
 
 interface Props {
@@ -48,17 +52,19 @@ export default async function LocationSection({
 
   const primary = apartments[0];
   const { district, dong } = parseDistrictDong(primary.address);
-  const insights = await getDistrictInsightsAsync(district, dong);
+  const regionCode = primary.dongCode ? primary.dongCode.slice(0, 5) : null;
+  const insights = await getDistrictInsightsByCodeAsync(regionCode, dong, district);
 
   // 좌표가 있으면 주변 데이터를 병렬 조회
   const hasCoord = primary.latitude !== null && primary.longitude !== null;
 
   // 1단계: 단지 주변 데이터 + 가까운 역 좌표를 병렬로
+  // 상권은 SBA 공식 폴리곤(서울신용보증재단) 사용 — DBSCAN 인공 폴리곤 대신.
   const [nearby, commercialClusters, nearbySchools, stationCoord] = hasCoord
     ? await Promise.all([
         findNearbyLargeApartments(primary.id, primary.latitude!, primary.longitude!),
-        fetchCommercialClusters(primary.latitude!, primary.longitude!),
-        fetchNearbySchools(primary.latitude!, primary.longitude!),
+        getNearbyOfficialZones(primary.latitude!, primary.longitude!),
+        fetchNearbySchools(primary.latitude!, primary.longitude!, { limit: 12 }),
         fetchNearestStationCoord(primary.latitude!, primary.longitude!),
       ])
     : [[], [], [], null];
@@ -74,14 +80,29 @@ export default async function LocationSection({
       : Promise.resolve(null),
     sb
       .from('trade_history')
-      .select('price_10k, area_m2, deal_date')
+      .select('price_10k, area_m2, deal_date, deal_type')
       .eq('apartment_id', primary.id)
       .order('deal_date', { ascending: false })
-      .limit(20),
+      .limit(40),
   ]);
 
-  // 시세 / 평당가 / 12개월 상승률 계산
-  const trades = latestTradeRow.data ?? [];
+  // 시세 / 평당가 / 12개월 상승률 — 직거래 제외 + outlier 자동 필터.
+  // 1) 직거래 (가족 증여성) 제외
+  // 2) 같은 평형(±2㎡) 그룹 중간값의 50% 이하 거래는 outlier로 제외 (잘못 매칭된 옆 단지 거래·임대 단지 거래 등)
+  const allTrades = latestTradeRow.data ?? [];
+  const marketTrades = allTrades.filter((t) => t.deal_type !== '직거래');
+  // 같은 평형끼리 그룹 만들어 중간값 산출
+  function groupMedian(area: number) {
+    const peers = marketTrades.filter((t) => Math.abs(t.area_m2 - area) <= 2);
+    if (peers.length < 3) return null; // 표본 적으면 필터 비활성
+    const sorted = [...peers].map((t) => t.price_10k).sort((a, b) => a - b);
+    return sorted[Math.floor(sorted.length / 2)];
+  }
+  const trades = marketTrades.filter((t) => {
+    const median = groupMedian(t.area_m2);
+    if (median === null) return true;
+    return t.price_10k >= median * 0.5; // 중간값의 50% 미만이면 outlier
+  });
   const latest = trades[0];
   const latestPrice10k = latest?.price_10k ?? null;
   const latestArea = latest?.area_m2 ?? null;
@@ -140,6 +161,9 @@ export default async function LocationSection({
         householdType={householdType}
       />
 
+      {/* 0.5 주변 학교 초·중·고 (레벨별 가장 가까운 1곳) */}
+      <NearbySchoolsCard schools={nearbySchools} />
+
       {/* 1. 실제 카카오 지도 + 도보 경로 + 리딩단지 구역 + 상권 클러스터 + 학교 */}
       {primary.latitude !== null && primary.longitude !== null ? (
         <NeighborhoodMap
@@ -172,10 +196,17 @@ export default async function LocationSection({
         householdType={householdType}
       />
 
-      {/* 2. 내 출근지 3경로 (프로필 출근지 있을 때만) */}
-      {highlightCommuteArea ? (
+      {/* 2. 출근지 분기:
+          - 'none' → "출퇴근 안 해요" 카드 (은퇴·재택·1인 등)
+          - 그 외 CBD → RouteOptions (3경로 + ODSay)
+          - undefined/null → 둘 다 안 띄움 (프로필 미설정) */}
+      {highlightCommuteArea === 'none' ? (
+        <CommuteFreeCard apartmentName={primary.name} householdType={householdType} />
+      ) : highlightCommuteArea ? (
         <RouteOptions
+          apartmentId={primary.id}
           district={district}
+          regionCode={regionCode}
           commuteArea={highlightCommuteArea}
           apartmentLat={primary.latitude}
           apartmentLng={primary.longitude}
@@ -183,14 +214,19 @@ export default async function LocationSection({
         />
       ) : null}
 
-      {/* 3. 주요 업무지 그리드 (전체 참고) */}
+      {/* 3. 주요 업무지 그리드 (전체 참고) — 하단에 통근버스 한 줄 카드 포함.
+          단지 좌표 있으면 ODSay 실시간 매칭, 없으면 시군구 매트릭스 fallback.
+          'none'(출퇴근 안 해요) 또는 은퇴 가구는 lifestyle 모드: 헤더 톤 변경 + 셔틀 숨김. */}
       <CommuteGrid
         address={primary.address}
+        regionCode={regionCode}
+        apartmentId={primary.id}
+        apartmentLat={primary.latitude}
+        apartmentLng={primary.longitude}
         highlightArea={highlightCommuteArea ?? undefined}
+        shuttles={insights.shuttles}
+        lifestyleMode={highlightCommuteArea === 'none' || householdType === 'retired'}
       />
-
-      {/* 3.5. 🚌 통근버스 운행 회사 (재미 섹터) */}
-      <ShuttleCard shuttles={insights.shuttles} district={district} />
 
       {/* 4. 가구 형태별 라이프 시나리오 카드 */}
       <LifeScenario

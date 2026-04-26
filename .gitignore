@@ -59,3 +59,13 @@ next-env.d.ts
 
 # Claude Code 설정 (로컬)
 .claude/settings.local.json
+
+# SBA 공식 상권 데이터셋 (재배포 제한·대용량) — README로 다운로드 안내
+app/data/seoul-commercial-zones/*.shp
+app/data/seoul-commercial-zones/*.dbf
+app/data/seoul-commercial-zones/*.shx
+app/data/seoul-commercial-zones/*.prj
+app/data/seoul-commercial-zones/*.cpg
+app/data/seoul-commercial-zones/*.json
+app/data/seoul-commercial-zones/*.geojson
+app/data/seoul-commercial-zones/*.csv

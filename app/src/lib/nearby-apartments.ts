@@ -3,7 +3,7 @@
 // 각 단지의 최근 실거래가도 함께 조회해 평당가 계산
 
 import { createSupabaseAdminClient } from './supabase/server';
-import { calcPricePerPyeong } from './utils';
+import { calcPricePerPyeong, displayApartmentName } from './utils';
 
 export interface NearbyApartment {
   id: string;
@@ -62,7 +62,7 @@ export async function findNearbyLargeApartments(
     .filter((row) => row.latitude !== null && row.longitude !== null)
     .map((row) => ({
       id: row.id,
-      name: row.name,
+      name: displayApartmentName(row.name, row.address),
       address: row.address,
       totalUnits: row.total_units ?? 0,
       builtYear: row.built_year ?? null,

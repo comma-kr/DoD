@@ -60,7 +60,6 @@ const COMMUTE_ORDER: CommuteArea[] = [
   'gwanghwamun',
   'pangyo',
   'jamsil',
-  'mapo',
   'seongsu',
   'none',
 ];

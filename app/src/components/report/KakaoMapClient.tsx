@@ -39,8 +39,10 @@ export interface ApartmentZone {
 export interface CommercialClusterPoint {
   id: string;
   centroid: { lat: number; lng: number };
-  count: number;
+  count: number;                 // 0이면 라벨에 표시 안 함 (공식 폴리곤 케이스)
   polygon: Array<{ lat: number; lng: number }>;
+  name?: string | null;          // SBA 공식 상권명 (예: "강남역_2")
+  seName?: string | null;        // 상권 종류 (발달상권/골목상권/전통시장/관광특구)
 }
 
 export interface SchoolPoint {
@@ -97,104 +99,86 @@ declare global {
 
 const SDK_SRC_PREFIX = 'https://dapi.kakao.com/v2/maps/sdk.js';
 
+// noryangjin.html 디자인 시스템 차용 — 절제된 ink + terracotta accent + royal blue route.
+// 둥근 pill 대신 사각 라벨(radius 3px), 이모지 대신 흰 원 + 다크 라벨, mono+sans 조합.
+const MC = {
+  ink: '#111418',
+  inkBg: 'rgba(26,29,36,0.95)',
+  inkBgLight: 'rgba(26,29,36,0.85)',
+  accent2: '#A8401E',     // terracotta — 현재 단지
+  accent3: '#2D5A3D',     // forest — 학교
+  route: '#0070CA',       // royal blue — 도보 경로
+  white: '#FFFFFF',
+  // 상권 종류별 색상 (헤일 패밀리 분리: red-orange / yellow / blue / gray)
+  commDense: '#A8401E',   // 밀집상권 — terracotta (red-orange)
+  commMarket: '#B89B3E',  // 전통시장 — mustard (yellow-green) — terracotta와 hue family 분리
+  commTour: '#1F3A5F',    // 관광특구 — deep navy
+  commAlley: '#6B7280',   // 골목상권 — neutral gray
+};
+const FONT_MONO = "'IBM Plex Mono','Noto Sans KR',ui-monospace,SFMono-Regular,Menlo,monospace";
+const FONT_SANS = "'Noto Sans KR',-apple-system,BlinkMacSystemFont,Pretendard,sans-serif";
+
 function makeMarkerHtml(point: MapPoint): string {
   const { type, name, sublabel } = point;
 
+  // 라벨(위) + 흰 점(아래). 점이 정확히 lat/lng에 위치하도록
+  // CustomOverlay yAnchor=1로 컨텐츠 하단을 좌표에 고정.
+  // 컨텐츠 내부에는 transform 안 씀 — 이중 앵커 방지.
   if (type === 'current') {
     return `
-      <div style="
-        position: relative;
-        transform: translate(-50%, -100%);
-        pointer-events: none;
-      ">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:3px;pointer-events:none;">
         <div style="
-          display: inline-flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 2px;
-          padding: 7px 13px 8px;
-          background: #E25555;
-          color: white;
-          border-radius: 14px;
-          box-shadow: 0 6px 18px rgba(226, 85, 85, 0.45), 0 2px 4px rgba(0,0,0,0.15);
-          border: 2px solid white;
-          white-space: nowrap;
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Pretendard', sans-serif;
-          min-width: 80px;
-        ">
-          <div style="font-size: 12px; font-weight: 700; letter-spacing: -0.2px;">${name}</div>
-          ${sublabel ? `<div style="font-size: 10px; opacity: 0.9; font-weight: 500;">${sublabel}</div>` : ''}
-        </div>
-        <div style="
-          position: absolute;
-          left: 50%;
-          bottom: -5px;
-          transform: translateX(-50%) rotate(45deg);
-          width: 11px;
-          height: 11px;
-          background: #C13C3C;
-          border-right: 2px solid white;
-          border-bottom: 2px solid white;
-        "></div>
-        <div style="
-          position: absolute;
-          left: 50%;
-          top: calc(100% + 6px);
-          transform: translateX(-50%);
-          width: 10px;
-          height: 10px;
-          border-radius: 50%;
-          background: #C13C3C;
-          border: 2px solid white;
-          box-shadow: 0 0 0 2px rgba(193, 60, 60, 0.3);
-        "></div>
+          background:${MC.accent2};
+          color:#fff;
+          font-family:${FONT_SANS};
+          font-size:13px;
+          font-weight:700;
+          letter-spacing:-0.2px;
+          padding:5px 12px;
+          border-radius:3px;
+          white-space:nowrap;
+          box-shadow:0 3px 10px rgba(168,64,30,0.35),0 0 0 1px rgba(255,255,255,0.15) inset;
+        ">${name}${sublabel ? `<span style="opacity:0.85;font-weight:500;margin-left:6px;font-size:11px;">${sublabel}</span>` : ''}</div>
+        <div style="width:10px;height:10px;border-radius:50%;background:#fff;border:2px solid ${MC.accent2};box-shadow:0 1px 3px rgba(0,0,0,0.25);"></div>
       </div>
     `;
   }
 
   if (type === 'nearby') {
     return `
-      <div style="transform: translate(-50%, -100%); pointer-events: none;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:2px;pointer-events:none;">
         <div style="
-          display: inline-flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 1px;
-          padding: 5px 11px 6px;
-          background: white;
-          color: #1f2937;
-          border-radius: 12px;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.18), 0 1px 3px rgba(0,0,0,0.1);
-          border: 1.5px solid #e5e7eb;
-          white-space: nowrap;
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Pretendard', sans-serif;
-        ">
-          <div style="font-size: 11px; font-weight: 700; letter-spacing: -0.2px;">${name}</div>
-          ${sublabel ? `<div style="font-size: 9px; color: #6b7280;">${sublabel}</div>` : ''}
-        </div>
+          background:${MC.inkBgLight};
+          color:#fff;
+          font-family:${FONT_SANS};
+          font-size:11px;
+          font-weight:600;
+          letter-spacing:-0.2px;
+          padding:3px 9px;
+          border-radius:3px;
+          white-space:nowrap;
+          box-shadow:0 2px 6px rgba(0,0,0,0.2);
+        ">${name}</div>
+        <div style="width:6px;height:6px;border-radius:50%;background:#fff;border:1.5px solid ${MC.ink};"></div>
       </div>
     `;
   }
 
-  // station
+  // station — 라벨 + 흰 원
   return `
-    <div style="transform: translate(-50%, -50%); pointer-events: none;">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:3px;pointer-events:none;">
       <div style="
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        padding: 5px 10px;
-        background: #059669;
-        color: white;
-        border-radius: 999px;
-        box-shadow: 0 3px 10px rgba(5, 150, 105, 0.35);
-        border: 2px solid white;
-        white-space: nowrap;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Pretendard', sans-serif;
-      ">
-        <span style="font-size: 11px;">🚇</span>
-        <span style="font-size: 10px; font-weight: 600;">${name}</span>
-      </div>
+        background:${MC.inkBg};
+        color:#fff;
+        font-family:${FONT_SANS};
+        font-size:12px;
+        font-weight:600;
+        padding:4px 10px;
+        border-radius:3px;
+        white-space:nowrap;
+        box-shadow:0 2px 8px rgba(0,0,0,0.22),0 0 0 1px rgba(255,255,255,0.08) inset;
+      ">${name}${sublabel ? `<span style="opacity:0.7;font-family:${FONT_MONO};font-size:10px;margin-left:6px;letter-spacing:0.04em;">${sublabel}</span>` : ''}</div>
+      <div style="width:12px;height:12px;border-radius:50%;background:#fff;border:2px solid ${MC.ink};box-shadow:0 1px 3px rgba(0,0,0,0.2);"></div>
     </div>
   `;
 }
@@ -313,107 +297,157 @@ export default function KakaoMapClient({
     overlaysRef.current.forEach((o) => o.setMap(null));
     overlaysRef.current = [];
 
-    // 맵 생성 (최초 1회)
+    // 맵 생성 (최초 1회) — 줌 컨트롤 미장착 (한국 정서 + 정적 리포트 톤)
     if (!mapRef.current) {
       mapRef.current = new kakao.maps.Map(mapContainerRef.current, {
         center: new kakao.maps.LatLng(center.lat, center.lng),
-        level: 4,
+        level: 5, // 한 단계 축소 (숫자↑ = 축소). 단지 + 인근 상권 폴리곤 함께 잡힘
       });
-      mapRef.current && (mapRef.current as unknown as { addControl: (c: unknown, p: unknown) => void }).addControl?.(
-        new kakao.maps.ZoomControl(),
-        kakao.maps.ControlPosition.RIGHT
-      );
     }
 
     const map = mapRef.current;
 
-    // === 레이어 1: 상권 폴리곤 (DBSCAN 클러스터 + 호갱노노 스타일 큰 숫자) ===
+    // === 레이어 1: SBA 공식 상권 폴리곤 — 종류별 색상 분리 ===
+    // 밀집(=발달) terracotta / 시장 amber / 관광 navy / 골목 회색.
+    // 라벨은 밀집·시장·관광만 (골목은 1000+개라 노이즈 방지로 폴리곤만).
+    const seConfig: Record<string, { color: string; label: string; fill: number }> = {
+      '발달상권':  { color: MC.commDense,  label: '상권', fill: 0.18 },
+      '전통시장':  { color: MC.commMarket, label: '시장', fill: 0.20 },
+      '관광특구':  { color: MC.commTour,   label: '관광', fill: 0.18 },
+    };
     if (commercialClusters && commercialClusters.length > 0) {
       for (const c of commercialClusters) {
-        // 점포 수가 많을수록 진한 색상 (호갱노노 빨강 → 우리는 주황 톤)
-        const intensity = Math.min(1, c.count / 30);
-        const fillOpacity = 0.25 + intensity * 0.3; // 0.25 ~ 0.55
-        // 메인 코랄 색과 분리하기 위해 상권은 amber 계열로
-        const fillColor = c.count >= 20 ? '#D97706' : c.count >= 10 ? '#F59E0B' : '#FBBF24';
-        const strokeColor = c.count >= 20 ? '#B45309' : '#D97706';
+        const cfg = c.seName ? seConfig[c.seName] : null;
+        const color = cfg?.color ?? MC.commAlley;
+        const fillOpacity = cfg?.fill ?? 0.08;
 
         const polygon = new kakao.maps.Polygon({
           path: c.polygon.map((p) => new kakao.maps.LatLng(p.lat, p.lng)),
-          strokeWeight: 1.5,
-          strokeColor,
-          strokeOpacity: 0.85,
-          strokeStyle: 'solid',
-          fillColor,
+          strokeWeight: 1.2,
+          strokeColor: color,
+          strokeOpacity: cfg ? 0.65 : 0.4,
+          strokeStyle: 'shortdash',
+          fillColor: color,
           fillOpacity,
         });
         polygon.setMap(map);
         overlaysRef.current.push(polygon);
 
-        // 호갱노노식 큰 가운데 숫자
-        const fontSize = c.count >= 20 ? 14 : c.count >= 10 ? 12 : 11;
-        const labelHtml = `
-          <div style="
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-            padding: 4px 9px;
-            background: white;
-            color: #92400E;
-            border: 2px solid ${strokeColor};
-            border-radius: 12px;
-            font-size: ${fontSize}px;
-            font-weight: 800;
-            font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', sans-serif;
-            white-space: nowrap;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.18);
-          ">${c.count}개</div>
-        `;
-        const label = new kakao.maps.CustomOverlay({
-          position: new kakao.maps.LatLng(c.centroid.lat, c.centroid.lng),
-          content: labelHtml,
-          xAnchor: 0.5,
-          yAnchor: 0.5,
-          zIndex: 2,
-        });
-        label.setMap(map);
-        overlaysRef.current.push(label);
+        // 점포 수 자릿수 버킷: 1~9 / 10~99 / 100~999 / 1,000+
+        const storeBucket =
+          c.count > 0
+            ? c.count >= 1000
+              ? '1,000+개'
+              : c.count >= 100
+              ? `${Math.round(c.count / 100) * 100}개+`
+              : c.count >= 10
+              ? `${Math.round(c.count / 10) * 10}개+`
+              : `${c.count}개`
+            : null;
+
+        // 라벨 구성:
+        //  - 발달상권(prefix='상권'): [상권][점포 수] — 이름 생략 (행정 코드명이라 사용자에게 무의미)
+        //  - 시장·관광: [prefix][이름][점포 수] — 이름이 정보적 가치 있음
+        const showZoneName = cfg && cfg.label !== '상권';
+        if (cfg && (c.name || cfg.label === '상권')) {
+          const nameSpan = showZoneName && c.name
+            ? `<span style="
+                background:${MC.inkBg};
+                color:#fff;
+                padding:3px 8px;
+                font-size:11px;
+                font-weight:600;
+                letter-spacing:-0.2px;
+              ">${c.name}</span>`
+            : '';
+          const countSpan = storeBucket
+            ? `<span style="
+                background:${MC.inkBg};
+                color:#fff;
+                padding:3px 7px;
+                font-family:${FONT_MONO};
+                font-size:10px;
+                font-weight:700;
+                letter-spacing:0.04em;
+                ${showZoneName ? 'border-left:1px solid rgba(255,255,255,0.2);' : ''}
+              ">${storeBucket}</span>`
+            : '';
+          const labelHtml = `
+            <div style="
+              display:inline-flex;
+              align-items:stretch;
+              pointer-events:none;
+              border-radius:3px;
+              overflow:hidden;
+              white-space:nowrap;
+              box-shadow:0 2px 6px rgba(0,0,0,0.2);
+              font-family:${FONT_SANS};
+            ">
+              <span style="
+                background:${color};
+                color:#fff;
+                padding:3px 7px;
+                font-family:${FONT_MONO};
+                font-size:10px;
+                font-weight:700;
+                letter-spacing:0.04em;
+              ">${cfg.label}</span>
+              ${nameSpan}${countSpan}
+            </div>
+          `;
+          const label = new kakao.maps.CustomOverlay({
+            position: new kakao.maps.LatLng(c.centroid.lat, c.centroid.lng),
+            content: labelHtml,
+            xAnchor: 0.5,
+            yAnchor: 0.5,
+            zIndex: 2,
+          });
+          label.setMap(map);
+          overlaysRef.current.push(label);
+        }
       }
     }
 
-    // === 레이어 1.5: 학교 마커 (축약: 00초/00중/00고) ===
+    // === 레이어 1.5: 학교 마커 — forest green 단색 + 사각 라벨 ===
+    // 축약: 여의도초/여의도중/여의도고. mono로 type 코드 prefix.
     if (schools && schools.length > 0) {
       for (const school of schools) {
-        const typeColor =
-          school.type === '초등학교'
-            ? '#10b981' // emerald-500
-            : school.type === '중학교'
-            ? '#059669' // emerald-600
-            : '#047857'; // emerald-700
-
-        // 축약: "여의도초등학교" → "여의도초"
         const shortName = school.name
           .replace(/초등학교$/, '초')
           .replace(/중학교$/, '중')
           .replace(/고등학교$/, '고')
           .replace(/고교$/, '고');
 
+        // 초/중/고 prefix tag (mono) — noryangjin .seobu-tag 차용
+        const typeCode = school.type === '초등학교' ? '초' : school.type === '중학교' ? '중' : '고';
+
         const labelHtml = `
-          <div style="
-            transform: translate(-50%, -100%);
-            pointer-events: none;
-          ">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:2px;pointer-events:none;">
             <div style="
-              padding: 3px 8px 4px;
-              background: ${typeColor};
-              color: white;
-              border-radius: 999px;
-              border: 2px solid white;
-              font-size: 11px;
-              font-weight: 800;
-              font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', sans-serif;
-              white-space: nowrap;
-              box-shadow: 0 3px 10px rgba(16, 185, 129, 0.4);
-              letter-spacing: -0.3px;
-            ">${shortName}</div>
+              display:inline-flex;
+              align-items:center;
+              gap:0;
+              background:${MC.accent3};
+              color:#fff;
+              border-radius:3px;
+              font-family:${FONT_SANS};
+              font-size:11px;
+              font-weight:700;
+              white-space:nowrap;
+              box-shadow:0 2px 6px rgba(45,90,61,0.3);
+              overflow:hidden;
+            ">
+              <span style="
+                background:rgba(255,255,255,0.18);
+                padding:3px 6px;
+                font-family:${FONT_MONO};
+                font-size:10px;
+                font-weight:700;
+                letter-spacing:0.04em;
+              ">${typeCode}</span>
+              <span style="padding:3px 8px;letter-spacing:-0.2px;">${shortName.replace(/[초중고]$/, '')}</span>
+            </div>
+            <div style="width:6px;height:6px;border-radius:50%;background:${MC.accent3};border:1.5px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></div>
           </div>
         `;
         const label = new kakao.maps.CustomOverlay({
@@ -428,40 +462,24 @@ export default function KakaoMapClient({
       }
     }
 
-    // === 레이어 2: 주변 리딩단지 — 작은 점 + 단지명만 ===
+    // === 레이어 2: 주변 리딩단지 — 다크 라벨 + 흰 점 (현재 단지보다 작고 절제) ===
     if (apartmentZones && apartmentZones.length > 0) {
       for (const zone of apartmentZones) {
-        // 작은 점 + 단지명 (꼬리 없는 작은 마커)
         const dotHtml = `
-          <div style="
-            transform: translate(-50%, -100%);
-            pointer-events: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-          ">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:2px;pointer-events:none;">
             <div style="
-              padding: 3px 8px 4px;
-              background: white;
-              color: #C13C3C;
-              border: 1.5px solid #E25555;
-              border-radius: 999px;
-              font-size: 10px;
-              font-weight: 700;
-              font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', sans-serif;
-              white-space: nowrap;
-              box-shadow: 0 2px 6px rgba(226, 85, 85, 0.25);
-              letter-spacing: -0.3px;
+              background:${MC.inkBgLight};
+              color:#fff;
+              font-family:${FONT_SANS};
+              font-size:11px;
+              font-weight:600;
+              letter-spacing:-0.2px;
+              padding:3px 9px;
+              border-radius:3px;
+              white-space:nowrap;
+              box-shadow:0 2px 6px rgba(0,0,0,0.2);
             ">${zone.name}</div>
-            <div style="
-              width: 8px;
-              height: 8px;
-              border-radius: 50%;
-              background: #E25555;
-              border: 2px solid white;
-              box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-            "></div>
+            <div style="width:7px;height:7px;border-radius:50%;background:#fff;border:1.5px solid ${MC.ink};"></div>
           </div>
         `;
         const label = new kakao.maps.CustomOverlay({
@@ -476,9 +494,8 @@ export default function KakaoMapClient({
       }
     }
 
-    // === 레이어 3: 도보 경로 (현재 단지 → 가장 가까운 역) ===
+    // === 레이어 3: 도보 경로 — royal blue 점선 + mono 라벨 (noryangjin .route-label) ===
     if (walkingRoute) {
-      // OSRM path가 있으면 실제 도로 따라가는 경로, 없으면 직선
       const pathPoints = walkingRoute.path && walkingRoute.path.length > 0
         ? walkingRoute.path.map((p) => new kakao.maps.LatLng(p.lat, p.lng))
         : [
@@ -488,15 +505,15 @@ export default function KakaoMapClient({
 
       const polyline = new kakao.maps.Polyline({
         path: pathPoints,
-        strokeWeight: 5,
-        strokeColor: '#3b82f6', // 파란
-        strokeOpacity: 0.95,
-        strokeStyle: 'shortdash', // 점선
+        strokeWeight: 3,
+        strokeColor: MC.route,
+        strokeOpacity: 0.9,
+        strokeStyle: 'shortdash',
       });
       polyline.setMap(map);
       overlaysRef.current.push(polyline);
 
-      // 라벨 위치: 경로의 중간 지점
+      // 경로 중간 지점에 라벨
       let midLat: number, midLng: number;
       if (walkingRoute.path && walkingRoute.path.length >= 2) {
         const midIdx = Math.floor(walkingRoute.path.length / 2);
@@ -506,61 +523,44 @@ export default function KakaoMapClient({
         midLat = (walkingRoute.from.lat + walkingRoute.to.lat) / 2;
         midLng = (walkingRoute.from.lng + walkingRoute.to.lng) / 2;
       }
+      // 라벨 컨테이너 — margin-bottom으로 경로 선과 8px 간격 띄움 (yAnchor=1 기준 살짝 위로)
       const routeLabel = `
-        <div style="
-          transform: translate(-50%, -50%);
-          pointer-events: none;
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          padding: 5px 11px 6px 8px;
-          background: linear-gradient(180deg, #60a5fa, #3b82f6);
-          color: white;
-          border: 2px solid white;
-          border-radius: 999px;
-          font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', sans-serif;
-          white-space: nowrap;
-          box-shadow: 0 4px 14px rgba(59, 130, 246, 0.5);
-        ">
-          <span style="
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 22px;
-            height: 22px;
-            background: white;
-            color: #2563eb;
-            border-radius: 50%;
-            font-size: 14px;
-            line-height: 1;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.18);
-          ">🚶</span>
-          <span style="font-size: 12px; font-weight: 800; letter-spacing: -0.2px;">
-            ${walkingRoute.toName} · ${walkingRoute.distanceM}m · ${walkingRoute.walkMin}분
-          </span>
+        <div style="margin-bottom:8px;pointer-events:none;">
+          <div style="
+            background:${MC.route};
+            color:#fff;
+            font-family:${FONT_MONO};
+            font-size:10px;
+            font-weight:700;
+            letter-spacing:0.04em;
+            padding:4px 9px;
+            border:1.5px solid #fff;
+            white-space:nowrap;
+            box-shadow:0 2px 6px rgba(0,0,0,0.3);
+          ">${walkingRoute.toName.toUpperCase()} · ${walkingRoute.distanceM}M · ${walkingRoute.walkMin}MIN</div>
         </div>
       `;
       const label = new kakao.maps.CustomOverlay({
         position: new kakao.maps.LatLng(midLat, midLng),
         content: routeLabel,
         xAnchor: 0.5,
-        yAnchor: 0.5,
+        yAnchor: 1, // 컨텐츠 하단이 경로 중간점에 닿음 → 라벨은 경로 위로 띄워짐
         zIndex: 6,
       });
       label.setMap(map);
       overlaysRef.current.push(label);
     }
 
-    // 반경 원 (500m / 1km) — 맨 위 (참고선)
+    // 반경 원 (500m / 1km) — ink 다크 점선 (terracotta 살짝 섞어 절제)
     const circle500 = new kakao.maps.Circle({
       center: new kakao.maps.LatLng(center.lat, center.lng),
       radius: 500,
       strokeWeight: 1,
-      strokeColor: '#E25555',
-      strokeOpacity: 0.4,
+      strokeColor: MC.ink,
+      strokeOpacity: 0.25,
       strokeStyle: 'dashed',
-      fillColor: '#E25555',
-      fillOpacity: 0.03,
+      fillColor: MC.accent2,
+      fillOpacity: 0.02,
     });
     circle500.setMap(map);
     overlaysRef.current.push(circle500);
@@ -569,8 +569,8 @@ export default function KakaoMapClient({
       center: new kakao.maps.LatLng(center.lat, center.lng),
       radius: 1000,
       strokeWeight: 1,
-      strokeColor: '#E25555',
-      strokeOpacity: 0.25,
+      strokeColor: MC.ink,
+      strokeOpacity: 0.15,
       strokeStyle: 'dashed',
       fillColor: 'transparent',
       fillOpacity: 0,
@@ -578,12 +578,12 @@ export default function KakaoMapClient({
     circle1000.setMap(map);
     overlaysRef.current.push(circle1000);
 
-    // 마커 (CustomOverlay)
+    // 마커 (CustomOverlay) — 모두 yAnchor=1 (컨텐츠 하단 = 흰 점 = 좌표)
     for (const point of points) {
       const overlay = new kakao.maps.CustomOverlay({
         position: new kakao.maps.LatLng(point.latitude, point.longitude),
         content: makeMarkerHtml(point),
-        yAnchor: point.type === 'current' ? 1 : point.type === 'nearby' ? 1 : 0.5,
+        yAnchor: 1,
         xAnchor: 0.5,
         zIndex: point.type === 'current' ? 10 : point.type === 'station' ? 5 : 1,
       });
@@ -591,15 +591,13 @@ export default function KakaoMapClient({
       overlaysRef.current.push(overlay);
     }
 
-    // bounds 맞추기
-    if (points.length > 1) {
-      const bounds = new kakao.maps.LatLngBounds();
-      points.forEach((p) => {
-        bounds.extend(new kakao.maps.LatLng(p.latitude, p.longitude));
-      });
-      map.setBounds(bounds);
-    } else if (points.length === 1) {
-      map.setCenter(new kakao.maps.LatLng(points[0].latitude, points[0].longitude));
+    // 항상 현재 단지를 정중앙으로 (역·학교 마커 위치에 영향 받지 않음).
+    // current 마커가 있으면 그걸, 없으면 첫 마커 또는 center prop.
+    const currentPoint = points.find((p) => p.type === 'current') ?? points[0];
+    if (currentPoint) {
+      map.setCenter(new kakao.maps.LatLng(currentPoint.latitude, currentPoint.longitude));
+    } else {
+      map.setCenter(new kakao.maps.LatLng(center.lat, center.lng));
     }
   }, [status, center, points, walkingRoute, apartmentZones, commercialClusters, schools]);
 

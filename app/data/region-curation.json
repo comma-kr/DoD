@@ -1,0 +1,5425 @@
+[
+  {
+    "district_name": "은평구",
+    "insights": {
+      "school_district_label": "은평·연신내권 학군",
+      "school_notes": [
+        "선일여중·선일여고 등 인근 여학교",
+        "은평뉴타운 입주 후 학군 향상"
+      ],
+      "academy_cluster": "연신내·불광 학원가",
+      "commercial_area": "연신내역·은평뉴타운 상권",
+      "major_stores": [
+        "롯데몰 은평점",
+        "이마트 은평점"
+      ],
+      "parks": [
+        "북한산국립공원",
+        "백련산",
+        "이말산"
+      ],
+      "hospitals": [
+        "은평성모병원",
+        "서울시립서북병원"
+      ],
+      "developments": [
+        {
+          "title": "GTX-A 연신내역",
+          "status": "완료",
+          "note": "수서·동탄 직결로 통근 시간 단축"
+        },
+        {
+          "title": "수색·증산 뉴타운",
+          "status": "진행중",
+          "note": "DMC 인근 대규모 정비"
+        }
+      ],
+      "hobby_spots": [
+        "북한산 등산·둘레길",
+        "롯데몰 영화관·서점",
+        "진관사 일대"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 45,
+        "max": 65,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "3호선→2호선 환승"
+      },
+      "yeouido": {
+        "min": 30,
+        "max": 45,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "6호선→5호선 환승"
+      },
+      "gwanghwamun": {
+        "min": 20,
+        "max": 35,
+        "transfers": 0,
+        "verdict": "편리",
+        "description": "3호선 직결"
+      },
+      "pangyo": {
+        "min": 60,
+        "max": 85,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회 + 거리"
+      },
+      "jamsil": {
+        "min": 50,
+        "max": 70,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "3호선→2호선 환승"
+      },
+      "seongsu": {
+        "min": 40,
+        "max": 60,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "3호선→2호선 환승"
+      }
+    }
+  },
+  {
+    "district_name": "강북구",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "수유·미아사거리 상권",
+      "major_stores": [
+        "현대백화점 미아점",
+        "롯데백화점 미아점",
+        "이마트 미아점"
+      ],
+      "parks": [
+        "북한산국립공원",
+        "우이천",
+        "북서울꿈의숲(인접)"
+      ],
+      "hospitals": [],
+      "developments": [
+        {
+          "title": "우이신설선",
+          "status": "완료",
+          "note": "북한산우이~신설동 경전철"
+        },
+        {
+          "title": "미아·수유 정비사업",
+          "status": "진행중",
+          "note": "재개발 다수 진행"
+        }
+      ],
+      "hobby_spots": [
+        "북한산 등산",
+        "4·19기념공원",
+        "우이동 계곡"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 45,
+        "max": 65,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "4호선→2호선 환승"
+      },
+      "yeouido": {
+        "min": 45,
+        "max": 65,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "4호선→5호선 환승"
+      },
+      "gwanghwamun": {
+        "min": 25,
+        "max": 40,
+        "transfers": 0,
+        "verdict": "편리",
+        "description": "4호선 직결"
+      },
+      "pangyo": {
+        "min": 70,
+        "max": 95,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "jamsil": {
+        "min": 50,
+        "max": 70,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "4호선→2호선 환승"
+      },
+      "seongsu": {
+        "min": 40,
+        "max": 60,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "4호선→2호선 환승"
+      }
+    }
+  },
+  {
+    "district_name": "노원구",
+    "insights": {
+      "school_district_label": "중계·상계권 학군 (서울 3대 학군)",
+      "school_notes": [
+        "중계동 은행사거리 학원가",
+        "대진고·서라벌고·청원고 등 인기 학교",
+        "특목고 진학률 상위권"
+      ],
+      "academy_cluster": "중계동 은행사거리 학원가",
+      "commercial_area": "노원역·상계 상권",
+      "major_stores": [
+        "롯데백화점 노원점",
+        "노원 NC백화점",
+        "이마트 상계점"
+      ],
+      "parks": [
+        "불암산",
+        "수락산",
+        "중랑천",
+        "당현천"
+      ],
+      "hospitals": [
+        "인제대 상계백병원",
+        "노원을지대학교병원"
+      ],
+      "developments": [
+        {
+          "title": "동북선 경전철",
+          "status": "진행중",
+          "note": "왕십리~상계 연결 예정"
+        },
+        {
+          "title": "상계동 재건축",
+          "status": "진행중",
+          "note": "주공아파트 단지 다수 진행"
+        },
+        {
+          "title": "광운대역세권 개발",
+          "status": "진행중",
+          "note": "동북권 거점 복합개발"
+        }
+      ],
+      "hobby_spots": [
+        "수락산·불암산 등산",
+        "중랑천 자전거길",
+        "노원 NC백화점"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 45,
+        "max": 65,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "7호선→2호선 또는 4호선 환승"
+      },
+      "yeouido": {
+        "min": 50,
+        "max": 70,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "7호선→5호선 환승"
+      },
+      "gwanghwamun": {
+        "min": 35,
+        "max": 50,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "4호선→1호선 또는 직결"
+      },
+      "pangyo": {
+        "min": 75,
+        "max": 100,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회 + 거리"
+      },
+      "jamsil": {
+        "min": 35,
+        "max": 50,
+        "transfers": 0,
+        "verdict": "편리",
+        "description": "7호선 직결"
+      },
+      "seongsu": {
+        "min": 35,
+        "max": 50,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "7호선→2호선 환승"
+      }
+    }
+  },
+  {
+    "district_name": "도봉구",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "창동·쌍문 상권",
+      "major_stores": [
+        "이마트 창동점",
+        "농협하나로마트 창동점"
+      ],
+      "parks": [
+        "도봉산",
+        "북한산",
+        "중랑천"
+      ],
+      "hospitals": [
+        "한일병원"
+      ],
+      "developments": [
+        {
+          "title": "창동 차량기지 이전·복합개발",
+          "status": "진행중",
+          "note": "동북권 신경제중심지 조성"
+        },
+        {
+          "title": "동부간선도로 지하화",
+          "status": "진행중",
+          "note": "중랑천변 환경 개선"
+        }
+      ],
+      "hobby_spots": [
+        "도봉산 등산",
+        "둘리뮤지엄",
+        "중랑천 산책로"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 50,
+        "max": 70,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "1호선→2호선 환승"
+      },
+      "yeouido": {
+        "min": 50,
+        "max": 70,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "1호선→5호선 환승"
+      },
+      "gwanghwamun": {
+        "min": 30,
+        "max": 45,
+        "transfers": 0,
+        "verdict": "편리",
+        "description": "1호선 직결"
+      },
+      "pangyo": {
+        "min": 75,
+        "max": 100,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "jamsil": {
+        "min": 45,
+        "max": 65,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "1호선→2호선 환승"
+      },
+      "seongsu": {
+        "min": 40,
+        "max": 55,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "1호선→2호선 환승"
+      }
+    }
+  },
+  {
+    "district_name": "성북구",
+    "insights": {
+      "school_district_label": "길음·돈암권 학군",
+      "school_notes": [
+        "고려대·성신여대 등 대학가 형성"
+      ],
+      "academy_cluster": null,
+      "commercial_area": "성신여대입구·길음 상권",
+      "major_stores": [
+        "롯데백화점 미아점(인접)",
+        "이마트 미아점(인접)"
+      ],
+      "parks": [
+        "북한산국립공원",
+        "정릉",
+        "성북천"
+      ],
+      "hospitals": [
+        "고려대학교 안암병원"
+      ],
+      "developments": [
+        {
+          "title": "길음뉴타운",
+          "status": "완료",
+          "note": "대규모 신축 단지 입주"
+        },
+        {
+          "title": "장위뉴타운",
+          "status": "진행중",
+          "note": "장위1~15구역 단계별 사업"
+        }
+      ],
+      "hobby_spots": [
+        "성북동 골목",
+        "수연산방·간송미술관",
+        "정릉 산책"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 35,
+        "max": 55,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "4호선→2호선 환승"
+      },
+      "yeouido": {
+        "min": 40,
+        "max": 55,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "4호선→5호선 환승"
+      },
+      "gwanghwamun": {
+        "min": 15,
+        "max": 30,
+        "transfers": 0,
+        "verdict": "편리",
+        "description": "4호선 직결"
+      },
+      "pangyo": {
+        "min": 65,
+        "max": 90,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "jamsil": {
+        "min": 40,
+        "max": 60,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "4호선→2호선 환승"
+      },
+      "seongsu": {
+        "min": 30,
+        "max": 45,
+        "transfers": 1,
+        "verdict": "편리",
+        "description": "6호선→2호선 환승"
+      }
+    }
+  },
+  {
+    "district_name": "중랑구",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "상봉·면목 상권",
+      "major_stores": [
+        "코스트코 상봉점",
+        "홈플러스 면목점",
+        "이마트 상봉점"
+      ],
+      "parks": [
+        "용마산",
+        "망우산",
+        "중랑천"
+      ],
+      "hospitals": [],
+      "developments": [
+        {
+          "title": "면목선 경전철",
+          "status": "예정",
+          "note": "청량리~신내 연결 검토"
+        },
+        {
+          "title": "상봉터미널 부지 복합개발",
+          "status": "진행중",
+          "note": "동북권 거점 개발"
+        }
+      ],
+      "hobby_spots": [
+        "용마폭포공원",
+        "중랑천 자전거길"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 40,
+        "max": 60,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "7호선→2호선 또는 직결"
+      },
+      "yeouido": {
+        "min": 45,
+        "max": 65,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "7호선→5호선 환승"
+      },
+      "gwanghwamun": {
+        "min": 30,
+        "max": 45,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "7호선→2호선 환승"
+      },
+      "pangyo": {
+        "min": 65,
+        "max": 90,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "jamsil": {
+        "min": 30,
+        "max": 45,
+        "transfers": 0,
+        "verdict": "편리",
+        "description": "7호선 직결"
+      },
+      "seongsu": {
+        "min": 20,
+        "max": 35,
+        "transfers": 1,
+        "verdict": "편리",
+        "description": "7호선→2호선 환승"
+      }
+    }
+  },
+  {
+    "district_name": "동대문구",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [
+        "경희대·외대·서울시립대 등 대학 밀집"
+      ],
+      "academy_cluster": null,
+      "commercial_area": "청량리·회기 상권",
+      "major_stores": [
+        "롯데백화점 청량리점",
+        "청량리 종합시장",
+        "한솔동의보감"
+      ],
+      "parks": [
+        "배봉산",
+        "중랑천",
+        "홍릉수목원"
+      ],
+      "hospitals": [
+        "경희대학교병원",
+        "한국외국어대학교 의료원",
+        "서울성심병원"
+      ],
+      "developments": [
+        {
+          "title": "GTX-B 청량리역",
+          "status": "진행중",
+          "note": "송도~마석 연결 예정"
+        },
+        {
+          "title": "GTX-C 청량리역",
+          "status": "진행중",
+          "note": "양주~수원 연결 예정"
+        },
+        {
+          "title": "청량리역세권 복합개발",
+          "status": "진행중",
+          "note": "고층 주상복합 다수 입주"
+        }
+      ],
+      "hobby_spots": [
+        "경동시장·약령시",
+        "홍릉수목원",
+        "청량리 일대 카페"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 35,
+        "max": 55,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "1호선→2호선 환승"
+      },
+      "yeouido": {
+        "min": 35,
+        "max": 55,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "1호선→5호선 환승"
+      },
+      "gwanghwamun": {
+        "min": 15,
+        "max": 30,
+        "transfers": 0,
+        "verdict": "편리",
+        "description": "1호선 직결"
+      },
+      "pangyo": {
+        "min": 65,
+        "max": 90,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "jamsil": {
+        "min": 30,
+        "max": 45,
+        "transfers": 1,
+        "verdict": "편리",
+        "description": "2호선 환승"
+      },
+      "seongsu": {
+        "min": 20,
+        "max": 35,
+        "transfers": 0,
+        "verdict": "편리",
+        "description": "2호선 직결"
+      }
+    }
+  },
+  {
+    "district_name": "종로구",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "종로·광화문·인사동",
+      "major_stores": [
+        "종로타워",
+        "광화문 D타워",
+        "그랑서울"
+      ],
+      "parks": [
+        "인왕산",
+        "북악산",
+        "청계천",
+        "종묘"
+      ],
+      "hospitals": [
+        "서울대학교병원",
+        "강북삼성병원",
+        "서울적십자병원"
+      ],
+      "developments": [
+        {
+          "title": "세운지구 정비사업",
+          "status": "진행중",
+          "note": "을지로 일대 재정비"
+        }
+      ],
+      "hobby_spots": [
+        "인사동·삼청동·서촌 골목",
+        "광화문 교보문고",
+        "국립현대미술관 서울관"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 25,
+        "max": 40,
+        "transfers": 1,
+        "verdict": "편리",
+        "description": "3호선 직결 또는 1·2호선 환승"
+      },
+      "yeouido": {
+        "min": 20,
+        "max": 35,
+        "transfers": 0,
+        "verdict": "편리",
+        "description": "5호선 직결"
+      },
+      "gwanghwamun": {
+        "min": 5,
+        "max": 15,
+        "transfers": 0,
+        "verdict": "최적",
+        "description": "자체 권역"
+      },
+      "pangyo": {
+        "min": 50,
+        "max": 75,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "신분당선 환승"
+      },
+      "jamsil": {
+        "min": 30,
+        "max": 45,
+        "transfers": 1,
+        "verdict": "편리",
+        "description": "2호선 환승"
+      },
+      "seongsu": {
+        "min": 20,
+        "max": 35,
+        "transfers": 1,
+        "verdict": "편리",
+        "description": "1호선→2호선 환승"
+      }
+    }
+  },
+  {
+    "district_name": "중구",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "명동·을지로·동대문",
+      "major_stores": [
+        "신세계백화점 본점",
+        "롯데백화점 본점",
+        "동대문 두타·밀리오레"
+      ],
+      "parks": [
+        "남산공원",
+        "청계천",
+        "장충단공원"
+      ],
+      "hospitals": [
+        "국립중앙의료원"
+      ],
+      "developments": [
+        {
+          "title": "세운지구 정비사업",
+          "status": "진행중",
+          "note": "을지로~청계천 일대 재정비"
+        }
+      ],
+      "hobby_spots": [
+        "명동·을지로 노포",
+        "남산 둘레길",
+        "DDP 디자인플라자"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 20,
+        "max": 35,
+        "transfers": 0,
+        "verdict": "편리",
+        "description": "2호선 직결"
+      },
+      "yeouido": {
+        "min": 20,
+        "max": 35,
+        "transfers": 0,
+        "verdict": "편리",
+        "description": "5호선 직결"
+      },
+      "gwanghwamun": {
+        "min": 5,
+        "max": 15,
+        "transfers": 0,
+        "verdict": "최적",
+        "description": "자체 권역"
+      },
+      "pangyo": {
+        "min": 50,
+        "max": 75,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "신분당선 환승"
+      },
+      "jamsil": {
+        "min": 25,
+        "max": 40,
+        "transfers": 0,
+        "verdict": "편리",
+        "description": "2호선 직결"
+      },
+      "seongsu": {
+        "min": 15,
+        "max": 30,
+        "transfers": 0,
+        "verdict": "최적",
+        "description": "2호선 직결"
+      }
+    }
+  },
+  {
+    "district_name": "용산구",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "용산·이태원·한남",
+      "major_stores": [
+        "아이파크몰",
+        "용산전자상가"
+      ],
+      "parks": [
+        "남산공원",
+        "용산가족공원",
+        "한강공원(이촌·서빙고)"
+      ],
+      "hospitals": [
+        "순천향대학교 서울병원"
+      ],
+      "developments": [
+        {
+          "title": "용산국제업무지구",
+          "status": "진행중",
+          "note": "용산정비창 부지 대규모 개발"
+        },
+        {
+          "title": "GTX-B 용산역",
+          "status": "진행중",
+          "note": "송도~마석 연결 예정"
+        },
+        {
+          "title": "한남뉴타운",
+          "status": "진행중",
+          "note": "한남2~5구역 정비 진행"
+        }
+      ],
+      "hobby_spots": [
+        "이태원·한남동 골목",
+        "국립중앙박물관",
+        "한강공원"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 20,
+        "max": 35,
+        "transfers": 0,
+        "verdict": "편리",
+        "description": "신분당선 직결 또는 4호선"
+      },
+      "yeouido": {
+        "min": 15,
+        "max": 30,
+        "transfers": 1,
+        "verdict": "편리",
+        "description": "1호선→5호선 또는 버스"
+      },
+      "gwanghwamun": {
+        "min": 15,
+        "max": 25,
+        "transfers": 0,
+        "verdict": "편리",
+        "description": "1호선 또는 4호선 직결"
+      },
+      "pangyo": {
+        "min": 35,
+        "max": 50,
+        "transfers": 0,
+        "verdict": "편리",
+        "description": "신분당선 직결"
+      },
+      "jamsil": {
+        "min": 30,
+        "max": 45,
+        "transfers": 1,
+        "verdict": "편리",
+        "description": "4호선→2호선 환승"
+      },
+      "seongsu": {
+        "min": 20,
+        "max": 35,
+        "transfers": 1,
+        "verdict": "편리",
+        "description": "경의중앙선 또는 환승"
+      }
+    }
+  },
+  {
+    "district_name": "서대문구",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [
+        "연세대·이화여대·명지대 등 대학 밀집"
+      ],
+      "academy_cluster": null,
+      "commercial_area": "신촌·홍제 상권",
+      "major_stores": [
+        "현대백화점 신촌점",
+        "그랑마트 신촌"
+      ],
+      "parks": [
+        "안산",
+        "백련산",
+        "홍제천"
+      ],
+      "hospitals": [
+        "연세대학교 세브란스병원"
+      ],
+      "developments": [
+        {
+          "title": "가재울뉴타운",
+          "status": "완료",
+          "note": "DMC 인근 대규모 신축단지"
+        },
+        {
+          "title": "북아현뉴타운",
+          "status": "진행중",
+          "note": "신촌·아현 인근 정비"
+        }
+      ],
+      "hobby_spots": [
+        "연남동 카페·홍대 인근",
+        "안산 자락길",
+        "독립문·서대문형무소역사관"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 35,
+        "max": 50,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "2호선 직결 또는 환승"
+      },
+      "yeouido": {
+        "min": 20,
+        "max": 35,
+        "transfers": 1,
+        "verdict": "편리",
+        "description": "5호선→9호선 또는 직결"
+      },
+      "gwanghwamun": {
+        "min": 15,
+        "max": 25,
+        "transfers": 0,
+        "verdict": "편리",
+        "description": "5호선 직결"
+      },
+      "pangyo": {
+        "min": 55,
+        "max": 80,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "신분당선 환승"
+      },
+      "jamsil": {
+        "min": 40,
+        "max": 55,
+        "transfers": 0,
+        "verdict": "보통",
+        "description": "2호선 직결"
+      },
+      "seongsu": {
+        "min": 30,
+        "max": 45,
+        "transfers": 0,
+        "verdict": "편리",
+        "description": "2호선 직결"
+      }
+    }
+  },
+  {
+    "district_name": "광진구",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [
+        "건국대 인근 학원·교육시설"
+      ],
+      "academy_cluster": null,
+      "commercial_area": "건대입구·강변·자양",
+      "major_stores": [
+        "롯데백화점 스타시티점",
+        "이마트 자양점",
+        "강변 테크노마트"
+      ],
+      "parks": [
+        "아차산",
+        "어린이대공원",
+        "한강공원(뚝섬·자양)"
+      ],
+      "hospitals": [
+        "건국대학교병원",
+        "혜민병원"
+      ],
+      "developments": [
+        {
+          "title": "자양1구역 재개발",
+          "status": "진행중",
+          "note": "동서울터미널 인근 정비"
+        },
+        {
+          "title": "동서울터미널 현대화",
+          "status": "예정",
+          "note": "복합환승센터 개발 검토"
+        }
+      ],
+      "hobby_spots": [
+        "건대 로데오·커먼그라운드",
+        "한강 뚝섬유원지",
+        "아차산 등산"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 20,
+        "max": 35,
+        "transfers": 1,
+        "verdict": "편리",
+        "description": "2호선→2호선 또는 7호선 환승"
+      },
+      "yeouido": {
+        "min": 35,
+        "max": 50,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "2호선→5호선 환승"
+      },
+      "gwanghwamun": {
+        "min": 25,
+        "max": 40,
+        "transfers": 1,
+        "verdict": "편리",
+        "description": "2호선 환승"
+      },
+      "pangyo": {
+        "min": 50,
+        "max": 70,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "신분당선 환승"
+      },
+      "jamsil": {
+        "min": 15,
+        "max": 25,
+        "transfers": 0,
+        "verdict": "최적",
+        "description": "2호선 직결"
+      },
+      "seongsu": {
+        "min": 5,
+        "max": 15,
+        "transfers": 0,
+        "verdict": "최적",
+        "description": "2호선 직결"
+      }
+    }
+  },
+  {
+    "district_name": "강동구",
+    "insights": {
+      "school_district_label": "둔촌·명일권 학군",
+      "school_notes": [
+        "명일·고덕 일대 학교 밀집"
+      ],
+      "academy_cluster": "둔촌동·명일동 학원가",
+      "commercial_area": "천호·둔촌·길동 상권",
+      "major_stores": [
+        "현대백화점 천호점",
+        "이마트 천호점"
+      ],
+      "parks": [
+        "일자산",
+        "한강공원(암사)",
+        "성내천",
+        "명일근린공원"
+      ],
+      "hospitals": [
+        "강동경희대학교병원",
+        "강동성심병원",
+        "중앙보훈병원"
+      ],
+      "developments": [
+        {
+          "title": "9호선 4단계 연장",
+          "status": "진행중",
+          "note": "고덕·강일 연결 예정"
+        },
+        {
+          "title": "둔촌주공 재건축(올림픽파크포레온)",
+          "status": "완료",
+          "note": "1만2천세대 대규모 단지"
+        },
+        {
+          "title": "고덕강일지구",
+          "status": "진행중",
+          "note": "신축 단지 입주 진행"
+        }
+      ],
+      "hobby_spots": [
+        "한강 암사선사유적지",
+        "일자산 산책로",
+        "광나루 한강공원"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 30,
+        "max": 50,
+        "transfers": 1,
+        "verdict": "편리",
+        "description": "5호선→2호선 또는 9호선"
+      },
+      "yeouido": {
+        "min": 40,
+        "max": 60,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "5호선→9호선 환승"
+      },
+      "gwanghwamun": {
+        "min": 35,
+        "max": 50,
+        "transfers": 0,
+        "verdict": "보통",
+        "description": "5호선 직결"
+      },
+      "pangyo": {
+        "min": 45,
+        "max": 65,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "5호선→신분당선 환승"
+      },
+      "jamsil": {
+        "min": 15,
+        "max": 25,
+        "transfers": 0,
+        "verdict": "최적",
+        "description": "8·9호선 직결"
+      },
+      "seongsu": {
+        "min": 25,
+        "max": 40,
+        "transfers": 1,
+        "verdict": "편리",
+        "description": "5호선→2호선 환승"
+      }
+    }
+  },
+  {
+    "district_name": "강서구",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "마곡·발산·화곡 상권",
+      "major_stores": [
+        "롯데몰 김포공항점",
+        "이마트 가양점",
+        "NC백화점 강서점"
+      ],
+      "parks": [
+        "서울식물원",
+        "한강공원(가양)",
+        "궁산"
+      ],
+      "hospitals": [
+        "이대서울병원",
+        "강서성심병원"
+      ],
+      "developments": [
+        {
+          "title": "마곡지구",
+          "status": "완료",
+          "note": "LG사이언스파크·기업 R&D 단지"
+        },
+        {
+          "title": "GTX-E",
+          "status": "예정",
+          "note": "인천공항~구리 연결 검토"
+        }
+      ],
+      "hobby_spots": [
+        "서울식물원·마곡호수공원",
+        "겸재정선미술관",
+        "한강 가양유원지"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 40,
+        "max": 60,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "9호선 급행"
+      },
+      "yeouido": {
+        "min": 20,
+        "max": 35,
+        "transfers": 0,
+        "verdict": "편리",
+        "description": "9호선 직결"
+      },
+      "gwanghwamun": {
+        "min": 30,
+        "max": 45,
+        "transfers": 1,
+        "verdict": "편리",
+        "description": "5호선 직결"
+      },
+      "pangyo": {
+        "min": 60,
+        "max": 85,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "jamsil": {
+        "min": 35,
+        "max": 55,
+        "transfers": 0,
+        "verdict": "편리",
+        "description": "9호선 급행"
+      },
+      "seongsu": {
+        "min": 35,
+        "max": 55,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "9호선→2호선 환승"
+      }
+    }
+  },
+  {
+    "district_name": "구로구",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "신도림·구로디지털단지",
+      "major_stores": [
+        "디큐브시티",
+        "신도림 테크노마트",
+        "이마트 신도림점"
+      ],
+      "parks": [
+        "안양천",
+        "구로올레길",
+        "푸른수목원"
+      ],
+      "hospitals": [
+        "고려대학교 구로병원"
+      ],
+      "developments": [
+        {
+          "title": "구로차량기지 이전",
+          "status": "예정",
+          "note": "광명 이전 검토"
+        },
+        {
+          "title": "신도림역세권 개발",
+          "status": "진행중",
+          "note": "역사 일대 복합개발"
+        }
+      ],
+      "hobby_spots": [
+        "디큐브시티 영화관",
+        "안양천 자전거길"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 30,
+        "max": 45,
+        "transfers": 0,
+        "verdict": "편리",
+        "description": "2호선 직결"
+      },
+      "yeouido": {
+        "min": 15,
+        "max": 25,
+        "transfers": 1,
+        "verdict": "편리",
+        "description": "1호선→5호선 환승"
+      },
+      "gwanghwamun": {
+        "min": 25,
+        "max": 40,
+        "transfers": 1,
+        "verdict": "편리",
+        "description": "1·2호선"
+      },
+      "pangyo": {
+        "min": 50,
+        "max": 70,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "환승 1회"
+      },
+      "jamsil": {
+        "min": 35,
+        "max": 50,
+        "transfers": 0,
+        "verdict": "편리",
+        "description": "2호선 직결"
+      },
+      "seongsu": {
+        "min": 35,
+        "max": 50,
+        "transfers": 0,
+        "verdict": "편리",
+        "description": "2호선 직결"
+      }
+    }
+  },
+  {
+    "district_name": "금천구",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "가산디지털단지·독산",
+      "major_stores": [
+        "마리오아울렛",
+        "현대시티아울렛 가산점",
+        "W몰"
+      ],
+      "parks": [
+        "안양천",
+        "호암산"
+      ],
+      "hospitals": [
+        "희명병원"
+      ],
+      "developments": [
+        {
+          "title": "신안산선",
+          "status": "진행중",
+          "note": "여의도~한양대(상록) 연결"
+        },
+        {
+          "title": "G밸리(가산디지털단지)",
+          "status": "진행중",
+          "note": "지식산업센터 단지 확장"
+        }
+      ],
+      "hobby_spots": [
+        "가산 아울렛 쇼핑",
+        "안양천 자전거길"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 35,
+        "max": 55,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "1호선→2호선 환승"
+      },
+      "yeouido": {
+        "min": 25,
+        "max": 40,
+        "transfers": 1,
+        "verdict": "편리",
+        "description": "1호선→5호선 환승"
+      },
+      "gwanghwamun": {
+        "min": 35,
+        "max": 50,
+        "transfers": 0,
+        "verdict": "보통",
+        "description": "1호선 직결"
+      },
+      "pangyo": {
+        "min": 55,
+        "max": 75,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "환승 1회"
+      },
+      "jamsil": {
+        "min": 40,
+        "max": 60,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "환승 1회"
+      },
+      "seongsu": {
+        "min": 45,
+        "max": 60,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "환승 1회"
+      }
+    }
+  },
+  {
+    "district_name": "관악구",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [
+        "서울대학교 인근"
+      ],
+      "academy_cluster": null,
+      "commercial_area": "신림·서울대입구·봉천",
+      "major_stores": [
+        "신림 포도몰",
+        "이마트 봉천점"
+      ],
+      "parks": [
+        "관악산",
+        "도림천",
+        "낙성대공원"
+      ],
+      "hospitals": [],
+      "developments": [
+        {
+          "title": "신림선 경전철",
+          "status": "완료",
+          "note": "샛강~관악산 연결"
+        },
+        {
+          "title": "서부선 경전철",
+          "status": "예정",
+          "note": "새절~서울대입구 검토"
+        }
+      ],
+      "hobby_spots": [
+        "관악산 등산",
+        "샤로수길 카페골목"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 20,
+        "max": 35,
+        "transfers": 0,
+        "verdict": "편리",
+        "description": "2호선 직결"
+      },
+      "yeouido": {
+        "min": 20,
+        "max": 35,
+        "transfers": 1,
+        "verdict": "편리",
+        "description": "신림선→9호선"
+      },
+      "gwanghwamun": {
+        "min": 35,
+        "max": 50,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "2호선→1호선 환승"
+      },
+      "pangyo": {
+        "min": 45,
+        "max": 65,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "2호선→신분당선 환승"
+      },
+      "jamsil": {
+        "min": 30,
+        "max": 45,
+        "transfers": 0,
+        "verdict": "편리",
+        "description": "2호선 직결"
+      },
+      "seongsu": {
+        "min": 35,
+        "max": 50,
+        "transfers": 0,
+        "verdict": "편리",
+        "description": "2호선 직결"
+      }
+    }
+  },
+  {
+    "district_name": "남양주시",
+    "insights": {
+      "school_district_label": "별내·다산권 학군",
+      "school_notes": [
+        "별내·다산 신도시 신설 학교"
+      ],
+      "academy_cluster": "다산·별내 학원가",
+      "commercial_area": "별내·다산·평내호평",
+      "major_stores": [
+        "현대프리미엄아울렛 스페이스원",
+        "이마트 별내점"
+      ],
+      "parks": [
+        "천마산",
+        "축령산",
+        "북한강"
+      ],
+      "hospitals": [
+        "현대병원",
+        "남양주한양병원"
+      ],
+      "developments": [
+        {
+          "title": "8호선 별내선",
+          "status": "완료",
+          "note": "암사~별내 연결"
+        },
+        {
+          "title": "GTX-B 별내·도농역",
+          "status": "진행중",
+          "note": "송도~마석 연결 예정"
+        },
+        {
+          "title": "왕숙신도시",
+          "status": "예정",
+          "note": "3기 신도시 6만세대"
+        }
+      ],
+      "hobby_spots": [
+        "북한강 자전거길",
+        "수동계곡",
+        "천마산 스키장(인접)"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 50,
+        "max": 80,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "yeouido": {
+        "min": 60,
+        "max": 90,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "gwanghwamun": {
+        "min": 45,
+        "max": 70,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "경춘선→경의중앙선 또는 환승"
+      },
+      "pangyo": {
+        "min": 75,
+        "max": 100,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "jamsil": {
+        "min": 35,
+        "max": 55,
+        "transfers": 0,
+        "verdict": "편리",
+        "description": "8호선 별내선 직결"
+      },
+      "seongsu": {
+        "min": 40,
+        "max": 60,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "경의중앙선 또는 환승"
+      }
+    }
+  },
+  {
+    "district_name": "평택시",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [
+        "고덕국제신도시 학교 신설"
+      ],
+      "academy_cluster": null,
+      "commercial_area": "평택역·고덕·비전동",
+      "major_stores": [
+        "AK플라자 평택점",
+        "이마트 평택점",
+        "롯데마트 평택점"
+      ],
+      "parks": [
+        "진위천",
+        "평택호"
+      ],
+      "hospitals": [
+        "평택성모병원",
+        "굿모닝병원"
+      ],
+      "developments": [
+        {
+          "title": "고덕국제신도시",
+          "status": "진행중",
+          "note": "삼성전자 평택캠퍼스 인접"
+        },
+        {
+          "title": "SRT 지제역",
+          "status": "완료",
+          "note": "수서~부산 고속철"
+        },
+        {
+          "title": "GTX-A 연장 검토",
+          "status": "예정",
+          "note": "동탄~평택 연장 논의"
+        }
+      ],
+      "hobby_spots": [
+        "평택호 관광단지",
+        "평택 미군기지 인근 거리"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 60,
+        "max": 90,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "SRT 또는 1호선 + 환승"
+      },
+      "yeouido": {
+        "min": 70,
+        "max": 100,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "1호선 + 환승"
+      },
+      "gwanghwamun": {
+        "min": 70,
+        "max": 100,
+        "transfers": 0,
+        "verdict": "불편",
+        "description": "1호선 직결 장거리"
+      },
+      "pangyo": {
+        "min": 60,
+        "max": 90,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "SRT 또는 환승"
+      },
+      "jamsil": {
+        "min": 75,
+        "max": 105,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "seongsu": {
+        "min": 80,
+        "max": 110,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      }
+    }
+  },
+  {
+    "district_name": "시흥시",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [
+        "배곧 신도시 학교 신설"
+      ],
+      "academy_cluster": null,
+      "commercial_area": "배곧·정왕·은계",
+      "major_stores": [
+        "신세계프리미엄아울렛 시흥점",
+        "이마트 시흥점"
+      ],
+      "parks": [
+        "갯골생태공원",
+        "오이도",
+        "월곶포구"
+      ],
+      "hospitals": [
+        "시화병원",
+        "신천연합병원"
+      ],
+      "developments": [
+        {
+          "title": "신안산선",
+          "status": "진행중",
+          "note": "여의도~한양대 연결"
+        },
+        {
+          "title": "월곶판교선",
+          "status": "진행중",
+          "note": "월곶~판교 연결 예정"
+        },
+        {
+          "title": "광명시흥 3기 신도시",
+          "status": "예정",
+          "note": "7만세대 규모"
+        }
+      ],
+      "hobby_spots": [
+        "오이도 해안 산책",
+        "갯골생태공원",
+        "월곶 회센터"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 60,
+        "max": 85,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "yeouido": {
+        "min": 45,
+        "max": 65,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "수인분당선→환승"
+      },
+      "gwanghwamun": {
+        "min": 60,
+        "max": 85,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "pangyo": {
+        "min": 60,
+        "max": 85,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 + 거리"
+      },
+      "jamsil": {
+        "min": 60,
+        "max": 85,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 + 거리"
+      },
+      "seongsu": {
+        "min": 65,
+        "max": 90,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      }
+    }
+  },
+  {
+    "district_name": "의정부시",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "의정부역·민락·신곡",
+      "major_stores": [
+        "신세계백화점 의정부점",
+        "롯데마트 의정부점",
+        "이마트 의정부점"
+      ],
+      "parks": [
+        "부용산",
+        "사패산",
+        "중랑천"
+      ],
+      "hospitals": [
+        "가톨릭대학교 의정부성모병원",
+        "의정부을지대학교병원"
+      ],
+      "developments": [
+        {
+          "title": "GTX-C 의정부역",
+          "status": "진행중",
+          "note": "양주~수원 연결 예정"
+        },
+        {
+          "title": "7호선 연장(도봉산~옥정)",
+          "status": "진행중",
+          "note": "의정부 경유"
+        },
+        {
+          "title": "의정부 경전철",
+          "status": "완료",
+          "note": "발곡~탑석 연결"
+        }
+      ],
+      "hobby_spots": [
+        "사패산·부용산 등산",
+        "의정부 부대찌개 거리"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 50,
+        "max": 75,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "1호선→2호선 환승"
+      },
+      "yeouido": {
+        "min": 50,
+        "max": 75,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "1호선→5호선 환승"
+      },
+      "gwanghwamun": {
+        "min": 35,
+        "max": 55,
+        "transfers": 0,
+        "verdict": "보통",
+        "description": "1호선 직결"
+      },
+      "pangyo": {
+        "min": 80,
+        "max": 110,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "jamsil": {
+        "min": 50,
+        "max": 75,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "1호선→2호선 환승"
+      },
+      "seongsu": {
+        "min": 45,
+        "max": 65,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "1호선→2호선 환승"
+      }
+    }
+  },
+  {
+    "district_name": "성남분당구",
+    "insights": {
+      "school_district_label": "분당 학군 (수도권 최상위권)",
+      "school_notes": [
+        "분당대진고·서현고·낙생고·분당중앙고 등 명문 인기",
+        "특목고·자사고 진학률 상위"
+      ],
+      "academy_cluster": "정자·서현 학원가",
+      "commercial_area": "서현·정자·야탑·판교",
+      "major_stores": [
+        "AK플라자 분당점",
+        "현대백화점 판교점",
+        "이마트 서현점"
+      ],
+      "parks": [
+        "분당중앙공원",
+        "율동공원",
+        "탄천",
+        "맹산환경생태학습원"
+      ],
+      "hospitals": [
+        "분당서울대학교병원",
+        "분당차병원",
+        "분당제생병원"
+      ],
+      "developments": [
+        {
+          "title": "GTX-A 성남역",
+          "status": "완료",
+          "note": "수서~동탄 직결"
+        },
+        {
+          "title": "판교 테크노밸리·제2판교",
+          "status": "진행중",
+          "note": "IT 기업 본사 집적"
+        },
+        {
+          "title": "위례신사선",
+          "status": "예정",
+          "note": "위례~신사 경전철 검토"
+        }
+      ],
+      "hobby_spots": [
+        "율동공원 책 테마파크",
+        "탄천 자전거길",
+        "현대백화점 판교점"
+      ],
+      "shuttles": [
+        "판교역 대기업 통근버스(다수)"
+      ]
+    },
+    "commute": {
+      "gangnam": {
+        "min": 20,
+        "max": 35,
+        "transfers": 0,
+        "verdict": "최적",
+        "description": "신분당선 직결"
+      },
+      "yeouido": {
+        "min": 40,
+        "max": 60,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "신분당선→9호선 환승"
+      },
+      "gwanghwamun": {
+        "min": 45,
+        "max": 65,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "신분당선→1호선 환승"
+      },
+      "pangyo": {
+        "min": 5,
+        "max": 20,
+        "transfers": 0,
+        "verdict": "최적",
+        "description": "자체 권역(판교)"
+      },
+      "jamsil": {
+        "min": 40,
+        "max": 60,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "분당선→2호선 또는 8호선 환승"
+      },
+      "seongsu": {
+        "min": 45,
+        "max": 65,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "신분당선→2호선 환승"
+      }
+    }
+  },
+  {
+    "district_name": "성남수정구",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "신흥·수진·위례",
+      "major_stores": [
+        "이마트 신흥점",
+        "위례 트램상권"
+      ],
+      "parks": [
+        "남한산성",
+        "탄천"
+      ],
+      "hospitals": [
+        "성남시의료원"
+      ],
+      "developments": [
+        {
+          "title": "위례신사선",
+          "status": "예정",
+          "note": "위례~신사 경전철 검토"
+        },
+        {
+          "title": "산성역·신흥역 정비사업",
+          "status": "진행중",
+          "note": "재개발 다수"
+        }
+      ],
+      "hobby_spots": [
+        "남한산성 등산",
+        "탄천 산책로"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 35,
+        "max": 55,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "8호선→2호선 환승"
+      },
+      "yeouido": {
+        "min": 60,
+        "max": 85,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "gwanghwamun": {
+        "min": 50,
+        "max": 70,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "환승 1회"
+      },
+      "pangyo": {
+        "min": 20,
+        "max": 35,
+        "transfers": 1,
+        "verdict": "편리",
+        "description": "분당선 환승"
+      },
+      "jamsil": {
+        "min": 20,
+        "max": 35,
+        "transfers": 0,
+        "verdict": "편리",
+        "description": "8호선 직결"
+      },
+      "seongsu": {
+        "min": 40,
+        "max": 60,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "환승 1회"
+      }
+    }
+  },
+  {
+    "district_name": "성남중원구",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "모란·상대원",
+      "major_stores": [
+        "모란민속5일장",
+        "이마트 성남점"
+      ],
+      "parks": [
+        "영장산",
+        "탄천"
+      ],
+      "hospitals": [],
+      "developments": [
+        {
+          "title": "중원 정비사업",
+          "status": "진행중",
+          "note": "재개발 다수 진행"
+        }
+      ],
+      "hobby_spots": [
+        "모란시장",
+        "탄천 자전거길"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 35,
+        "max": 55,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "8호선→2호선 환승"
+      },
+      "yeouido": {
+        "min": 55,
+        "max": 80,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "gwanghwamun": {
+        "min": 50,
+        "max": 70,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "환승 1회"
+      },
+      "pangyo": {
+        "min": 15,
+        "max": 30,
+        "transfers": 1,
+        "verdict": "편리",
+        "description": "분당선 환승"
+      },
+      "jamsil": {
+        "min": 20,
+        "max": 35,
+        "transfers": 0,
+        "verdict": "편리",
+        "description": "8호선 직결"
+      },
+      "seongsu": {
+        "min": 40,
+        "max": 60,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "환승 1회"
+      }
+    }
+  },
+  {
+    "district_name": "용인기흥구",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [
+        "동백·보정 일대 학교 밀집"
+      ],
+      "academy_cluster": null,
+      "commercial_area": "기흥역·동백·보정",
+      "major_stores": [
+        "신세계백화점 경기점(인접 죽전)",
+        "이마트 기흥점",
+        "롯데시네마 기흥"
+      ],
+      "parks": [
+        "호수공원(동백)",
+        "광교산"
+      ],
+      "hospitals": [
+        "용인세브란스병원",
+        "강남병원"
+      ],
+      "developments": [
+        {
+          "title": "GTX-A 구성역",
+          "status": "진행중",
+          "note": "수서~동탄 직결 예정"
+        },
+        {
+          "title": "용인 플랫폼시티",
+          "status": "진행중",
+          "note": "기흥IC 인근 자족도시"
+        },
+        {
+          "title": "용인 반도체 클러스터",
+          "status": "예정",
+          "note": "처인구 인접 대규모 산단"
+        }
+      ],
+      "hobby_spots": [
+        "동백호수공원",
+        "민속촌(인접)"
+      ],
+      "shuttles": [
+        "삼성전자 기흥캠퍼스 통근버스"
+      ]
+    },
+    "commute": {
+      "gangnam": {
+        "min": 40,
+        "max": 60,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "분당선→2호선 환승"
+      },
+      "yeouido": {
+        "min": 60,
+        "max": 85,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "gwanghwamun": {
+        "min": 60,
+        "max": 85,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "pangyo": {
+        "min": 20,
+        "max": 35,
+        "transfers": 0,
+        "verdict": "편리",
+        "description": "분당선 직결"
+      },
+      "jamsil": {
+        "min": 50,
+        "max": 70,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "분당선→2호선 또는 8호선 환승"
+      },
+      "seongsu": {
+        "min": 55,
+        "max": 75,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "환승 1회"
+      }
+    }
+  },
+  {
+    "district_name": "용인수지구",
+    "insights": {
+      "school_district_label": "수지·풍덕천 학군",
+      "school_notes": [
+        "수지고·성복고·풍덕고 등 인기 학교"
+      ],
+      "academy_cluster": "수지·죽전 학원가",
+      "commercial_area": "수지·풍덕천·죽전",
+      "major_stores": [
+        "신세계백화점 경기점",
+        "이마트 수지점"
+      ],
+      "parks": [
+        "광교산",
+        "성복천"
+      ],
+      "hospitals": [
+        "용인세브란스병원(인접)"
+      ],
+      "developments": [
+        {
+          "title": "신분당선",
+          "status": "완료",
+          "note": "강남~광교 연결"
+        },
+        {
+          "title": "GTX-A 성남역(인접)",
+          "status": "완료",
+          "note": "수서~동탄 연결"
+        }
+      ],
+      "hobby_spots": [
+        "광교산 등산",
+        "신세계백화점 경기점 문화홀"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 35,
+        "max": 55,
+        "transfers": 0,
+        "verdict": "편리",
+        "description": "신분당선 직결"
+      },
+      "yeouido": {
+        "min": 55,
+        "max": 80,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "신분당선→9호선 환승"
+      },
+      "gwanghwamun": {
+        "min": 55,
+        "max": 80,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "신분당선→1호선 환승"
+      },
+      "pangyo": {
+        "min": 15,
+        "max": 30,
+        "transfers": 0,
+        "verdict": "편리",
+        "description": "신분당선 직결"
+      },
+      "jamsil": {
+        "min": 50,
+        "max": 70,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "환승 1회"
+      },
+      "seongsu": {
+        "min": 55,
+        "max": 75,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "환승 1회"
+      }
+    }
+  },
+  {
+    "district_name": "용인처인구",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "김량장·남사",
+      "major_stores": [
+        "이마트 용인점"
+      ],
+      "parks": [
+        "와우정사",
+        "한택식물원",
+        "에버랜드"
+      ],
+      "hospitals": [
+        "용인세브란스병원(기흥구 인접)"
+      ],
+      "developments": [
+        {
+          "title": "용인 반도체 클러스터",
+          "status": "진행중",
+          "note": "SK하이닉스·삼성전자 첨단 산단"
+        },
+        {
+          "title": "경강선 연장 검토",
+          "status": "예정",
+          "note": "처인 경유 검토"
+        }
+      ],
+      "hobby_spots": [
+        "에버랜드",
+        "캐리비안베이",
+        "한국민속촌"
+      ],
+      "shuttles": [
+        "SK하이닉스·반도체 클러스터 통근버스"
+      ]
+    },
+    "commute": {
+      "gangnam": {
+        "min": 60,
+        "max": 90,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "버스+지하철 또는 환승"
+      },
+      "yeouido": {
+        "min": 80,
+        "max": 110,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "gwanghwamun": {
+        "min": 80,
+        "max": 110,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "pangyo": {
+        "min": 50,
+        "max": 75,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "버스+지하철"
+      },
+      "jamsil": {
+        "min": 70,
+        "max": 100,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "seongsu": {
+        "min": 75,
+        "max": 105,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      }
+    }
+  },
+  {
+    "district_name": "파주시",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [
+        "운정 신도시 학교 신설"
+      ],
+      "academy_cluster": null,
+      "commercial_area": "운정·금촌·헤이리",
+      "major_stores": [
+        "롯데프리미엄아울렛 파주점",
+        "신세계프리미엄아울렛 파주점",
+        "이마트 운정점"
+      ],
+      "parks": [
+        "임진강",
+        "헤이리예술마을",
+        "파주출판도시"
+      ],
+      "hospitals": [],
+      "developments": [
+        {
+          "title": "GTX-A 운정역",
+          "status": "진행중",
+          "note": "수서~동탄 연결 예정"
+        },
+        {
+          "title": "운정신도시",
+          "status": "진행중",
+          "note": "3기 신도시 포함 대규모 개발"
+        },
+        {
+          "title": "3호선 운정 연장",
+          "status": "예정",
+          "note": "대화~운정 검토"
+        }
+      ],
+      "hobby_spots": [
+        "헤이리예술마을",
+        "프로방스",
+        "파주출판도시",
+        "임진각"
+      ],
+      "shuttles": [
+        "LG디스플레이 파주 통근버스"
+      ]
+    },
+    "commute": {
+      "gangnam": {
+        "min": 70,
+        "max": 100,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "yeouido": {
+        "min": 60,
+        "max": 85,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "경의중앙선→9호선 환승"
+      },
+      "gwanghwamun": {
+        "min": 50,
+        "max": 75,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "경의중앙선→환승"
+      },
+      "pangyo": {
+        "min": 90,
+        "max": 120,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "jamsil": {
+        "min": 70,
+        "max": 100,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "seongsu": {
+        "min": 65,
+        "max": 90,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "경의중앙선→2호선 환승"
+      }
+    }
+  },
+  {
+    "district_name": "고양덕양구",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "화정·원당·삼송",
+      "major_stores": [
+        "이마트 화정점",
+        "스타필드 고양(인접)"
+      ],
+      "parks": [
+        "북한산국립공원",
+        "창릉천"
+      ],
+      "hospitals": [
+        "명지병원"
+      ],
+      "developments": [
+        {
+          "title": "GTX-A 창릉역",
+          "status": "예정",
+          "note": "3기 신도시 환승역"
+        },
+        {
+          "title": "창릉신도시",
+          "status": "예정",
+          "note": "3기 신도시 3.8만세대"
+        },
+        {
+          "title": "삼송지구",
+          "status": "완료",
+          "note": "신축 아파트 단지 다수"
+        }
+      ],
+      "hobby_spots": [
+        "북한산 둘레길",
+        "스타필드 고양"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 50,
+        "max": 75,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "3호선→2호선 환승"
+      },
+      "yeouido": {
+        "min": 40,
+        "max": 60,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "3호선→5호선 환승"
+      },
+      "gwanghwamun": {
+        "min": 30,
+        "max": 50,
+        "transfers": 0,
+        "verdict": "보통",
+        "description": "3호선 직결"
+      },
+      "pangyo": {
+        "min": 70,
+        "max": 100,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "jamsil": {
+        "min": 55,
+        "max": 80,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "3호선→2호선 환승"
+      },
+      "seongsu": {
+        "min": 45,
+        "max": 65,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "3호선→2호선 환승"
+      }
+    }
+  },
+  {
+    "district_name": "고양일산서구",
+    "insights": {
+      "school_district_label": "일산 학군",
+      "school_notes": [
+        "백석고·일산동고·정발고 등 인기 학교"
+      ],
+      "academy_cluster": "후곡·일산 학원가",
+      "commercial_area": "주엽·대화·일산",
+      "major_stores": [
+        "라페스타",
+        "웨스턴돔",
+        "이마트 일산점"
+      ],
+      "parks": [
+        "일산호수공원",
+        "한강공원(행주)"
+      ],
+      "hospitals": [
+        "인제대학교 일산백병원"
+      ],
+      "developments": [
+        {
+          "title": "GTX-A 킨텍스역",
+          "status": "진행중",
+          "note": "수서~동탄 연결 예정"
+        },
+        {
+          "title": "일산테크노밸리",
+          "status": "예정",
+          "note": "킨텍스 인근 자족시설"
+        },
+        {
+          "title": "3호선 운정 연장",
+          "status": "예정",
+          "note": "대화~운정 검토"
+        }
+      ],
+      "hobby_spots": [
+        "일산호수공원",
+        "라페스타·웨스턴돔",
+        "킨텍스 전시"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 60,
+        "max": 85,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "3호선→2호선 환승"
+      },
+      "yeouido": {
+        "min": 45,
+        "max": 65,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "3호선→5호선 환승"
+      },
+      "gwanghwamun": {
+        "min": 40,
+        "max": 60,
+        "transfers": 0,
+        "verdict": "보통",
+        "description": "3호선 직결"
+      },
+      "pangyo": {
+        "min": 80,
+        "max": 110,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "jamsil": {
+        "min": 60,
+        "max": 85,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "3호선→2호선 환승"
+      },
+      "seongsu": {
+        "min": 55,
+        "max": 75,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "경의중앙선 또는 환승"
+      }
+    }
+  },
+  {
+    "district_name": "고양일산동구",
+    "insights": {
+      "school_district_label": "백마·마두권 학군",
+      "school_notes": [
+        "백마고·정발고 등"
+      ],
+      "academy_cluster": "백마·정발산 학원가",
+      "commercial_area": "백석·마두·정발산",
+      "major_stores": [
+        "스타필드 고양",
+        "라페스타(인접)",
+        "웨스턴돔(인접)"
+      ],
+      "parks": [
+        "일산호수공원",
+        "정발산",
+        "백마근린공원"
+      ],
+      "hospitals": [
+        "동국대학교 일산병원",
+        "국민건강보험 일산병원"
+      ],
+      "developments": [
+        {
+          "title": "GTX-A 킨텍스역(인접)",
+          "status": "진행중",
+          "note": "수서~동탄 연결"
+        },
+        {
+          "title": "백석역세권 개발",
+          "status": "진행중",
+          "note": "복합용지 개발"
+        }
+      ],
+      "hobby_spots": [
+        "스타필드 고양",
+        "정발산 산책",
+        "일산호수공원"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 55,
+        "max": 80,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "3호선→2호선 환승"
+      },
+      "yeouido": {
+        "min": 40,
+        "max": 60,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "3호선→5호선 환승"
+      },
+      "gwanghwamun": {
+        "min": 35,
+        "max": 55,
+        "transfers": 0,
+        "verdict": "보통",
+        "description": "3호선 직결"
+      },
+      "pangyo": {
+        "min": 75,
+        "max": 105,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "jamsil": {
+        "min": 55,
+        "max": 80,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "3호선→2호선 환승"
+      },
+      "seongsu": {
+        "min": 50,
+        "max": 70,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "환승 1회"
+      }
+    }
+  },
+  {
+    "district_name": "김포시",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "풍무·김포한강·구래",
+      "major_stores": [
+        "현대프리미엄아울렛 김포점",
+        "이마트 김포점",
+        "롯데몰 김포공항점(인접)"
+      ],
+      "parks": [
+        "한강",
+        "애기봉",
+        "문수산"
+      ],
+      "hospitals": [
+        "뉴고려병원",
+        "김포우리병원"
+      ],
+      "developments": [
+        {
+          "title": "5호선 김포 연장",
+          "status": "예정",
+          "note": "방화~김포한강 검토"
+        },
+        {
+          "title": "GTX-D",
+          "status": "예정",
+          "note": "장기~부천 연결 검토"
+        },
+        {
+          "title": "김포골드라인",
+          "status": "완료",
+          "note": "양촌~김포공항 경전철"
+        }
+      ],
+      "hobby_spots": [
+        "애기봉 평화공원",
+        "문수산 등산",
+        "현대아울렛"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 60,
+        "max": 90,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "yeouido": {
+        "min": 50,
+        "max": 75,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "골드라인→9호선 환승"
+      },
+      "gwanghwamun": {
+        "min": 55,
+        "max": 80,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "골드라인→5호선 환승"
+      },
+      "pangyo": {
+        "min": 80,
+        "max": 110,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "jamsil": {
+        "min": 70,
+        "max": 95,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "seongsu": {
+        "min": 65,
+        "max": 90,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      }
+    }
+  },
+  {
+    "district_name": "양주시",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "옥정·덕정",
+      "major_stores": [
+        "이마트 양주점"
+      ],
+      "parks": [
+        "천보산",
+        "불곡산"
+      ],
+      "hospitals": [],
+      "developments": [
+        {
+          "title": "7호선 옥정 연장",
+          "status": "진행중",
+          "note": "도봉산~옥정 연결 예정"
+        },
+        {
+          "title": "GTX-C 덕정역",
+          "status": "진행중",
+          "note": "양주~수원 연결 예정"
+        },
+        {
+          "title": "양주신도시(옥정·회천)",
+          "status": "진행중",
+          "note": "대규모 신도시 개발"
+        }
+      ],
+      "hobby_spots": [
+        "일영유원지",
+        "장흥아트파크"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 70,
+        "max": 100,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "yeouido": {
+        "min": 70,
+        "max": 100,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "gwanghwamun": {
+        "min": 50,
+        "max": 75,
+        "transfers": 0,
+        "verdict": "불편",
+        "description": "1호선 직결 장거리"
+      },
+      "pangyo": {
+        "min": 95,
+        "max": 125,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "jamsil": {
+        "min": 65,
+        "max": 90,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "1호선→2호선 환승"
+      },
+      "seongsu": {
+        "min": 60,
+        "max": 85,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "1호선→2호선 환승"
+      }
+    }
+  },
+  {
+    "district_name": "수원권선구",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "권선·호매실",
+      "major_stores": [
+        "롯데마트 권선점",
+        "이마트 트레이더스 수원점"
+      ],
+      "parks": [
+        "칠보산",
+        "서호공원"
+      ],
+      "hospitals": [],
+      "developments": [
+        {
+          "title": "신분당선 호매실 연장",
+          "status": "진행중",
+          "note": "광교~호매실 연결 예정"
+        }
+      ],
+      "hobby_spots": [
+        "칠보산 등산",
+        "서호공원 산책"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 60,
+        "max": 85,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "분당선 또는 1호선 환승"
+      },
+      "yeouido": {
+        "min": 60,
+        "max": 85,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "1호선→5호선 환승"
+      },
+      "gwanghwamun": {
+        "min": 60,
+        "max": 85,
+        "transfers": 0,
+        "verdict": "불편",
+        "description": "1호선 직결 장거리"
+      },
+      "pangyo": {
+        "min": 50,
+        "max": 70,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "신분당선 환승"
+      },
+      "jamsil": {
+        "min": 65,
+        "max": 90,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "seongsu": {
+        "min": 70,
+        "max": 95,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      }
+    }
+  },
+  {
+    "district_name": "수원영통구",
+    "insights": {
+      "school_district_label": "영통·광교 학군",
+      "school_notes": [
+        "영덕고·효원고 등 인기 학교"
+      ],
+      "academy_cluster": "영통·광교 학원가",
+      "commercial_area": "영통·광교·매탄",
+      "major_stores": [
+        "갤러리아백화점 광교점",
+        "롯데백화점 수원점",
+        "이마트 광교점"
+      ],
+      "parks": [
+        "광교호수공원",
+        "광교산"
+      ],
+      "hospitals": [
+        "아주대학교병원"
+      ],
+      "developments": [
+        {
+          "title": "신분당선 광교",
+          "status": "완료",
+          "note": "강남~광교 직결"
+        },
+        {
+          "title": "GTX-C 수원역(인접 팔달)",
+          "status": "진행중",
+          "note": "양주~수원 연결"
+        },
+        {
+          "title": "인덕원동탄선",
+          "status": "진행중",
+          "note": "영통 경유"
+        }
+      ],
+      "hobby_spots": [
+        "광교호수공원",
+        "갤러리아 광교",
+        "광교산 등산"
+      ],
+      "shuttles": [
+        "삼성전자 수원캠퍼스 통근버스"
+      ]
+    },
+    "commute": {
+      "gangnam": {
+        "min": 40,
+        "max": 60,
+        "transfers": 0,
+        "verdict": "편리",
+        "description": "신분당선 직결"
+      },
+      "yeouido": {
+        "min": 60,
+        "max": 85,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "신분당선→9호선 환승"
+      },
+      "gwanghwamun": {
+        "min": 60,
+        "max": 85,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "pangyo": {
+        "min": 20,
+        "max": 35,
+        "transfers": 0,
+        "verdict": "편리",
+        "description": "신분당선 직결"
+      },
+      "jamsil": {
+        "min": 55,
+        "max": 75,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "환승 1회"
+      },
+      "seongsu": {
+        "min": 60,
+        "max": 80,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      }
+    }
+  },
+  {
+    "district_name": "수원장안구",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "화서·정자·송죽",
+      "major_stores": [
+        "스타필드 수원",
+        "이마트 화서점"
+      ],
+      "parks": [
+        "광교산",
+        "만석공원",
+        "서호공원"
+      ],
+      "hospitals": [
+        "가톨릭대학교 성빈센트병원"
+      ],
+      "developments": [
+        {
+          "title": "스타필드 수원 개장",
+          "status": "완료",
+          "note": "화서역 인접 대형몰"
+        },
+        {
+          "title": "신분당선 호매실 연장(인접)",
+          "status": "진행중",
+          "note": "광교~호매실"
+        }
+      ],
+      "hobby_spots": [
+        "스타필드 수원",
+        "광교산 등산",
+        "만석공원"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 60,
+        "max": 85,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "1호선→2호선 환승"
+      },
+      "yeouido": {
+        "min": 55,
+        "max": 80,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "1호선→5호선 환승"
+      },
+      "gwanghwamun": {
+        "min": 60,
+        "max": 85,
+        "transfers": 0,
+        "verdict": "불편",
+        "description": "1호선 직결 장거리"
+      },
+      "pangyo": {
+        "min": 50,
+        "max": 75,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "jamsil": {
+        "min": 65,
+        "max": 90,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "seongsu": {
+        "min": 65,
+        "max": 90,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      }
+    }
+  },
+  {
+    "district_name": "수원팔달구",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "수원역·인계·행궁",
+      "major_stores": [
+        "AK플라자 수원점",
+        "롯데몰 수원점",
+        "노보텔 인근 상권"
+      ],
+      "parks": [
+        "수원화성",
+        "팔달산"
+      ],
+      "hospitals": [
+        "동수원병원"
+      ],
+      "developments": [
+        {
+          "title": "GTX-C 수원역",
+          "status": "진행중",
+          "note": "양주~수원 연결 예정"
+        },
+        {
+          "title": "수인분당선",
+          "status": "완료",
+          "note": "수원~인천 연결"
+        }
+      ],
+      "hobby_spots": [
+        "수원화성·행궁동",
+        "팔달문시장",
+        "AK플라자"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 55,
+        "max": 80,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "1호선→2호선 환승"
+      },
+      "yeouido": {
+        "min": 55,
+        "max": 80,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "1호선→5호선 환승"
+      },
+      "gwanghwamun": {
+        "min": 55,
+        "max": 80,
+        "transfers": 0,
+        "verdict": "불편",
+        "description": "1호선 직결 장거리"
+      },
+      "pangyo": {
+        "min": 50,
+        "max": 70,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "jamsil": {
+        "min": 60,
+        "max": 85,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "seongsu": {
+        "min": 65,
+        "max": 90,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      }
+    }
+  },
+  {
+    "district_name": "안양동안구",
+    "insights": {
+      "school_district_label": "평촌 학군 (수도권 상위권)",
+      "school_notes": [
+        "평촌고·백영고·인덕원고 등 명문",
+        "특목고 진학률 상위"
+      ],
+      "academy_cluster": "평촌 학원가 (수도권 3대)",
+      "commercial_area": "평촌·인덕원·범계",
+      "major_stores": [
+        "뉴코아아울렛 평촌점",
+        "롯데백화점 평촌점",
+        "이마트 평촌점"
+      ],
+      "parks": [
+        "모락산",
+        "학의천",
+        "평촌중앙공원"
+      ],
+      "hospitals": [
+        "한림대학교 성심병원",
+        "안양샘병원"
+      ],
+      "developments": [
+        {
+          "title": "GTX-C 인덕원역",
+          "status": "진행중",
+          "note": "양주~수원 연결 예정"
+        },
+        {
+          "title": "월곶판교선",
+          "status": "진행중",
+          "note": "월곶~판교 인덕원 경유"
+        },
+        {
+          "title": "인덕원동탄선",
+          "status": "진행중",
+          "note": "인덕원~동탄 연결 예정"
+        }
+      ],
+      "hobby_spots": [
+        "평촌중앙공원",
+        "롯데백화점 평촌",
+        "학의천 산책"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 40,
+        "max": 60,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "4호선→2호선 환승"
+      },
+      "yeouido": {
+        "min": 45,
+        "max": 65,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "4호선→9호선 환승"
+      },
+      "gwanghwamun": {
+        "min": 45,
+        "max": 65,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "4호선→1호선 환승"
+      },
+      "pangyo": {
+        "min": 35,
+        "max": 55,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "4호선→신분당선 환승"
+      },
+      "jamsil": {
+        "min": 45,
+        "max": 65,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "4호선→2호선 환승"
+      },
+      "seongsu": {
+        "min": 55,
+        "max": 75,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      }
+    }
+  },
+  {
+    "district_name": "안양만안구",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "안양역·명학",
+      "major_stores": [
+        "안양1번가 상권",
+        "이마트 안양점"
+      ],
+      "parks": [
+        "삼성산",
+        "수리산",
+        "안양천"
+      ],
+      "hospitals": [],
+      "developments": [
+        {
+          "title": "월곶판교선",
+          "status": "진행중",
+          "note": "월곶~판교 연결"
+        },
+        {
+          "title": "GTX-C 인덕원역(인접)",
+          "status": "진행중",
+          "note": "양주~수원 연결"
+        }
+      ],
+      "hobby_spots": [
+        "수리산 등산",
+        "안양천 자전거길",
+        "안양예술공원"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 40,
+        "max": 60,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "1호선→2호선 환승"
+      },
+      "yeouido": {
+        "min": 35,
+        "max": 55,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "1호선→5호선 환승"
+      },
+      "gwanghwamun": {
+        "min": 40,
+        "max": 60,
+        "transfers": 0,
+        "verdict": "보통",
+        "description": "1호선 직결"
+      },
+      "pangyo": {
+        "min": 50,
+        "max": 75,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "jamsil": {
+        "min": 45,
+        "max": 65,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "환승 1회"
+      },
+      "seongsu": {
+        "min": 50,
+        "max": 70,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "환승 1회"
+      }
+    }
+  },
+  {
+    "district_name": "안산단원구",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "고잔·중앙·초지",
+      "major_stores": [
+        "신세계백화점 안산점",
+        "롯데백화점 안산점",
+        "이마트 고잔점"
+      ],
+      "parks": [
+        "화랑유원지",
+        "시화호",
+        "대부도"
+      ],
+      "hospitals": [
+        "고려대학교 안산병원",
+        "한도병원"
+      ],
+      "developments": [
+        {
+          "title": "신안산선",
+          "status": "진행중",
+          "note": "여의도~한양대 연결"
+        },
+        {
+          "title": "수인분당선",
+          "status": "완료",
+          "note": "수원~인천 연결"
+        }
+      ],
+      "hobby_spots": [
+        "대부도 해솔길",
+        "화랑유원지",
+        "시화호 조류 탐방"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 60,
+        "max": 85,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "4호선→2호선 환승"
+      },
+      "yeouido": {
+        "min": 60,
+        "max": 85,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "4호선→5호선 환승"
+      },
+      "gwanghwamun": {
+        "min": 60,
+        "max": 85,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "pangyo": {
+        "min": 60,
+        "max": 85,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "jamsil": {
+        "min": 65,
+        "max": 90,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "seongsu": {
+        "min": 70,
+        "max": 95,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      }
+    }
+  },
+  {
+    "district_name": "안산상록구",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [
+        "한양대학교 ERICA캠퍼스"
+      ],
+      "academy_cluster": null,
+      "commercial_area": "상록수·한대앞",
+      "major_stores": [
+        "이마트 상록점",
+        "롯데마트 사동점"
+      ],
+      "parks": [
+        "노적봉공원",
+        "광덕산"
+      ],
+      "hospitals": [
+        "고려대학교 안산병원(인접)"
+      ],
+      "developments": [
+        {
+          "title": "GTX-C 한양대역",
+          "status": "진행중",
+          "note": "양주~수원 연결 예정"
+        },
+        {
+          "title": "신안산선",
+          "status": "진행중",
+          "note": "여의도~한양대 연결"
+        }
+      ],
+      "hobby_spots": [
+        "노적봉공원",
+        "광덕산 둘레길"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 55,
+        "max": 80,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "4호선→2호선 환승"
+      },
+      "yeouido": {
+        "min": 60,
+        "max": 85,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "gwanghwamun": {
+        "min": 60,
+        "max": 85,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "pangyo": {
+        "min": 55,
+        "max": 80,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "jamsil": {
+        "min": 60,
+        "max": 85,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "seongsu": {
+        "min": 65,
+        "max": 90,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      }
+    }
+  },
+  {
+    "district_name": "광주시",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "경안·오포·곤지암",
+      "major_stores": [
+        "이마트 광주점"
+      ],
+      "parks": [
+        "무갑산",
+        "곤지암 화담숲",
+        "팔당호"
+      ],
+      "hospitals": [],
+      "developments": [
+        {
+          "title": "경강선",
+          "status": "완료",
+          "note": "판교~여주 연결"
+        }
+      ],
+      "hobby_spots": [
+        "곤지암 화담숲",
+        "팔당호 드라이브",
+        "남한산성"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 60,
+        "max": 85,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "경강선→분당선 환승"
+      },
+      "yeouido": {
+        "min": 75,
+        "max": 100,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "gwanghwamun": {
+        "min": 70,
+        "max": 95,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "pangyo": {
+        "min": 30,
+        "max": 50,
+        "transfers": 0,
+        "verdict": "보통",
+        "description": "경강선 직결"
+      },
+      "jamsil": {
+        "min": 55,
+        "max": 80,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "seongsu": {
+        "min": 65,
+        "max": 90,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      }
+    }
+  },
+  {
+    "district_name": "하남시",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [
+        "미사·위례 신도시 학교 신설"
+      ],
+      "academy_cluster": null,
+      "commercial_area": "미사·위례·신장",
+      "major_stores": [
+        "스타필드 하남",
+        "이마트 미사점"
+      ],
+      "parks": [
+        "미사한강공원",
+        "검단산"
+      ],
+      "hospitals": [],
+      "developments": [
+        {
+          "title": "5호선 하남 연장",
+          "status": "완료",
+          "note": "상일동~하남검단산 연결"
+        },
+        {
+          "title": "9호선 하남 연장",
+          "status": "예정",
+          "note": "강일~미사 검토"
+        },
+        {
+          "title": "3호선 하남 연장",
+          "status": "예정",
+          "note": "오금~하남 검토"
+        }
+      ],
+      "hobby_spots": [
+        "스타필드 하남",
+        "미사 한강공원",
+        "검단산 등산"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 40,
+        "max": 60,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "5호선→2호선 환승"
+      },
+      "yeouido": {
+        "min": 50,
+        "max": 70,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "5호선→9호선 환승"
+      },
+      "gwanghwamun": {
+        "min": 40,
+        "max": 60,
+        "transfers": 0,
+        "verdict": "보통",
+        "description": "5호선 직결"
+      },
+      "pangyo": {
+        "min": 55,
+        "max": 80,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "jamsil": {
+        "min": 25,
+        "max": 40,
+        "transfers": 1,
+        "verdict": "편리",
+        "description": "5호선→8호선 환승"
+      },
+      "seongsu": {
+        "min": 35,
+        "max": 55,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "5호선→2호선 환승"
+      }
+    }
+  },
+  {
+    "district_name": "오산시",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "오산역·세교",
+      "major_stores": [
+        "이마트 오산점",
+        "롯데마트 오산점"
+      ],
+      "parks": [
+        "독산성",
+        "오산천"
+      ],
+      "hospitals": [
+        "오산한국병원"
+      ],
+      "developments": [
+        {
+          "title": "인덕원동탄선",
+          "status": "진행중",
+          "note": "오산 경유 예정"
+        },
+        {
+          "title": "오산세교신도시",
+          "status": "진행중",
+          "note": "택지지구 개발"
+        }
+      ],
+      "hobby_spots": [
+        "독산성 산성길",
+        "오산천 자전거길"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 70,
+        "max": 95,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "1호선→2호선 환승"
+      },
+      "yeouido": {
+        "min": 70,
+        "max": 95,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "1호선→5호선 환승"
+      },
+      "gwanghwamun": {
+        "min": 70,
+        "max": 95,
+        "transfers": 0,
+        "verdict": "불편",
+        "description": "1호선 직결 장거리"
+      },
+      "pangyo": {
+        "min": 60,
+        "max": 85,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "jamsil": {
+        "min": 75,
+        "max": 100,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "seongsu": {
+        "min": 75,
+        "max": 100,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      }
+    }
+  },
+  {
+    "district_name": "이천시",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "이천중앙·부발",
+      "major_stores": [
+        "이천 롯데프리미엄아울렛",
+        "이마트 이천점"
+      ],
+      "parks": [
+        "설봉공원",
+        "이천도자예술마을"
+      ],
+      "hospitals": [
+        "경기도의료원 이천병원"
+      ],
+      "developments": [
+        {
+          "title": "경강선",
+          "status": "완료",
+          "note": "판교~여주 연결"
+        },
+        {
+          "title": "수도권내륙선",
+          "status": "예정",
+          "note": "동탄~이천~여주 검토"
+        }
+      ],
+      "hobby_spots": [
+        "설봉공원",
+        "이천 도자기축제",
+        "곤지암 인접"
+      ],
+      "shuttles": [
+        "SK하이닉스 이천 통근버스"
+      ]
+    },
+    "commute": {
+      "gangnam": {
+        "min": 70,
+        "max": 95,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "경강선→분당선 환승"
+      },
+      "yeouido": {
+        "min": 85,
+        "max": 115,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "gwanghwamun": {
+        "min": 80,
+        "max": 110,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "pangyo": {
+        "min": 40,
+        "max": 60,
+        "transfers": 0,
+        "verdict": "보통",
+        "description": "경강선 직결"
+      },
+      "jamsil": {
+        "min": 70,
+        "max": 95,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "seongsu": {
+        "min": 80,
+        "max": 110,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      }
+    }
+  },
+  {
+    "district_name": "군포시",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "산본·금정",
+      "major_stores": [
+        "롯데피트인 산본점",
+        "이마트 산본점"
+      ],
+      "parks": [
+        "수리산",
+        "반월호수"
+      ],
+      "hospitals": [
+        "원광대학교 산본병원"
+      ],
+      "developments": [
+        {
+          "title": "GTX-C 금정역",
+          "status": "진행중",
+          "note": "양주~수원 연결 예정"
+        },
+        {
+          "title": "월곶판교선",
+          "status": "진행중",
+          "note": "월곶~판교 연결"
+        }
+      ],
+      "hobby_spots": [
+        "수리산 등산",
+        "반월호수 산책"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 45,
+        "max": 65,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "4호선→2호선 환승"
+      },
+      "yeouido": {
+        "min": 45,
+        "max": 65,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "4호선→5호선 환승"
+      },
+      "gwanghwamun": {
+        "min": 45,
+        "max": 65,
+        "transfers": 0,
+        "verdict": "보통",
+        "description": "1호선 직결"
+      },
+      "pangyo": {
+        "min": 45,
+        "max": 65,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "환승 1회"
+      },
+      "jamsil": {
+        "min": 50,
+        "max": 70,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "환승 1회"
+      },
+      "seongsu": {
+        "min": 55,
+        "max": 75,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      }
+    }
+  },
+  {
+    "district_name": "광명시",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "철산·광명사거리·광명역",
+      "major_stores": [
+        "롯데프리미엄아울렛 광명점",
+        "이케아 광명점",
+        "코스트코 광명점"
+      ],
+      "parks": [
+        "도덕산",
+        "안양천"
+      ],
+      "hospitals": [
+        "광명성애병원",
+        "중앙대학교 광명병원"
+      ],
+      "developments": [
+        {
+          "title": "신안산선",
+          "status": "진행중",
+          "note": "여의도~한양대 연결"
+        },
+        {
+          "title": "월곶판교선",
+          "status": "진행중",
+          "note": "광명 경유"
+        },
+        {
+          "title": "광명·시흥 3기 신도시",
+          "status": "예정",
+          "note": "7만세대 규모"
+        },
+        {
+          "title": "GTX-B(인접 구로)",
+          "status": "진행중",
+          "note": "송도~마석 연결"
+        }
+      ],
+      "hobby_spots": [
+        "광명동굴",
+        "이케아·아울렛 쇼핑",
+        "도덕산 등산"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 35,
+        "max": 55,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "7호선→2호선 환승"
+      },
+      "yeouido": {
+        "min": 35,
+        "max": 55,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "환승 1회"
+      },
+      "gwanghwamun": {
+        "min": 40,
+        "max": 60,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "환승 1회"
+      },
+      "pangyo": {
+        "min": 55,
+        "max": 75,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "jamsil": {
+        "min": 35,
+        "max": 55,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "7호선→2호선 환승"
+      },
+      "seongsu": {
+        "min": 45,
+        "max": 65,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "환승 1회"
+      }
+    }
+  },
+  {
+    "district_name": "구리시",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "구리역·토평",
+      "major_stores": [
+        "롯데백화점 구리점",
+        "이마트 구리점"
+      ],
+      "parks": [
+        "한강공원",
+        "동구릉"
+      ],
+      "hospitals": [
+        "한양대학교 구리병원"
+      ],
+      "developments": [
+        {
+          "title": "8호선 별내선(인접 남양주)",
+          "status": "완료",
+          "note": "암사~별내 연결"
+        },
+        {
+          "title": "GTX-B 별내(인접)",
+          "status": "진행중",
+          "note": "송도~마석 연결"
+        }
+      ],
+      "hobby_spots": [
+        "동구릉 산책",
+        "한강공원 자전거길",
+        "구리타워 야경"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 40,
+        "max": 60,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "경의중앙선 또는 환승"
+      },
+      "yeouido": {
+        "min": 50,
+        "max": 70,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "환승 1회"
+      },
+      "gwanghwamun": {
+        "min": 35,
+        "max": 55,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "경의중앙선→1호선 환승"
+      },
+      "pangyo": {
+        "min": 60,
+        "max": 85,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "jamsil": {
+        "min": 35,
+        "max": 55,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "환승 1회"
+      },
+      "seongsu": {
+        "min": 25,
+        "max": 40,
+        "transfers": 1,
+        "verdict": "편리",
+        "description": "경의중앙선→2호선 환승"
+      }
+    }
+  },
+  {
+    "district_name": "의왕시",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "내손·고천",
+      "major_stores": [
+        "이마트 트레이더스 의왕점"
+      ],
+      "parks": [
+        "백운호수",
+        "청계산",
+        "모락산"
+      ],
+      "hospitals": [],
+      "developments": [
+        {
+          "title": "GTX-C 의왕역",
+          "status": "진행중",
+          "note": "양주~수원 연결 예정"
+        },
+        {
+          "title": "인덕원동탄선",
+          "status": "진행중",
+          "note": "의왕 경유 예정"
+        },
+        {
+          "title": "월곶판교선",
+          "status": "진행중",
+          "note": "월곶~판교 연결"
+        }
+      ],
+      "hobby_spots": [
+        "백운호수 카페거리",
+        "청계산 등산",
+        "왕송호수공원"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 40,
+        "max": 60,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "1호선→2호선 환승"
+      },
+      "yeouido": {
+        "min": 45,
+        "max": 65,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "환승 1회"
+      },
+      "gwanghwamun": {
+        "min": 45,
+        "max": 65,
+        "transfers": 0,
+        "verdict": "보통",
+        "description": "1호선 직결"
+      },
+      "pangyo": {
+        "min": 40,
+        "max": 60,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "환승 1회"
+      },
+      "jamsil": {
+        "min": 50,
+        "max": 70,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "환승 1회"
+      },
+      "seongsu": {
+        "min": 55,
+        "max": 75,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      }
+    }
+  },
+  {
+    "district_name": "안성시",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "안성·공도",
+      "major_stores": [
+        "이마트 안성점"
+      ],
+      "parks": [
+        "칠장산",
+        "안성팜랜드",
+        "안성맞춤랜드"
+      ],
+      "hospitals": [],
+      "developments": [
+        {
+          "title": "평택부발선",
+          "status": "예정",
+          "note": "안성 경유 검토"
+        }
+      ],
+      "hobby_spots": [
+        "안성팜랜드",
+        "안성맞춤랜드",
+        "칠장사"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 85,
+        "max": 115,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회 + 거리"
+      },
+      "yeouido": {
+        "min": 90,
+        "max": 120,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "gwanghwamun": {
+        "min": 90,
+        "max": 120,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "장거리"
+      },
+      "pangyo": {
+        "min": 75,
+        "max": 105,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "장거리"
+      },
+      "jamsil": {
+        "min": 90,
+        "max": 120,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "seongsu": {
+        "min": 95,
+        "max": 125,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      }
+    }
+  },
+  {
+    "district_name": "동두천시",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "동두천중앙·보산",
+      "major_stores": [
+        "이마트 동두천점"
+      ],
+      "parks": [
+        "소요산"
+      ],
+      "hospitals": [],
+      "developments": [
+        {
+          "title": "GTX-C 연장 검토",
+          "status": "예정",
+          "note": "양주~동두천 연장 논의"
+        },
+        {
+          "title": "1호선 연천 연장(인접)",
+          "status": "완료",
+          "note": "소요산~연천 연결"
+        }
+      ],
+      "hobby_spots": [
+        "소요산 등산",
+        "재인폭포(인접 연천)"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 85,
+        "max": 115,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회 + 거리"
+      },
+      "yeouido": {
+        "min": 85,
+        "max": 115,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "gwanghwamun": {
+        "min": 65,
+        "max": 90,
+        "transfers": 0,
+        "verdict": "불편",
+        "description": "1호선 직결 장거리"
+      },
+      "pangyo": {
+        "min": 105,
+        "max": 135,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "jamsil": {
+        "min": 80,
+        "max": 110,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "seongsu": {
+        "min": 75,
+        "max": 105,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      }
+    }
+  },
+  {
+    "district_name": "포천시",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "포천·송우",
+      "major_stores": [
+        "이마트 포천점"
+      ],
+      "parks": [
+        "광릉수목원",
+        "산정호수",
+        "백운계곡"
+      ],
+      "hospitals": [],
+      "developments": [
+        {
+          "title": "7호선 포천 연장 검토",
+          "status": "예정",
+          "note": "옥정~포천 연장 논의"
+        },
+        {
+          "title": "GTX-C 포천 연장 검토",
+          "status": "예정",
+          "note": "장기 검토"
+        }
+      ],
+      "hobby_spots": [
+        "산정호수",
+        "광릉수목원",
+        "포천 한탄강 주상절리"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 95,
+        "max": 125,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회 + 거리"
+      },
+      "yeouido": {
+        "min": 95,
+        "max": 125,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "gwanghwamun": {
+        "min": 80,
+        "max": 110,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "장거리"
+      },
+      "pangyo": {
+        "min": 110,
+        "max": 140,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "jamsil": {
+        "min": 90,
+        "max": 120,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "seongsu": {
+        "min": 85,
+        "max": 115,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      }
+    }
+  },
+  {
+    "district_name": "여주시",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "여주역·점동",
+      "major_stores": [
+        "여주프리미엄아울렛",
+        "이마트 여주점"
+      ],
+      "parks": [
+        "남한강",
+        "여강길",
+        "신륵사"
+      ],
+      "hospitals": [],
+      "developments": [
+        {
+          "title": "경강선",
+          "status": "완료",
+          "note": "판교~여주 연결"
+        },
+        {
+          "title": "수도권내륙선",
+          "status": "예정",
+          "note": "동탄~이천~여주 검토"
+        }
+      ],
+      "hobby_spots": [
+        "여주프리미엄아울렛",
+        "남한강 자전거길",
+        "신륵사·세종대왕릉"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 85,
+        "max": 115,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "경강선→분당선 환승"
+      },
+      "yeouido": {
+        "min": 100,
+        "max": 130,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "gwanghwamun": {
+        "min": 95,
+        "max": 125,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "pangyo": {
+        "min": 55,
+        "max": 80,
+        "transfers": 0,
+        "verdict": "불편",
+        "description": "경강선 직결"
+      },
+      "jamsil": {
+        "min": 85,
+        "max": 115,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "seongsu": {
+        "min": 95,
+        "max": 125,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      }
+    }
+  },
+  {
+    "district_name": "가평군",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "가평읍·청평",
+      "major_stores": [],
+      "parks": [
+        "자라섬",
+        "남이섬",
+        "운악산",
+        "북한강"
+      ],
+      "hospitals": [],
+      "developments": [
+        {
+          "title": "ITX-청춘",
+          "status": "완료",
+          "note": "용산~춘천 광역급행"
+        }
+      ],
+      "hobby_spots": [
+        "남이섬",
+        "자라섬 재즈페스티벌",
+        "쁘띠프랑스",
+        "아침고요수목원"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 95,
+        "max": 125,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회 + 거리"
+      },
+      "yeouido": {
+        "min": 85,
+        "max": 115,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "ITX→환승"
+      },
+      "gwanghwamun": {
+        "min": 75,
+        "max": 105,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "ITX→환승"
+      },
+      "pangyo": {
+        "min": 110,
+        "max": 140,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "jamsil": {
+        "min": 85,
+        "max": 115,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "seongsu": {
+        "min": 75,
+        "max": 100,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "경춘선→2호선 환승"
+      }
+    }
+  },
+  {
+    "district_name": "양평군",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "양평읍·용문",
+      "major_stores": [
+        "이마트 양평점"
+      ],
+      "parks": [
+        "두물머리",
+        "세미원",
+        "용문산"
+      ],
+      "hospitals": [],
+      "developments": [
+        {
+          "title": "경의중앙선",
+          "status": "완료",
+          "note": "용산~지평 연결"
+        }
+      ],
+      "hobby_spots": [
+        "두물머리",
+        "세미원",
+        "용문사 은행나무",
+        "남한강 자전거길"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 85,
+        "max": 115,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "yeouido": {
+        "min": 85,
+        "max": 115,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "경의중앙선→9호선 환승"
+      },
+      "gwanghwamun": {
+        "min": 70,
+        "max": 100,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "경의중앙선→환승"
+      },
+      "pangyo": {
+        "min": 95,
+        "max": 125,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "jamsil": {
+        "min": 75,
+        "max": 105,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "seongsu": {
+        "min": 65,
+        "max": 90,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "경의중앙선→2호선 환승"
+      }
+    }
+  },
+  {
+    "district_name": "연천군",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "전곡·연천읍",
+      "major_stores": [],
+      "parks": [
+        "한탄강",
+        "재인폭포",
+        "한탄강 주상절리"
+      ],
+      "hospitals": [],
+      "developments": [
+        {
+          "title": "1호선 연천 연장",
+          "status": "완료",
+          "note": "소요산~연천 연결"
+        }
+      ],
+      "hobby_spots": [
+        "한탄강 주상절리길",
+        "재인폭포",
+        "전곡선사박물관"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 110,
+        "max": 140,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회 + 거리"
+      },
+      "yeouido": {
+        "min": 110,
+        "max": 140,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "gwanghwamun": {
+        "min": 90,
+        "max": 120,
+        "transfers": 0,
+        "verdict": "불편",
+        "description": "1호선 직결 장거리"
+      },
+      "pangyo": {
+        "min": 125,
+        "max": 155,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "jamsil": {
+        "min": 105,
+        "max": 135,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "seongsu": {
+        "min": 100,
+        "max": 130,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      }
+    }
+  },
+  {
+    "district_name": "과천시",
+    "insights": {
+      "school_district_label": "과천 학군 (수도권 상위권)",
+      "school_notes": [
+        "과천외고·과천중앙고·과천여고 등 명문",
+        "특목고 진학률 상위"
+      ],
+      "academy_cluster": "과천 학원가",
+      "commercial_area": "과천중앙·별양·갈현",
+      "major_stores": [
+        "코스트코 양재(인접)",
+        "롯데시네마 과천",
+        "갈현 신축 상권"
+      ],
+      "parks": [
+        "청계산",
+        "관악산",
+        "서울대공원",
+        "국립현대미술관 과천"
+      ],
+      "hospitals": [],
+      "developments": [
+        {
+          "title": "GTX-C 과천역",
+          "status": "진행중",
+          "note": "양주~수원 연결 예정"
+        },
+        {
+          "title": "과천지식정보타운",
+          "status": "진행중",
+          "note": "지식기반 신도시 조성"
+        },
+        {
+          "title": "주공아파트 재건축",
+          "status": "진행중",
+          "note": "과천 1·2·5·8·10단지 등"
+        }
+      ],
+      "hobby_spots": [
+        "서울대공원·서울랜드",
+        "국립현대미술관",
+        "청계산 등산"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 25,
+        "max": 40,
+        "transfers": 0,
+        "verdict": "편리",
+        "description": "4호선→2호선 또는 직결"
+      },
+      "yeouido": {
+        "min": 35,
+        "max": 50,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "4호선→9호선 환승"
+      },
+      "gwanghwamun": {
+        "min": 35,
+        "max": 50,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "4호선→1호선 환승"
+      },
+      "pangyo": {
+        "min": 30,
+        "max": 45,
+        "transfers": 1,
+        "verdict": "편리",
+        "description": "4호선→신분당선 환승"
+      },
+      "jamsil": {
+        "min": 35,
+        "max": 55,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "4호선→2호선 환승"
+      },
+      "seongsu": {
+        "min": 45,
+        "max": 65,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "환승 1회"
+      }
+    }
+  },
+  {
+    "district_name": "인천 서구",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [
+        "청라·검단 신도시 학교 신설"
+      ],
+      "academy_cluster": null,
+      "commercial_area": "청라·검단",
+      "major_stores": [
+        "롯데마트 청라점",
+        "이마트 청라점"
+      ],
+      "parks": [
+        "청라호수공원",
+        "검단산"
+      ],
+      "hospitals": [
+        "인천나은병원"
+      ],
+      "developments": [
+        {
+          "title": "GTX-D",
+          "status": "예정",
+          "note": "장기~부천 연결 검토"
+        },
+        {
+          "title": "7호선 청라 연장",
+          "status": "진행중",
+          "note": "석남~청라국제도시 연결 예정"
+        },
+        {
+          "title": "검단신도시",
+          "status": "진행중",
+          "note": "택지지구 입주 진행"
+        },
+        {
+          "title": "청라국제도시",
+          "status": "진행중",
+          "note": "국제업무·R&D 단지"
+        }
+      ],
+      "hobby_spots": [
+        "청라호수공원",
+        "스카이 72 골프(영종 인접)"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 70,
+        "max": 100,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "yeouido": {
+        "min": 50,
+        "max": 75,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "공항철도→9호선 환승"
+      },
+      "gwanghwamun": {
+        "min": 55,
+        "max": 80,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "공항철도→환승"
+      },
+      "pangyo": {
+        "min": 85,
+        "max": 115,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "jamsil": {
+        "min": 70,
+        "max": 100,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "seongsu": {
+        "min": 65,
+        "max": 90,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      }
+    }
+  },
+  {
+    "district_name": "인천 연수구",
+    "insights": {
+      "school_district_label": "송도 학군",
+      "school_notes": [
+        "인천예일고·인천포스코고·채드윅국제학교",
+        "송도국제학교 다수"
+      ],
+      "academy_cluster": "송도 학원가",
+      "commercial_area": "송도·연수",
+      "major_stores": [
+        "현대프리미엄아울렛 송도점",
+        "트리플스트리트",
+        "이마트 트레이더스 송도점"
+      ],
+      "parks": [
+        "송도센트럴파크",
+        "청량산"
+      ],
+      "hospitals": [],
+      "developments": [
+        {
+          "title": "GTX-B 송도역",
+          "status": "진행중",
+          "note": "송도~마석 연결 예정"
+        },
+        {
+          "title": "수인분당선",
+          "status": "완료",
+          "note": "수원~인천 연결"
+        },
+        {
+          "title": "인천1호선 송도 연장",
+          "status": "진행중",
+          "note": "국제업무지구~송도랜드마크 연결"
+        }
+      ],
+      "hobby_spots": [
+        "송도센트럴파크",
+        "트리플스트리트",
+        "현대아울렛"
+      ],
+      "shuttles": [
+        "삼성바이오로직스 송도 통근버스"
+      ]
+    },
+    "commute": {
+      "gangnam": {
+        "min": 75,
+        "max": 100,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "yeouido": {
+        "min": 60,
+        "max": 85,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "gwanghwamun": {
+        "min": 70,
+        "max": 95,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "pangyo": {
+        "min": 85,
+        "max": 115,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "jamsil": {
+        "min": 70,
+        "max": 95,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "seongsu": {
+        "min": 75,
+        "max": 100,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      }
+    }
+  },
+  {
+    "district_name": "인천 남동구",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "구월·논현·만수",
+      "major_stores": [
+        "신세계백화점 인천점(논현)",
+        "롯데백화점 인천점(구월)",
+        "이마트 구월점"
+      ],
+      "parks": [
+        "인천대공원",
+        "소래습지생태공원"
+      ],
+      "hospitals": [
+        "가천대학교 길병원"
+      ],
+      "developments": [
+        {
+          "title": "수인분당선",
+          "status": "완료",
+          "note": "수원~인천 연결"
+        },
+        {
+          "title": "인천2호선",
+          "status": "완료",
+          "note": "검단오류~운연 연결"
+        }
+      ],
+      "hobby_spots": [
+        "소래포구",
+        "인천대공원",
+        "소래습지생태공원"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 70,
+        "max": 95,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "yeouido": {
+        "min": 55,
+        "max": 75,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "수인분당선→환승"
+      },
+      "gwanghwamun": {
+        "min": 65,
+        "max": 90,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "pangyo": {
+        "min": 75,
+        "max": 100,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "jamsil": {
+        "min": 65,
+        "max": 90,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "seongsu": {
+        "min": 70,
+        "max": 95,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      }
+    }
+  },
+  {
+    "district_name": "인천 부평구",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "부평역·부평시장",
+      "major_stores": [
+        "롯데마트 부평점",
+        "부평지하상가"
+      ],
+      "parks": [
+        "부평공원",
+        "청천천"
+      ],
+      "hospitals": [
+        "가톨릭대학교 인천성모병원"
+      ],
+      "developments": [
+        {
+          "title": "7호선 부평구청 연장",
+          "status": "완료",
+          "note": "온수~부평구청 연결"
+        },
+        {
+          "title": "GTX-B(인접 부천)",
+          "status": "진행중",
+          "note": "송도~마석 연결 예정"
+        }
+      ],
+      "hobby_spots": [
+        "부평지하상가",
+        "부평공원"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 60,
+        "max": 85,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "1호선→2호선 환승"
+      },
+      "yeouido": {
+        "min": 45,
+        "max": 65,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "1호선→5호선 환승"
+      },
+      "gwanghwamun": {
+        "min": 50,
+        "max": 70,
+        "transfers": 0,
+        "verdict": "불편",
+        "description": "1호선 직결"
+      },
+      "pangyo": {
+        "min": 70,
+        "max": 95,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "jamsil": {
+        "min": 55,
+        "max": 75,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "1호선→2호선 환승"
+      },
+      "seongsu": {
+        "min": 50,
+        "max": 70,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "1호선→2호선 환승"
+      }
+    }
+  },
+  {
+    "district_name": "인천 계양구",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "계산·작전",
+      "major_stores": [
+        "이마트 계양점",
+        "롯데마트 계양점"
+      ],
+      "parks": [
+        "계양산",
+        "굴포천"
+      ],
+      "hospitals": [
+        "메디플렉스 세종병원"
+      ],
+      "developments": [
+        {
+          "title": "GTX-D",
+          "status": "예정",
+          "note": "장기~부천 연결 검토"
+        },
+        {
+          "title": "계양테크노밸리(3기 신도시)",
+          "status": "예정",
+          "note": "1.7만세대 자족도시"
+        }
+      ],
+      "hobby_spots": [
+        "계양산 등산",
+        "굴포천 산책"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 65,
+        "max": 90,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "yeouido": {
+        "min": 45,
+        "max": 65,
+        "transfers": 1,
+        "verdict": "보통",
+        "description": "공항철도→9호선 환승"
+      },
+      "gwanghwamun": {
+        "min": 50,
+        "max": 70,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "pangyo": {
+        "min": 80,
+        "max": 110,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "jamsil": {
+        "min": 60,
+        "max": 85,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "seongsu": {
+        "min": 55,
+        "max": 80,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      }
+    }
+  },
+  {
+    "district_name": "인천 동구",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "송림·화수·만석",
+      "major_stores": [
+        "송림종합시장"
+      ],
+      "parks": [
+        "수도국산달동네박물관",
+        "화도진공원"
+      ],
+      "hospitals": [
+        "인천기독병원",
+        "인천백병원"
+      ],
+      "developments": [
+        {
+          "title": "송림뉴타운",
+          "status": "진행중",
+          "note": "재개발 사업 진행"
+        },
+        {
+          "title": "수인분당선",
+          "status": "완료",
+          "note": "수원~인천 연결"
+        }
+      ],
+      "hobby_spots": [
+        "수도국산달동네박물관",
+        "화도진공원"
+      ],
+      "shuttles": []
+    },
+    "commute": {
+      "gangnam": {
+        "min": 75,
+        "max": 100,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "yeouido": {
+        "min": 60,
+        "max": 85,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "gwanghwamun": {
+        "min": 65,
+        "max": 90,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "pangyo": {
+        "min": 85,
+        "max": 115,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "jamsil": {
+        "min": 70,
+        "max": 95,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "seongsu": {
+        "min": 70,
+        "max": 95,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      }
+    }
+  },
+  {
+    "district_name": "인천 중구",
+    "insights": {
+      "school_district_label": null,
+      "school_notes": [],
+      "academy_cluster": null,
+      "commercial_area": "신포·중앙·영종",
+      "major_stores": [
+        "신포국제시장",
+        "영종 파라다이스시티"
+      ],
+      "parks": [
+        "월미도",
+        "자유공원",
+        "을왕리해수욕장(영종)"
+      ],
+      "hospitals": [
+        "인하대학교병원(인접 미추홀)"
+      ],
+      "developments": [
+        {
+          "title": "인천공항 4단계",
+          "status": "완료",
+          "note": "제2터미널 확장"
+        },
+        {
+          "title": "영종도 개발",
+          "status": "진행중",
+          "note": "복합리조트 단지 조성"
+        },
+        {
+          "title": "GTX-D(인접)",
+          "status": "예정",
+          "note": "장기~부천 검토"
+        }
+      ],
+      "hobby_spots": [
+        "월미도·차이나타운",
+        "을왕리해수욕장",
+        "파라다이스시티"
+      ],
+      "shuttles": [
+        "인천공항 종사자 통근버스"
+      ]
+    },
+    "commute": {
+      "gangnam": {
+        "min": 70,
+        "max": 100,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "yeouido": {
+        "min": 50,
+        "max": 75,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "공항철도→9호선 환승"
+      },
+      "gwanghwamun": {
+        "min": 55,
+        "max": 80,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "pangyo": {
+        "min": 80,
+        "max": 110,
+        "transfers": 2,
+        "verdict": "불편",
+        "description": "환승 2회"
+      },
+      "jamsil": {
+        "min": 70,
+        "max": 95,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      },
+      "seongsu": {
+        "min": 65,
+        "max": 90,
+        "transfers": 1,
+        "verdict": "불편",
+        "description": "환승 1회"
+      }
+    }
+  }
+]

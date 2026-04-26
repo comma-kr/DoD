@@ -67,6 +67,54 @@ export function isValidKoreanPhone(phone: string): boolean {
   return /^01[016789]\d{7,8}$/.test(normalized);
 }
 
+// K-Apt 행정 분류 suffix 정리 — "(분양)", "(임대)", "(공공)" 등은
+// 행정 구분용 표기일 뿐 실제 호칭이 아니므로 표시 시 제거.
+// DB의 name은 보존 (raw 데이터 정합성 + 검색 가능성), 표시 단계에서만 정리.
+const KAPT_ADMIN_SUFFIX_RE =
+  /\s*\((?:분양|임대|공공|공공임대|국민임대|영구임대|행복주택|10년임대|5년임대|장기전세|분상공|혼합|혼합주택|민간|매입임대|기금)\)\s*$/;
+
+export function cleanApartmentName(name: string | null | undefined): string {
+  if (!name) return '';
+  let s = name;
+  // 끝에 붙은 suffix 1~2회 반복 제거 (예: "신당남산타운(분양)(혼합)")
+  for (let i = 0; i < 2; i++) {
+    const next = s.replace(KAPT_ADMIN_SUFFIX_RE, '');
+    if (next === s) break;
+    s = next;
+  }
+  return s.trim();
+}
+
+// 주소에서 법정동명 추출 (예: "서울특별시 중구 신당동 437" → "신당")
+// JS 정규식 \b는 ASCII 기반이라 한글에 안 붙음 → 명시적 lookahead 사용.
+// "동대문구"처럼 '동' 다음에 한글이 이어지는 경우는 동명이 아니므로 제외.
+export function extractDongFromAddress(address: string | null | undefined): string | null {
+  if (!address) return null;
+  const m = address.match(/([가-힣]{2,})동(?![가-힣])/);
+  return m ? m[1] : null;
+}
+
+// 사용자 통용 단지명 — K-Apt는 동명을 prefix로 붙여 등록하지만
+// 사람들은 "남산타운"이라 부르지 "신당남산타운"이라고 잘 안 부름.
+// 동 prefix 제거 후 3자 이상 남으면 제거, 그렇지 않으면 보존 (예: "잠실엘스"는 "엘스" 2자라 그대로).
+export function displayApartmentName(
+  name: string | null | undefined,
+  address?: string | null
+): string {
+  const cleaned = cleanApartmentName(name);
+  if (!cleaned) return '';
+  const dong = extractDongFromAddress(address);
+  if (!dong || dong.length < 2) return cleaned;
+  if (cleaned.startsWith(dong)) {
+    const stripped = cleaned.slice(dong.length).trim();
+    // 3자 이상 남고 + 첫 글자가 한글/영문이어야 자연스러운 호칭
+    if (stripped.length >= 3 && /^[가-힣A-Za-z]/.test(stripped)) {
+      return stripped;
+    }
+  }
+  return cleaned;
+}
+
 // 마크다운 헤딩 → URL 슬러그 (한글 보존, 특수문자만 정리)
 export function slugify(text: string): string {
   return text

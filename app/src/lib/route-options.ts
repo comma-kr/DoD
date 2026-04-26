@@ -4,7 +4,9 @@
 // 현재는 CBD 매트릭스 + Haversine 거리 기반 추정.
 // 향후 Kakao Mobility Transit/Direction API로 대체 예정.
 
-import { estimateCommute } from './commute-matrix';
+import { estimateCommuteByCodeAsync } from './commute-matrix';
+import { getSubwayPath, type SubwayHop } from './subway-paths';
+import { CBD_COORDS } from './transit-path';
 import type { CommuteArea } from '@/types/profile';
 
 export type RouteMode = 'subway_fastest' | 'subway_simple' | 'car_rush';
@@ -17,20 +19,8 @@ export interface RouteOption {
   transfersText: string;
   description: string;
   note?: string;
+  subwayPath?: SubwayHop[]; // 지하철 경로 hop 시퀀스 (출발→환승→도착)
 }
-
-// 주요 CBD 대표 좌표 (자차 거리 계산용)
-const CBD_COORDS: Record<CommuteArea, { lat: number; lng: number } | null> = {
-  gangnam: { lat: 37.4980, lng: 127.0276 }, // 강남역
-  yeouido: { lat: 37.5216, lng: 126.9241 }, // 여의도역
-  gwanghwamun: { lat: 37.5700, lng: 126.9764 }, // 광화문
-  pangyo: { lat: 37.3947, lng: 127.1112 }, // 판교역
-  jamsil: { lat: 37.5133, lng: 127.1,  }, // 잠실역
-  mapo: { lat: 37.5447, lng: 126.9497 }, // 공덕역
-  seongsu: { lat: 37.5447, lng: 127.0556 }, // 성수역
-  etc: null,
-  none: null,
-};
 
 // Haversine 거리 (km)
 function haversineKm(
@@ -66,28 +56,31 @@ function estimateCarTime(distanceKm: number): { min: number; max: number } {
 
 export interface GenerateOptions {
   district: string;
+  regionCode?: string | null; // 광역시 충돌 회피 매칭 키 (없으면 district_name fallback)
   commuteArea: CommuteArea | null | undefined;
   apartmentLat: number | null;
   apartmentLng: number | null;
   workplaceAddress?: string | null;
 }
 
-export function generateRouteOptions({
+export async function generateRouteOptions({
   district,
+  regionCode,
   commuteArea,
   apartmentLat,
   apartmentLng,
   workplaceAddress,
-}: GenerateOptions): RouteOption[] {
-  // 1) 프리셋 CBD가 있고 매트릭스에 존재 → 매트릭스 기반 3경로
+}: GenerateOptions): Promise<RouteOption[]> {
+  // 1) 프리셋 CBD가 있고 매트릭스(DB 우선)에 존재 → 매트릭스 기반 3경로
   if (commuteArea && commuteArea !== 'none' && commuteArea !== 'etc') {
-    const estimate = estimateCommute(district, commuteArea);
+    const estimate = await estimateCommuteByCodeAsync(regionCode, district, commuteArea);
     const coords = CBD_COORDS[commuteArea];
 
     if (estimate) {
       const options: RouteOption[] = [];
 
       // 1. 지하철 최단 경로
+      const path = getSubwayPath(district, commuteArea) ?? undefined;
       options.push({
         mode: 'subway_fastest',
         label: '지하철 최단',
@@ -98,6 +91,7 @@ export function generateRouteOptions({
             ? '직결'
             : `환승 ${estimate.transferCount}회`,
         description: estimate.description,
+        subwayPath: path,
       });
 
       // 2. 환승 적은 경로 (max 시간 + 편한 동선)

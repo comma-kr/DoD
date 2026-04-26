@@ -13,14 +13,13 @@ export interface CommuteEstimate {
   description: string;
 }
 
-// 주요 CBD 7개
+// 주요 CBD 6개
 export const MAIN_CBDS: CommuteArea[] = [
   'gangnam',
   'yeouido',
   'gwanghwamun',
   'pangyo',
   'jamsil',
-  'mapo',
   'seongsu',
 ];
 
@@ -30,7 +29,6 @@ export const CBD_LABELS: Record<CommuteArea, string> = {
   gwanghwamun: '광화문·종로',
   pangyo: '판교',
   jamsil: '잠실',
-  mapo: '마포·공덕',
   seongsu: '성수',
   etc: '그 외',
   none: '-',
@@ -43,7 +41,6 @@ const MATRIX: Record<string, Partial<Record<CommuteArea, CommuteEstimate>>> = {
     yeouido: { minMinutes: 35, maxMinutes: 55, transferCount: 1, verdict: '보통', description: '2호선 환승으로 45분 내외' },
     gwanghwamun: { minMinutes: 30, maxMinutes: 50, transferCount: 1, verdict: '보통', description: '2호선→5호선 환승' },
     pangyo: { minMinutes: 25, maxMinutes: 40, transferCount: 0, verdict: '편리', description: '8호선→신분당선 환승 또는 자차' },
-    mapo: { minMinutes: 40, maxMinutes: 60, transferCount: 1, verdict: '불편', description: '환승 포함 한 시간 내외' },
     seongsu: { minMinutes: 20, maxMinutes: 35, transferCount: 0, verdict: '편리', description: '2호선 직결' },
   },
   강남구: {
@@ -52,7 +49,6 @@ const MATRIX: Record<string, Partial<Record<CommuteArea, CommuteEstimate>>> = {
     yeouido: { minMinutes: 25, maxMinutes: 40, transferCount: 0, verdict: '편리', description: '9호선 직결' },
     gwanghwamun: { minMinutes: 25, maxMinutes: 45, transferCount: 1, verdict: '보통', description: '3호선→5호선 환승' },
     pangyo: { minMinutes: 20, maxMinutes: 35, transferCount: 0, verdict: '편리', description: '신분당선 직결' },
-    mapo: { minMinutes: 30, maxMinutes: 45, transferCount: 1, verdict: '보통', description: '환승 1회' },
     seongsu: { minMinutes: 15, maxMinutes: 25, transferCount: 0, verdict: '편리', description: '2호선 직결' },
   },
   서초구: {
@@ -61,7 +57,6 @@ const MATRIX: Record<string, Partial<Record<CommuteArea, CommuteEstimate>>> = {
     yeouido: { minMinutes: 25, maxMinutes: 40, transferCount: 0, verdict: '편리', description: '9호선 한 번으로' },
     gwanghwamun: { minMinutes: 30, maxMinutes: 50, transferCount: 1, verdict: '보통', description: '환승 1회 포함' },
     jamsil: { minMinutes: 20, maxMinutes: 35, transferCount: 1, verdict: '편리', description: '2호선 환승' },
-    mapo: { minMinutes: 30, maxMinutes: 45, transferCount: 1, verdict: '보통', description: '환승 1회' },
     seongsu: { minMinutes: 25, maxMinutes: 40, transferCount: 1, verdict: '보통', description: '환승 1회' },
   },
   마포구: {
@@ -71,14 +66,12 @@ const MATRIX: Record<string, Partial<Record<CommuteArea, CommuteEstimate>>> = {
     jamsil: { minMinutes: 35, maxMinutes: 50, transferCount: 1, verdict: '보통', description: '2호선 환승' },
     seongsu: { minMinutes: 20, maxMinutes: 35, transferCount: 0, verdict: '편리', description: '6호선 직결' },
     pangyo: { minMinutes: 45, maxMinutes: 65, transferCount: 2, verdict: '불편', description: '환승 2회 필요' },
-    mapo: { minMinutes: 5, maxMinutes: 15, transferCount: 0, verdict: '최적', description: '구 내부 이동' },
   },
   영등포구: {
     yeouido: { minMinutes: 5, maxMinutes: 15, transferCount: 0, verdict: '최적', description: '도보 + 5분' },
     gwanghwamun: { minMinutes: 25, maxMinutes: 40, transferCount: 0, verdict: '편리', description: '5호선 직결' },
     gangnam: { minMinutes: 30, maxMinutes: 45, transferCount: 0, verdict: '편리', description: '9호선 직결' },
     jamsil: { minMinutes: 35, maxMinutes: 55, transferCount: 1, verdict: '보통', description: '환승 1회' },
-    mapo: { minMinutes: 20, maxMinutes: 35, transferCount: 1, verdict: '편리', description: '5호선 환승' },
     pangyo: { minMinutes: 40, maxMinutes: 60, transferCount: 1, verdict: '보통', description: '신분당선 환승' },
     seongsu: { minMinutes: 30, maxMinutes: 45, transferCount: 1, verdict: '보통', description: '2호선 환승' },
   },
@@ -87,7 +80,6 @@ const MATRIX: Record<string, Partial<Record<CommuteArea, CommuteEstimate>>> = {
     gwanghwamun: { minMinutes: 30, maxMinutes: 45, transferCount: 0, verdict: '편리', description: '5호선 한 번으로' },
     gangnam: { minMinutes: 40, maxMinutes: 60, transferCount: 1, verdict: '보통', description: '환승 1회 + 시간 소요' },
     jamsil: { minMinutes: 45, maxMinutes: 65, transferCount: 1, verdict: '불편', description: '환승 + 거리' },
-    mapo: { minMinutes: 25, maxMinutes: 40, transferCount: 1, verdict: '보통', description: '5호선 환승' },
     pangyo: { minMinutes: 50, maxMinutes: 70, transferCount: 2, verdict: '불편', description: '환승 2회' },
     seongsu: { minMinutes: 35, maxMinutes: 50, transferCount: 1, verdict: '보통', description: '환승 1회' },
   },
@@ -97,7 +89,6 @@ const MATRIX: Record<string, Partial<Record<CommuteArea, CommuteEstimate>>> = {
     jamsil: { minMinutes: 15, maxMinutes: 25, transferCount: 0, verdict: '편리', description: '2호선 직결' },
     gwanghwamun: { minMinutes: 15, maxMinutes: 30, transferCount: 0, verdict: '편리', description: '5호선 또는 2호선 환승' },
     yeouido: { minMinutes: 30, maxMinutes: 45, transferCount: 1, verdict: '보통', description: '5호선 환승' },
-    mapo: { minMinutes: 20, maxMinutes: 35, transferCount: 0, verdict: '편리', description: '6호선 직결' },
     pangyo: { minMinutes: 35, maxMinutes: 55, transferCount: 1, verdict: '보통', description: '환승 1회' },
   },
   동작구: {
@@ -105,7 +96,6 @@ const MATRIX: Record<string, Partial<Record<CommuteArea, CommuteEstimate>>> = {
     gangnam: { minMinutes: 20, maxMinutes: 35, transferCount: 0, verdict: '편리', description: '9호선 급행 직결' },
     gwanghwamun: { minMinutes: 15, maxMinutes: 30, transferCount: 0, verdict: '편리', description: '1호선 직결' },
     jamsil: { minMinutes: 30, maxMinutes: 45, transferCount: 1, verdict: '보통', description: '2호선 환승' },
-    mapo: { minMinutes: 20, maxMinutes: 35, transferCount: 1, verdict: '편리', description: '환승 1회' },
     pangyo: { minMinutes: 35, maxMinutes: 50, transferCount: 1, verdict: '보통', description: '신분당선 환승' },
     seongsu: { minMinutes: 25, maxMinutes: 40, transferCount: 1, verdict: '보통', description: '2호선 환승' },
   },
@@ -116,6 +106,68 @@ export function estimateCommute(
   commuteArea: CommuteArea | undefined
 ): CommuteEstimate | null {
   if (!commuteArea || commuteArea === 'none' || commuteArea === 'etc') return null;
+  return MATRIX[district]?.[commuteArea] ?? null;
+}
+
+/**
+ * estimateCommute의 비동기 + DB 우선 버전. region_code 기반 정확 매칭.
+ * 코드 MATRIX만 보던 동기 버전이 새 권역(은평구 등)을 누락하던 문제 해결.
+ */
+export async function estimateCommuteByCodeAsync(
+  regionCode: string | null | undefined,
+  district: string,
+  commuteArea: CommuteArea | undefined
+): Promise<CommuteEstimate | null> {
+  if (!commuteArea || commuteArea === 'none' || commuteArea === 'etc') return null;
+
+  // 1) DB region_code 우선
+  if (regionCode) {
+    try {
+      const supabase = createSupabaseAdminClient();
+      const { data } = await supabase
+        .from('region_commute')
+        .select('min_minutes, max_minutes, transfer_count, verdict, description')
+        .eq('region_code', regionCode)
+        .eq('commute_area', commuteArea)
+        .maybeSingle();
+      if (data) {
+        return {
+          minMinutes: (data as { min_minutes: number }).min_minutes,
+          maxMinutes: (data as { max_minutes: number }).max_minutes,
+          transferCount: (data as { transfer_count: number }).transfer_count,
+          verdict: (data as { verdict: CommuteEstimate['verdict'] }).verdict,
+          description: (data as { description: string }).description,
+        };
+      }
+    } catch {
+      // DB 실패 → 이름 기반 fallback
+    }
+  }
+
+  // 2) DB district_name fallback
+  try {
+    const supabase = createSupabaseAdminClient();
+    const { data } = await supabase
+      .from('region_commute')
+      .select('min_minutes, max_minutes, transfer_count, verdict, description')
+      .eq('district_name', district)
+      .eq('commute_area', commuteArea)
+      .limit(1)
+      .maybeSingle();
+    if (data) {
+      return {
+        minMinutes: (data as { min_minutes: number }).min_minutes,
+        maxMinutes: (data as { max_minutes: number }).max_minutes,
+        transferCount: (data as { transfer_count: number }).transfer_count,
+        verdict: (data as { verdict: CommuteEstimate['verdict'] }).verdict,
+        description: (data as { description: string }).description,
+      };
+    }
+  } catch {
+    // 무시
+  }
+
+  // 3) 코드 MATRIX 최종 fallback
   return MATRIX[district]?.[commuteArea] ?? null;
 }
 
@@ -166,6 +218,162 @@ export async function getCommuteGridAsync(district: string): Promise<
     label: CBD_LABELS[area],
     estimate: dbMap[area] ?? MATRIX[district]?.[area] ?? null,
   }));
+}
+
+/**
+ * region_code(시군구 5자리) 우선 매칭. 같은 이름의 자치구가 여러 광역시에 존재할 때 충돌 회피.
+ * region_code 미스 시 district_name 기반 fallback.
+ */
+export async function getCommuteGridByCodeAsync(
+  regionCode: string | null | undefined,
+  districtFallback: string
+): Promise<Array<{ area: CommuteArea; label: string; estimate: CommuteEstimate | null }>> {
+  if (!regionCode) {
+    return getCommuteGridAsync(districtFallback);
+  }
+
+  let dbMap: Partial<Record<CommuteArea, CommuteEstimate>> = {};
+  try {
+    const supabase = createSupabaseAdminClient();
+    const { data } = await supabase
+      .from('region_commute')
+      .select('commute_area, min_minutes, max_minutes, transfer_count, verdict, description')
+      .eq('region_code', regionCode);
+
+    for (const row of data ?? []) {
+      const v = (row as { verdict: string }).verdict as CommuteEstimate['verdict'];
+      dbMap[(row as { commute_area: CommuteArea }).commute_area] = {
+        minMinutes: (row as { min_minutes: number }).min_minutes,
+        maxMinutes: (row as { max_minutes: number }).max_minutes,
+        transferCount: (row as { transfer_count: number }).transfer_count,
+        verdict: v,
+        description: (row as { description: string }).description,
+      };
+    }
+  } catch {
+    dbMap = {};
+  }
+
+  // DB hit이 하나라도 있으면 그것만 사용. 전혀 없으면 이름 fallback.
+  if (Object.keys(dbMap).length === 0) {
+    return getCommuteGridAsync(districtFallback);
+  }
+
+  return MAIN_CBDS.map((area) => ({
+    area,
+    label: CBD_LABELS[area],
+    estimate: dbMap[area] ?? MATRIX[districtFallback]?.[area] ?? null,
+  }));
+}
+
+/**
+ * 단지 좌표 기반 ODSay 실시간 매칭. 결과는 시군구 매트릭스보다 정밀.
+ * - 단지 좌표 없음 → 매트릭스 fallback
+ * - ODSay 결과 있음 → ODSay 사용 (출처 표기를 위해 source 필드 추가)
+ * - ODSay 미응답(키 없음/실패/캐시미스 + 호출실패) → 시군구 매트릭스 fallback
+ *
+ * 캐시: transit_path_cache 테이블 (단지×CBD 영구 캐시). 같은 단지 재조회는 무료.
+ */
+import { getTransitPath, CBD_COORDS } from './transit-path';
+import { LINE_COLOR } from './subway-paths';
+
+export interface ApartmentCommuteEstimate extends CommuteEstimate {
+  source: 'odsay' | 'matrix' | 'none';
+  hops?: { firstStation: string | null; lastStation: string | null };
+}
+
+function odsayPathToEstimate(p: {
+  totalTimeMin: number;
+  transitCount: number;
+  hops: Array<{ rideLine?: string }>;
+  firstStation: string | null;
+  lastStation: string | null;
+}): ApartmentCommuteEstimate {
+  const total = p.totalTimeMin;
+  const transfers = p.transitCount;
+  // 약간의 변동 흡수 — ODSay 단일 추정값을 ±5/+10 폭으로 노출
+  const minMinutes = Math.max(5, Math.round(total - 5));
+  const maxMinutes = Math.round(total + 10);
+
+  // verdict 자동 판정
+  let verdict: CommuteEstimate['verdict'];
+  if (total <= 30 && transfers === 0) verdict = '최적';
+  else if (total <= 45 && transfers <= 1) verdict = '편리';
+  else if (total <= 60) verdict = '보통';
+  else verdict = '불편';
+
+  // description 생성 — 첫 라이드 호선 + 환승 횟수
+  const rideLines = p.hops
+    .map((h) => h.rideLine)
+    .filter((l): l is string => Boolean(l));
+  const lineLabels = rideLines.map((l) => (LINE_COLOR as Record<string, { label: string }>)[l]?.label ?? l);
+  let description: string;
+  if (lineLabels.length === 0) {
+    description = `약 ${total}분 (${p.firstStation ?? '근처 역'}→${p.lastStation ?? '도착'})`;
+  } else if (transfers === 0) {
+    description = `${lineLabels[0]}호선 직결 (약 ${total}분)`;
+  } else {
+    description = `${lineLabels.slice(0, 3).join('→')} 환승 ${transfers}회 (약 ${total}분)`;
+  }
+
+  return {
+    minMinutes,
+    maxMinutes,
+    transferCount: transfers,
+    verdict,
+    description,
+    source: 'odsay',
+    hops: { firstStation: p.firstStation, lastStation: p.lastStation },
+  };
+}
+
+/**
+ * 단지 단위 commute grid. 6 CBD 모두 ODSay로 시도하고, 실패한 항목만 매트릭스 fallback.
+ */
+export async function getApartmentCommuteGridAsync(
+  apartmentId: string,
+  origin: { lat: number; lng: number } | null,
+  regionCode: string | null | undefined,
+  districtFallback: string
+): Promise<Array<{ area: CommuteArea; label: string; estimate: ApartmentCommuteEstimate | null }>> {
+  // 매트릭스 결과 먼저 fetch (fallback 베이스)
+  const matrixGrid = await getCommuteGridByCodeAsync(regionCode, districtFallback);
+  const matrixMap: Partial<Record<CommuteArea, CommuteEstimate>> = {};
+  for (const g of matrixGrid) if (g.estimate) matrixMap[g.area] = g.estimate;
+
+  // 좌표 없으면 매트릭스만
+  if (!origin) {
+    return matrixGrid.map((g) => ({
+      area: g.area,
+      label: g.label,
+      estimate: g.estimate ? { ...g.estimate, source: 'matrix' as const } : null,
+    }));
+  }
+
+  // 6 CBD 병렬 ODSay 호출 (캐시 hit이면 무료)
+  const odsayResults = await Promise.all(
+    MAIN_CBDS.map(async (area) => {
+      const dest = CBD_COORDS[area];
+      if (!dest) return { area, path: null };
+      try {
+        const path = await getTransitPath(apartmentId, origin, area, dest);
+        return { area, path };
+      } catch {
+        return { area, path: null };
+      }
+    })
+  );
+
+  return MAIN_CBDS.map((area) => {
+    const odsay = odsayResults.find((r) => r.area === area)?.path;
+    let estimate: ApartmentCommuteEstimate | null = null;
+    if (odsay) {
+      estimate = odsayPathToEstimate(odsay);
+    } else if (matrixMap[area]) {
+      estimate = { ...matrixMap[area]!, source: 'matrix' };
+    }
+    return { area, label: CBD_LABELS[area], estimate };
+  });
 }
 
 export function getVerdictColor(verdict: CommuteEstimate['verdict']): string {

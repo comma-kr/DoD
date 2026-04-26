@@ -6,6 +6,7 @@ import { checkFreeQuota, consumeFreeQuota } from '@/lib/quota';
 import { generateFreeDeepSingleReport } from '@/lib/claude';
 import { loadProfile } from '@/lib/profile';
 import { calcJeonseRatio, type RentPoint } from '@/lib/jeonse-ratio';
+import { displayApartmentName } from '@/lib/utils';
 import { calcRegionPercentile } from '@/lib/region-stats';
 import { fetchCompareSuggestions } from '@/lib/compare-suggestions';
 import { calcPricePerPyeong } from '@/lib/utils';
@@ -132,7 +133,7 @@ export async function POST(request: Request) {
 
   const apartment: ApartmentWithLatestPrice = {
     id: aptRow.id,
-    name: aptRow.name,
+    name: displayApartmentName(aptRow.name, aptRow.address),
     address: aptRow.address,
     totalUnits: aptRow.total_units,
     builtYear: aptRow.built_year,
@@ -213,6 +214,7 @@ export async function POST(request: Request) {
             stationDistanceM: apartment.stationDistanceM ?? null,
             totalUnits: apartment.totalUnits ?? null,
             builtYear: apartment.builtYear ?? null,
+            dongCode: aptRow.dong_code ?? null, // 광역시 충돌 회피용 region_code 매칭 키
             jeonseRatio, // null 또는 { ratio, pct, saleAvg10k, jeonseAvg10k, ... }
             regionPercentile, // null 또는 { scope, regionAvg, diffPct, ... }
           },

@@ -190,7 +190,11 @@ export default async function ReportPage({ params }: PageProps) {
           <ShareBar title={report.title} />
         </div>
 
-        <UpsellCTAs householdType={conditions.householdType ?? null} />
+        <UpsellCTAs
+          householdType={conditions.householdType ?? null}
+          currentApartmentId={mainApt?.id ?? null}
+          currentApartmentName={mainApt?.name ?? null}
+        />
 
         <p className="mt-10 text-center text-xs text-foreground-sub">
           본 자료는 공공데이터 기반 참고용 정보이며, 판단의 책임은 이용자에게

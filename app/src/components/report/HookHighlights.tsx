@@ -220,8 +220,8 @@ export default function HookHighlights({
             <div className="mt-3 text-[10px] font-semibold uppercase tracking-wide text-foreground-sub">
               {card.label}
             </div>
-            <div className="mt-1 text-lg font-bold leading-tight text-foreground">
-              {card.main}
+            <div className="mt-1 text-lg font-extrabold leading-tight text-foreground">
+              <span className="report-highlight">{card.main}</span>
             </div>
             <div className="mt-1 text-[11px] text-foreground-sub">{card.sub}</div>
           </div>

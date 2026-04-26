@@ -84,14 +84,13 @@ async function listDistricts() {
 // ============================================================
 // Claude 프롬프트
 // ============================================================
-const COMMUTE_AREAS = ['gangnam', 'yeouido', 'gwanghwamun', 'pangyo', 'jamsil', 'mapo', 'seongsu'];
+const COMMUTE_AREAS = ['gangnam', 'yeouido', 'gwanghwamun', 'pangyo', 'jamsil', 'seongsu'];
 const CBD_LABELS = {
   gangnam: '강남(테헤란로/삼성)',
   yeouido: '여의도',
   gwanghwamun: '광화문/시청',
   pangyo: '판교',
   jamsil: '잠실',
-  mapo: '마포/공덕',
   seongsu: '성수',
 };
 
@@ -119,7 +118,6 @@ function buildPrompt(districtName) {
     "gwanghwamun": {...},
     "pangyo": {...},
     "jamsil": {...},
-    "mapo": {...},
     "seongsu": {...}
   }
 }

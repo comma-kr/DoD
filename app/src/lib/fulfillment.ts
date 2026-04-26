@@ -7,6 +7,7 @@ import { buildMockCompareReport } from './mock-reports';
 import { loadProfile } from './profile';
 import { PRODUCT_NAMES, type ProductId } from './pricing';
 import { calcJeonseRatio, type RentPoint } from './jeonse-ratio';
+import { displayApartmentName } from './utils';
 import type { ApartmentWithLatestPrice, TradePoint } from '@/types/apartment';
 
 export interface PendingPaymentRow {
@@ -100,7 +101,7 @@ export async function fulfillPendingPayment(
     const latest = trades[0]; // desc 정렬 → 최신
     return {
       id: row.id,
-      name: row.name,
+      name: displayApartmentName(row.name, row.address),
       address: row.address,
       totalUnits: row.total_units,
       builtYear: row.built_year,
@@ -166,6 +167,8 @@ export async function fulfillPendingPayment(
           const aptTrades = a.trades ?? [];
           const aptRents = rentsByApt.get(a.id) ?? [];
           const jeonse = calcJeonseRatio(aptTrades, aptRents);
+          // dongCode는 ApartmentWithLatestPrice에 없어서 raw row에서 직접 가져옴.
+          const rawRow = aptRows?.find((r) => r.id === a.id);
           return {
             id: a.id,
             name: a.name,
@@ -176,6 +179,7 @@ export async function fulfillPendingPayment(
             stationDistanceM: a.stationDistanceM ?? null,
             totalUnits: a.totalUnits ?? null,
             builtYear: a.builtYear ?? null,
+            dongCode: rawRow?.dong_code ?? null, // 광역시 충돌 회피용 region 매칭 키
             latestPrice10k: a.latestPrice10k ?? null,
             latestAreaM2: a.latestAreaM2 ?? null,
             trades: aptTrades,
