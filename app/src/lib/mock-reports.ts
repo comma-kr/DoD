@@ -510,7 +510,9 @@ function getCommutePositioning(district: string): string {
 function buildSchool(
   f: ApartmentFacts,
   profile: UserProfile | null,
-  kidsInfra: import('./kakao-local').KidsInfra | null
+  kidsInfra: import('./kakao-local').KidsInfra | null,
+  nearbySchools: import('./kakao-local').NearbySchool[],
+  academyClusterFromDb: string | null
 ): string {
   const isParent =
     profile?.householdType === 'family_kids' ||
@@ -543,12 +545,34 @@ function buildSchool(
     kidsInfraLine = '- **주변 육아 인프라**: 반경 800m 내 등록된 어린이집·소아과 데이터가 적어요. 직접 둘러보시는 걸 권장.';
   }
 
+  // 카카오 SC4 검색 기반 주변 학교 카운트 — "지도앱 확인" 떠넘김 대체.
+  // 각 레벨별 가장 가까운 학교 1개 이름까지 함께 표기.
+  let schoolCountLine = '';
+  if (nearbySchools.length > 0) {
+    const elem = nearbySchools.filter((s) => s.type === '초등학교');
+    const mid = nearbySchools.filter((s) => s.type === '중학교');
+    const high = nearbySchools.filter((s) => s.type === '고등학교');
+    const parts: string[] = [];
+    if (elem.length > 0) {
+      parts.push(`초등학교 ${elem.length}곳 (가장 가까운 곳: ${elem[0].name})`);
+    }
+    if (mid.length > 0) {
+      parts.push(`중학교 ${mid.length}곳 (가장 가까운 곳: ${mid[0].name})`);
+    }
+    if (high.length > 0) {
+      parts.push(`고등학교 ${high.length}곳 (가장 가까운 곳: ${high[0].name})`);
+    }
+    if (parts.length > 0) {
+      schoolCountLine = `- **반경 1.5km 학교 분포**: ${parts.join(' / ')}`;
+    }
+  }
+
   const block = `${heading}
 
-${f.district || '해당 지역'}${f.dong ? ' ' + f.dong : ''} 일대의 학군은 공공데이터만으로 전체 그림이 안 보여요. 다음 포인트를 체크해보세요.
+${f.district || '해당 지역'}${f.dong ? ' ' + f.dong : ''} 일대의 학군 정보를 모았어요.
 
-- **배정 초등학교**: 학교알리미(schoolinfo.go.kr)에서 단지 주소 기준 배정 학교 확인
-- **학원가 밀집도**: ${getAcademyCluster(f.district)}
+- **배정 초등학교**: 학교알리미(schoolinfo.go.kr)에서 단지 주소 기준 배정 확인 (배정만 정확)
+${schoolCountLine ? schoolCountLine + '\n' : ''}- **학원가 밀집도**: ${academyClusterFromDb || getAcademyCluster(f.district)}
 ${
   f.units >= 1500
     ? `- **단지 내 시설**: ${f.units.toLocaleString()}세대 규모면 단지 내 어린이집·유치원이 자체 운영되는 경우가 많아요. 워킹 부모라면 꼭 확인.`
@@ -853,6 +877,9 @@ export function buildMockTldr(
 export interface MockReportExtras {
   // 단지 좌표 기반 카카오 검색 결과. free route에서 prefetch.
   kidsInfra?: import('./kakao-local').KidsInfra | null;
+  nearbySchools?: import('./kakao-local').NearbySchool[];
+  // region_insights DB에서 추출한 시군구 큐레이션 (있으면 코드 매트릭스보다 우선)
+  academyCluster?: string | null;
 }
 
 export function buildMockFreeReport(
@@ -867,7 +894,7 @@ export function buildMockFreeReport(
     intro: () => buildIntro(f, profile),
     strengths: () => buildStrengths(f, profile),
     commute: () => buildCommute(f, profile),
-    school: () => buildSchool(f, profile, extras.kidsInfra ?? null),
+    school: () => buildSchool(f, profile, extras.kidsInfra ?? null, extras.nearbySchools ?? [], extras.academyCluster ?? null),
     convenience: () => buildConvenience(f, profile),
     price: () => buildPrice(f, profile),
     trend: () => buildTrend(f, profile),

@@ -13,7 +13,7 @@ import { calcPricePerPyeong } from '@/lib/utils';
 import type { ApartmentWithLatestPrice } from '@/types/apartment';
 import type { UserProfile } from '@/types/profile';
 import { buildMockFreeReport, buildMockTldr } from '@/lib/mock-reports';
-import { fetchKidsInfra, type KidsInfra } from '@/lib/kakao-local';
+import { fetchKidsInfra, fetchNearbySchools, type KidsInfra, type NearbySchool } from '@/lib/kakao-local';
 
 const schema = z.object({
   apartmentId: z.string().uuid(),
@@ -167,18 +167,35 @@ export async function POST(request: Request) {
   }
 
   // 마크다운 본문에 사용할 보조 데이터 prefetch (지도앱 떠넘김 방지)
-  // 학교 섹션의 "주변 육아 인프라" — 카카오 PS3(어린이집·유치원) + HP8(소아과) 검색.
   let kidsInfra: KidsInfra | null = null;
+  let nearbySchools: NearbySchool[] = [];
   if (typeof apartment.latitude === 'number' && typeof apartment.longitude === 'number') {
-    kidsInfra = await fetchKidsInfra(apartment.latitude, apartment.longitude).catch(() => null);
+    [kidsInfra, nearbySchools] = await Promise.all([
+      fetchKidsInfra(apartment.latitude, apartment.longitude).catch(() => null),
+      fetchNearbySchools(apartment.latitude, apartment.longitude, { radius: 1500, limit: 30 }).catch(() => []),
+    ]);
+  }
+
+  // 학원가 밀집도 — region_insights DB에서 academy_cluster 추출 (코드 매트릭스보다 우선).
+  // 단지 dong_code 앞 5자리 = region_code.
+  let academyCluster: string | null = null;
+  const regionCode = aptRow.dong_code ? String(aptRow.dong_code).slice(0, 5) : null;
+  if (regionCode) {
+    const { data: insightRow } = await supabase
+      .from('region_insights')
+      .select('academy_cluster')
+      .eq('region_code', regionCode)
+      .eq('scope', 'sgg')
+      .maybeSingle();
+    academyCluster = (insightRow as { academy_cluster?: string | null } | null)?.academy_cluster ?? null;
   }
 
   let markdown: string;
   try {
     if (process.env.NODE_ENV === 'development' && !process.env.ANTHROPIC_API_KEY) {
-      markdown = buildMockFreeReport(apartment, profile, { kidsInfra });
+      markdown = buildMockFreeReport(apartment, profile, { kidsInfra, nearbySchools, academyCluster });
     } else {
-      markdown = await generateFreeDeepSingleReport(apartment, profile, { kidsInfra });
+      markdown = await generateFreeDeepSingleReport(apartment, profile, { kidsInfra, nearbySchools });
     }
   } catch (err) {
     return NextResponse.json(

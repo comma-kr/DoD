@@ -228,7 +228,8 @@ export default async function LocationSection({
         lifestyleMode={highlightCommuteArea === 'none' || householdType === 'retired'}
       />
 
-      {/* 4. 가구 형태별 라이프 시나리오 카드 */}
+      {/* 4. 가구 형태 + 우선순위 기반 라이프 시나리오 카드.
+          향후 Claude API 연동 시 generateLifeScenario(apt, profile)로 동적 생성 예정. */}
       <LifeScenario
         apartmentName={primary.name}
         totalUnits={primary.totalUnits ?? null}
@@ -240,6 +241,7 @@ export default async function LocationSection({
         district={district}
         parks={insights.parks ?? []}
         householdType={householdType}
+        priorities={priorities ?? null}
       />
     </section>
   );

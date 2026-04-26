@@ -446,7 +446,7 @@ export default function KakaoMapClient({
                 font-weight:700;
                 letter-spacing:0.04em;
               ">${typeCode}</span>
-              <span style="padding:3px 8px;letter-spacing:-0.2px;">${shortName.replace(/[초중고]$/, '')}</span>
+              <span style="padding:3px 8px;letter-spacing:-0.2px;">${shortName}</span>
             </div>
             <div style="width:6px;height:6px;border-radius:50%;background:${MC.accent3};border:1.5px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></div>
           </div>

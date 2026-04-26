@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import type {
   MapPoint,
@@ -151,16 +152,36 @@ export default function NeighborhoodMap({
   void apartmentId;
   void insights;
 
+  // 범례 항목 토글 — 사용자가 보고 싶은 레이어만 켜기. 디폴트 모두 ON.
+  // 현재 단지·도보 경로는 제외 (출처 명확, 토글 불필요).
+  const [visible, setVisible] = useState({
+    nearby: true,
+    commercial: true,
+    school: true,
+    station: true,
+  });
+  const toggle = (key: keyof typeof visible) =>
+    setVisible((v) => ({ ...v, [key]: !v[key] }));
+
+  // 토글 OFF인 레이어는 빈 배열 또는 필터링해서 KakaoMap에 전달
+  const filteredPoints = points.filter((p) => {
+    if (p.type === 'station') return visible.station;
+    return true; // current 단지는 항상
+  });
+  const filteredApartmentZones = visible.nearby ? apartmentZones : [];
+  const filteredCommercial = visible.commercial ? (commercialClusters ?? []) : [];
+  const filteredSchools = visible.school ? (nearbySchools ?? []) : [];
+
   return (
     <div className="overflow-hidden rounded-3xl border border-border bg-surface shadow-sm">
       {/* 지도 + 범례 오버레이 (상단 메타 바 제거) */}
       <div className="map-frame-wrap relative h-[460px] w-full">
         <KakaoMap
           center={{ lat: apartmentLat, lng: apartmentLng }}
-          points={points}
-          walkingRoute={walkingRoute}
-          apartmentZones={apartmentZones}
-          commercialClusters={(commercialClusters ?? []).map((c) => ({
+          points={filteredPoints}
+          walkingRoute={visible.station ? walkingRoute : null}
+          apartmentZones={filteredApartmentZones}
+          commercialClusters={filteredCommercial.map((c) => ({
             id: c.id,
             centroid: c.centroid,
             count: c.count,
@@ -168,7 +189,7 @@ export default function NeighborhoodMap({
             name: c.name,
             seName: c.seName,
           }))}
-          schools={(nearbySchools ?? []).map((s) => ({
+          schools={filteredSchools.map((s) => ({
             id: s.id,
             name: s.name,
             lat: s.lat,
@@ -178,49 +199,56 @@ export default function NeighborhoodMap({
           }))}
         />
 
-        {/* 좌측 하단 범례 박스 — 섹션 제목 없이 항목만 */}
-        <div className="pointer-events-none absolute bottom-4 left-4 z-[500] max-w-[340px] border border-border bg-surface/97 px-3.5 py-3 text-[11px] shadow-md backdrop-blur-sm">
+        {/* 좌측 하단 범례 박스 — 클릭하면 토글. 디폴트 모두 ON. 현재 단지·도보 경로는 토글 X. */}
+        <div className="absolute bottom-4 left-4 z-[500] max-w-[340px] border border-border bg-surface/97 px-3.5 py-3 text-[11px] shadow-md backdrop-blur-sm">
           <div className="grid grid-cols-2 gap-x-3.5 gap-y-1.5">
             <div className="flex items-center gap-2 text-foreground">
               <span className="inline-block h-3 w-3" style={{ background: '#A8401E' }} aria-hidden />
               <span>현재 단지</span>
             </div>
-            <div className="flex items-center gap-2 text-foreground">
+            <button
+              type="button"
+              onClick={() => toggle('nearby')}
+              className={`flex items-center gap-2 text-left transition ${visible.nearby ? 'text-foreground' : 'text-foreground-sub opacity-40 line-through'}`}
+              aria-pressed={visible.nearby}
+            >
               <span className="inline-block h-3 w-3" style={{ background: 'rgba(26,29,36,0.85)' }} aria-hidden />
               <span>주변단지</span>
-            </div>
-            <div className="flex items-center gap-2 text-foreground">
+            </button>
+            <button
+              type="button"
+              onClick={() => toggle('commercial')}
+              className={`flex items-center gap-2 text-left transition ${visible.commercial ? 'text-foreground' : 'text-foreground-sub opacity-40 line-through'}`}
+              aria-pressed={visible.commercial}
+            >
               <span className="inline-block h-3 w-3" style={{ background: 'rgba(168,64,30,0.22)', border: '1px dashed #A8401E' }} aria-hidden />
-              <span>상권</span>
-            </div>
-            <div className="flex items-center gap-2 text-foreground">
-              <span className="inline-block h-3 w-3" style={{ background: 'rgba(184,155,62,0.25)', border: '1px dashed #B89B3E' }} aria-hidden />
-              <span>전통시장</span>
-            </div>
-            <div className="flex items-center gap-2 text-foreground">
-              <span className="inline-block h-3 w-3" style={{ background: 'rgba(31,58,95,0.22)', border: '1px dashed #1F3A5F' }} aria-hidden />
-              <span>관광특구</span>
-            </div>
-            <div className="flex items-center gap-2 text-foreground">
+              <span>상권/시장/특구</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => toggle('school')}
+              className={`flex items-center gap-2 text-left transition ${visible.school ? 'text-foreground' : 'text-foreground-sub opacity-40 line-through'}`}
+              aria-pressed={visible.school}
+            >
               <span className="inline-block h-3 w-3" style={{ background: '#2D5A3D' }} aria-hidden />
               <span>학교</span>
-            </div>
-            <div className="flex items-center gap-2 text-foreground">
+            </button>
+            <button
+              type="button"
+              onClick={() => toggle('station')}
+              className={`flex items-center gap-2 text-left transition ${visible.station ? 'text-foreground' : 'text-foreground-sub opacity-40 line-through'}`}
+              aria-pressed={visible.station}
+            >
               <span
                 className="inline-block h-3 w-3 rounded-full border-2"
                 style={{ background: '#fff', borderColor: '#111418' }}
                 aria-hidden
               />
-              <span>지하철역</span>
-            </div>
-            <div className="flex items-center gap-2 text-foreground">
-              <span
-                className="inline-block h-0 w-4 border-t-2 border-dashed"
-                style={{ borderColor: '#0070CA' }}
-                aria-hidden
-              />
-              <span>도보 경로</span>
-            </div>
+              <span>지하철역·도보경로</span>
+            </button>
+          </div>
+          <div className="mt-2 pt-2 border-t border-border/40 text-[9px] text-foreground-sub">
+            범례 클릭하면 지도에서 보였다 안 보였다
           </div>
         </div>
       </div>

@@ -3,7 +3,7 @@
 
 import { Sunrise, Coffee, Bike, Moon } from 'lucide-react';
 import { CARD_TINT, type TintTone } from '@/lib/card-tint';
-import type { HouseholdType } from '@/types/profile';
+import type { HouseholdType, Priority } from '@/types/profile';
 
 interface Props {
   apartmentName: string;
@@ -16,6 +16,7 @@ interface Props {
   district?: string;
   parks?: string[];
   householdType?: HouseholdType | null;
+  priorities?: Priority[] | null;
 }
 
 // 가구 형태별 학교/통학로 안내 — "신혼부부라면" 고정 텍스트 대체
@@ -82,6 +83,7 @@ export default function LifeScenario({
   district,
   parks = [],
   householdType,
+  priorities = [],
 }: Props) {
   const age = builtYear ? 2026 - builtYear : 0;
   const isLargeScale = (totalUnits ?? 0) >= 1500;
@@ -92,6 +94,17 @@ export default function LifeScenario({
     householdType === 'family_kids' || householdType === 'school_parent';
   const isSolo = householdType === 'single';
   const isRetired = householdType === 'retired';
+
+  // 우선순위 1·2순위 — 시나리오 톤 분기에 활용 (향후 Claude API 연동 시 자연어 프롬프트로 대체)
+  const priList = priorities ?? [];
+  const top1 = priList[0];
+  const top2 = priList[1];
+  const wantsTransport = top1 === 'transport' || top2 === 'transport';
+  const wantsConvenience = top1 === 'convenience' || top2 === 'convenience';
+  const wantsQuiet = top1 === 'quiet' || top2 === 'quiet';
+  const wantsSize = top1 === 'size' || top2 === 'size';
+  void wantsTransport;
+  void wantsSize;
 
   const morningTitle = isParent
     ? '아이 등교·출근'
@@ -116,7 +129,10 @@ export default function LifeScenario({
     accent: 'amber',
   };
 
-  const afternoonBody = isSolo
+  // 우선순위 "조용한 환경" 1·2순위는 점심 시나리오를 외식이 아닌 단지 내·산책으로 변형
+  const afternoonBody = wantsQuiet && (isRetired || isSolo)
+    ? `평일 점심 시간은 학생·직장인 빠진 한적한 시간대예요. 단지 내 공원·인근 산책 코스를 한 바퀴 돌기 좋은 시점.`
+    : isSolo
     ? commercialClusterCount >= 1
       ? `1인 점심·카페 활용도 높아요. 단지 인근 상권 ${commercialClusterCount}개 권역에 혼밥 가능한 곳이 모여있어요.`
       : '주변 상권이 분산돼 1인 외식 동선은 다소 분산적. 배달·마켓 의존도가 높을 수 있어요.'
@@ -158,7 +174,10 @@ export default function LifeScenario({
     accent: 'emerald',
   };
 
-  const nightBody = isLargeScale
+  // 야간: "편의시설" 우선순위는 야간 운동·산책 코스 강조, 그 외는 보안·관리 톤
+  const nightBody = wantsConvenience && isSolo
+    ? `${apartmentName} 주변 24시 편의점·헬스장·산책 코스 동선이 1인가구 야간 활동의 핵심. 단지 내 ${(totalUnits ?? 0).toLocaleString()}세대 규모면 커뮤니티 시설(헬스장·게스트하우스)도 체크해볼 만해요.`
+    : isLargeScale
     ? isParent
       ? `${apartmentName}은 ${(totalUnits ?? 0).toLocaleString()}세대 ${age > 0 && age <= 10 ? '준신축' : age <= 20 ? '연식 있는' : '구축'} 단지라 학원에서 늦게 귀가하는 자녀 동선에서도 단지 내 조명·경비가 안정적인 편이에요.`
       : isSolo

@@ -144,6 +144,7 @@ const COMPARE_REPORT_STRUCTURE = `
 
 export interface ClaudeReportExtras {
   kidsInfra?: import('./kakao-local').KidsInfra | null;
+  nearbySchools?: import('./kakao-local').NearbySchool[];
 }
 
 export async function generateFreeDeepSingleReport(
@@ -233,6 +234,28 @@ ${
   - 어린이집·유치원: ${extras.kidsInfra.daycareCount}곳${extras.kidsInfra.daycareSamples.length > 0 ? ` (예: ${extras.kidsInfra.daycareSamples.slice(0, 3).join(', ')})` : ''}
   - 소아과: ${extras.kidsInfra.pediatricsCount}곳${extras.kidsInfra.pediatricsSamples.length > 0 ? ` (예: ${extras.kidsInfra.pediatricsSamples.slice(0, 3).join(', ')})` : ''}
   → 학군 섹션에서 이 숫자를 그대로 인용. "지도 앱 확인" 같이 떠넘기지 말 것.
+`
+    : ''
+}${
+  extras.nearbySchools && extras.nearbySchools.length > 0
+    ? `
+- 주변 학교 분포 (카카오 검색, 반경 1.5km, 거리순):
+  - 초등학교: ${extras.nearbySchools.filter((s) => s.type === '초등학교').length}곳${
+        extras.nearbySchools.find((s) => s.type === '초등학교')
+          ? ` (가장 가까운 곳: ${extras.nearbySchools.find((s) => s.type === '초등학교')!.name})`
+          : ''
+      }
+  - 중학교: ${extras.nearbySchools.filter((s) => s.type === '중학교').length}곳${
+        extras.nearbySchools.find((s) => s.type === '중학교')
+          ? ` (가장 가까운 곳: ${extras.nearbySchools.find((s) => s.type === '중학교')!.name})`
+          : ''
+      }
+  - 고등학교: ${extras.nearbySchools.filter((s) => s.type === '고등학교').length}곳${
+        extras.nearbySchools.find((s) => s.type === '고등학교')
+          ? ` (가장 가까운 곳: ${extras.nearbySchools.find((s) => s.type === '고등학교')!.name})`
+          : ''
+      }
+  → 학군 섹션에서 이 분포를 인용. 배정 학교는 별도 (학교알리미에서 확인 안내).
 `
     : ''
 }
@@ -368,4 +391,85 @@ function formatPrice10k(price10k: number): string {
       : `${eok}억원`;
   }
   return `${price10k.toLocaleString('ko-KR')}만원`;
+}
+
+// ============================================================
+// 라이프 시나리오 동적 생성 — 향후 Claude API 연동 시 LifeScenario 컴포넌트가 호출.
+// 현재는 정적 분기로 작동. 이 함수는 활성화 준비용 (호출만 추가하면 즉시 동작).
+//
+// 같은 단지여도 (가구 × 우선순위 1·2순위) 조합으로 4 시나리오 (아침·점심·주말·밤) 동적 생성.
+// 예) 1인가구 + 출퇴근 1순위 + 편의시설 2순위 → 출근 / 점심 스킵 / 저녁 장보기·요리 / 야간 운동
+// 예) 은퇴 + 조용한환경 1순위 + 평수 2순위 → 한적한 단지 산책 / 뒷산·헬스 / 마트 / 산책
+// ============================================================
+
+export interface LifeScenarioInput {
+  apartmentName: string;
+  totalUnits: number | null;
+  builtYear: number | null;
+  district: string;
+  walkingMin: number | null;
+  stationName: string | null;
+  schoolName: string | null;
+  commercialClusterCount: number;
+  parks: string[];
+}
+
+export interface LifeScenarioCard {
+  time: string;        // '아침 7:30' / '점심·낮' / '주말 오전' / '밤 10시'
+  title: string;       // 카드 제목 (예: "출근 준비")
+  body: string;        // 2~3줄 설명
+}
+
+export async function generateLifeScenarios(
+  input: LifeScenarioInput,
+  profile: UserProfile
+): Promise<LifeScenarioCard[]> {
+  const prompt = `
+당신은 부동산 라이프스타일 해설가입니다. 같은 단지여도 사용자 조건에 따라 일상이 다르게 그려진다는 점을 살려서 4개 시나리오 카드를 작성하세요.
+
+## 단지 정보
+- 단지명: ${input.apartmentName}
+- 행정구: ${input.district}
+- 세대수: ${input.totalUnits ?? '정보 없음'}
+- 입주년도: ${input.builtYear ?? '정보 없음'}
+- 가까운 역: ${input.stationName ?? '정보 없음'} (도보 ${input.walkingMin ?? '?'}분)
+- 가까운 학교: ${input.schoolName ?? '정보 없음'}
+- 주변 상권 군집 수: ${input.commercialClusterCount}개
+- 주변 공원: ${input.parks.length > 0 ? input.parks.slice(0, 3).join(', ') : '정보 없음'}
+
+## 사용자 조건 (이 조합으로 시나리오 변형)
+- 가구 형태: ${HOUSEHOLD_LABELS[profile.householdType]}
+- 우선순위 1순위: ${PRIORITY_LABELS[profile.priorities[0]]}
+- 우선순위 2순위: ${profile.priorities[1] ? PRIORITY_LABELS[profile.priorities[1]] : '없음'}
+${profile.commuteArea && profile.commuteArea !== 'none' ? `- 출근지: ${COMMUTE_LABELS[profile.commuteArea]}` : ''}
+
+## 출력 형식 (JSON 배열, 코드블록 없이)
+[
+  {"time": "아침 7:30", "title": "...", "body": "..."},
+  {"time": "점심·낮", "title": "...", "body": "..."},
+  {"time": "주말 오전", "title": "...", "body": "..."},
+  {"time": "밤 10시", "title": "...", "body": "..."}
+]
+
+## 작성 규칙
+- 가구 × 우선순위 조합에 맞게 각 시나리오를 변형. 출근 1순위면 아침은 통근 동선, 조용함 1순위면 한적한 시간대 강조.
+- 출퇴근 안 하는 가구(은퇴·재택)는 아침 카드를 "산책·일과 시작"으로.
+- 점심은 우선순위에 따라: 편의시설 1·2순위면 외식·카페 / 조용함 1·2순위면 단지 내 산책 / 출퇴근 1순위는 회사라 스킵 가능.
+- 저녁·야간은 우선순위에 따라: 편의시설은 장보기·요리·외식 / 조용함은 산책·운동 / 학군은 학원 픽업·아이 잠자리.
+- body는 2~3줄, 구체적이면서 가벼운 톤.
+- "추천드립니다" 같은 단정 금지. "이런 일상이 그려져요" 톤.
+- JSON만 출력. 다른 텍스트 금지.
+${TONE_GUIDE}
+`.trim();
+
+  const message = await getAnthropic().messages.create({
+    model: MODEL,
+    max_tokens: 1200,
+    messages: [{ role: 'user', content: prompt }],
+  });
+  const block = message.content[0];
+  if (block.type !== 'text') throw new Error('Claude 응답이 text 블록이 아님');
+  const jsonMatch = block.text.match(/\[[\s\S]*\]/);
+  if (!jsonMatch) throw new Error('JSON 파싱 실패');
+  return JSON.parse(jsonMatch[0]) as LifeScenarioCard[];
 }
