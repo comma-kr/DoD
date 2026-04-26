@@ -671,78 +671,40 @@ ${sizeLine}${pyeongLine}`;
 }
 
 function buildTrend(f: ApartmentFacts, _profile: UserProfile | null): string {
+  // 흐름 표·차트는 별도 인터랙티브 컴포넌트(TradeFlowTabs)가 담당.
+  // 여기서는 짧은 컨텍스트 한 줄(상승률·평형 분포)만 본문에 둠.
   const heading = '## 📈 실거래 흐름';
 
   if (!f.trades || f.trades.length === 0) {
     return `${heading}\n\n최근 실거래 데이터가 아직 수집되지 않았어요.`;
   }
 
-  // 오름차순 정렬 + 최근 12개월 기준 표
-  const sortedAsc = [...f.trades].sort(
-    (a, b) => new Date(a.dealDate).getTime() - new Date(b.dealDate).getTime()
-  );
-
-  // 테이블용 최근 8개 (너무 길면 가독성↓)
-  // 최고/최저 row 강조 — 거래가 셀 전체 strong (report-highlight 노랑 적용) + 이모지 + 라벨
-  const slice = sortedAsc.slice(-8);
-  const maxIdx = slice.length >= 3
-    ? slice.reduce((mi, t, i) => (t.priceM10k > slice[mi].priceM10k ? i : mi), 0)
-    : -1;
-  const minIdx = slice.length >= 3
-    ? slice.reduce((mi, t, i) => (t.priceM10k < slice[mi].priceM10k ? i : mi), 0)
-    : -1;
-  // 최고와 최저가 같은 row면(평탄) 강조 안 함
-  const showExtremes = maxIdx !== minIdx;
-
-  const tableRows = slice
-    .map((t, i) => {
-      const ppy = calcPricePerPyeong(t.priceM10k, t.areaM2);
-      const date = t.dealDate.slice(0, 7); // YYYY-MM
-      const price = formatPrice10k(t.priceM10k);
-      const pyeong = formatPricePerPyeong(ppy);
-      const floor = `${t.floor ?? '-'}층`;
-      // 〔▲최고〕/〔▼최저〕 토큰은 ReportMarkdown td 렌더러가 색상 pill로 변환.
-      if (showExtremes && i === maxIdx) {
-        return `| **${date}** | **${price}** 〔▲최고〕 | **${pyeong}** | **${floor}** |`;
-      }
-      if (showExtremes && i === minIdx) {
-        return `| **${date}** | **${price}** 〔▼최저〕 | **${pyeong}** | **${floor}** |`;
-      }
-      return `| ${date} | ${price} | ${pyeong} | ${floor} |`;
-    })
-    .join('\n');
-
-  const deltaLine = [];
+  const deltaLine: string[] = [];
   if (f.priceDelta12m !== null) {
     const sign = f.priceDelta12m > 0 ? '📈' : f.priceDelta12m < 0 ? '📉' : '➡️';
     deltaLine.push(
-      `${sign} **최근 1년**: ${f.priceDelta12m > 0 ? '+' : ''}${f.priceDelta12m}%`
+      `${sign} **최근 1년** ${f.priceDelta12m > 0 ? '+' : ''}${f.priceDelta12m}%`
     );
   }
   if (f.priceDelta6m !== null) {
     const sign = f.priceDelta6m > 0 ? '📈' : f.priceDelta6m < 0 ? '📉' : '➡️';
     deltaLine.push(
-      `${sign} **최근 6개월**: ${f.priceDelta6m > 0 ? '+' : ''}${f.priceDelta6m}%`
+      `${sign} **최근 6개월** ${f.priceDelta6m > 0 ? '+' : ''}${f.priceDelta6m}%`
     );
   }
 
   const rangeLine =
     f.priceMax && f.priceMin && f.priceMax !== f.priceMin
-      ? `- **관측 기간 최고/최저**: ${formatPrice10k(f.priceMax)} ~ ${formatPrice10k(f.priceMin)}`
+      ? ` · 관측 기간 ${formatPrice10k(f.priceMin)} ~ ${formatPrice10k(f.priceMax)}`
       : '';
 
   return `${heading}
 
-${f.name}의 최근 ${sortedAsc.length}건 실거래 흐름이에요. (${f.areaM2 ? `전용 ${Math.round(f.areaM2)}㎡ (공급 ${f.pyeongSupply}평형)` : '동일 평형'} 기준)
+${f.name}의 단지 전체 최근 **${f.trades.length}건** 실거래 흐름이에요.
 
-${deltaLine.length > 0 ? deltaLine.join(' · ') + '\n' : ''}
-| 거래월 | 거래가 | 평당가 | 층 |
-| --- | --- | --- | --- |
-${tableRows}
+${deltaLine.join(' · ')}${rangeLine}
 
-${rangeLine}
-
-> 💡 그래프로 보면 아래쪽에 이어져요. 상승·하락 리듬을 한눈에 확인해보세요.`;
+> 💡 아래 카드에서 **평수별로** 골라서 볼 수 있어요. 디폴트는 가장 거래 많은 평형.`;
 }
 
 function buildCheckpoints(f: ApartmentFacts, profile: UserProfile | null): string {

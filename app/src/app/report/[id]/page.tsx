@@ -8,7 +8,7 @@ import ReportByline from '@/components/report/ReportByline';
 import UpsellCTAs from '@/components/report/UpsellCTAs';
 import ProfileBadge from '@/components/report/ProfileBadge';
 import ShareBar from '@/components/report/ShareBar';
-import PriceChart from '@/components/report/PriceChart';
+import TradeFlowTabs from '@/components/report/TradeFlowTabs';
 import ApartmentSpecs from '@/components/report/ApartmentSpecs';
 import RegionPercentileBar from '@/components/report/RegionPercentileBar';
 import CompareSuggestionsCard from '@/components/report/CompareSuggestionsCard';
@@ -170,9 +170,11 @@ export default async function ReportPage({ params }: PageProps) {
           </div>
         ) : null}
 
-        {trades.length > 0 ? (
+        {/* 실거래 흐름 — 평형 칩 탭으로 다른 평수 거래도 전환해서 볼 수 있음.
+            디폴트는 거래 수 가장 많은 평형. (이전: 단일 평형 PriceChart) */}
+        {specsTrades.length > 0 ? (
           <div className="mt-6">
-            <PriceChart trades={trades} apartmentName={apartmentName} />
+            <TradeFlowTabs trades={specsTrades} apartmentName={apartmentName} />
           </div>
         ) : null}
 
