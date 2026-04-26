@@ -10,16 +10,16 @@ export default function LandingPage() {
         <div className="mx-auto max-w-5xl px-6 pt-14 pb-12 sm:pt-20 sm:pb-16">
           <div className="flex flex-col items-center text-center">
             <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-warning-soft px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-warning">
-              NEW · 오늘의 큐레이션
+              NEW · 오늘의 단지
             </span>
             <h1 className="text-balance text-3xl font-bold leading-tight tracking-tight sm:text-5xl">
-              내가 아는 단지, <em className="report-highlight not-italic">제대로</em>
+              <em className="report-highlight not-italic">칠래말래?</em>
               <br />
-              옆 단지랑 <em className="report-highlight not-italic">나란히</em>.
+              등기 치기 전에, <em className="report-highlight not-italic">한 장</em>
             </h1>
             <p className="mt-4 max-w-xl text-pretty text-base text-foreground-sub sm:text-lg">
-              공짜로 만나는 단지 해설. 옆 단지랑 비교는{' '}
-              <span className="font-semibold text-foreground">딱 990원.</span>
+              990원이면 옆 단지랑 나란히.{' '}
+              <span className="font-semibold text-foreground">사기 전에, 갈아타기 전에.</span>
             </p>
 
             <div className="mt-7 w-full max-w-[520px]">
@@ -27,14 +27,14 @@ export default function LandingPage() {
             </div>
 
             <p className="mt-3 text-xs text-foreground-sub">
-              단지를 고르면 바로 분석 시작 · 전화번호 하나면 끝
+              단지 고르면 바로 펼쳐드림 · 번호만 인증하면 끝
             </p>
 
             <Link
               href="/analyze"
               className="mt-4 inline-flex items-center gap-2 text-sm text-foreground-sub hover:text-foreground"
             >
-              또는 분석 페이지로 이동하기
+              또는 펼쳐보기 페이지로
               <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
@@ -45,7 +45,7 @@ export default function LandingPage() {
       <section className="mx-auto max-w-5xl px-6 pt-20 pb-24 sm:pt-24">
         <div className="mb-10 text-center">
           <span className="text-xs font-semibold uppercase tracking-wider text-primary">
-            WHY 입지990
+            WHY 칠래말래?
           </span>
           <h2 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">
             세 가지 방식으로, 가볍게.
@@ -54,21 +54,21 @@ export default function LandingPage() {
         <div className="grid auto-rows-fr gap-5 break-keep sm:grid-cols-3">
           <FeatureCard
             icon={<Building2 className="h-5 w-5" />}
-            title="내 가족 관점으로"
-            body="1인가구·신혼·학부모 등 가족 형태에 따라 같은 단지도 다르게 풀어드려요."
+            title="내 가족 시선으로"
+            body="1인가구·신혼·학부모 — 같은 단지도 가족 형태에 따라 다르게 풀어드려요."
             badge="무료"
             badgeColor="accent"
           />
           <FeatureCard
             icon={<BarChart3 className="h-5 w-5" />}
-            title="옆 단지랑 나란히"
-            body="2~3개 단지를 데이터로 비교. 어떤 점이 다른지 한눈에 정리해드려요."
+            title="옆 단지도 칠래말래?"
+            body="2~3개 단지를 데이터로 나란히. 어떤 점이 다른지 한눈에 정리."
             badge="990원"
             badgeColor="primary"
           />
           <FeatureCard
             icon={<Sparkles className="h-5 w-5" />}
-            title="한 장 더 보기"
+            title="한 장 더 펼치기"
             body="시세 흐름, 내 조건에 맞는 곳까지. 궁금증 따라 가볍게 추가로."
             badge="1,990원~"
             badgeColor="secondary"
@@ -77,16 +77,16 @@ export default function LandingPage() {
 
         <div className="mt-16 rounded-3xl border border-border bg-surface p-8 text-center shadow-sm">
           <h2 className="text-2xl font-bold sm:text-3xl">
-            데이터로 보는 우리 동네 아파트
+            등기 치기 전에, 한 장 펼쳐봐
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-foreground-sub">
-            투자 판단이 아니라 고민 정리에 도움을 드리는 참고용 정보예요.
+            매수 자문은 못 봐줘도, 칠까말까 고민은 데이터로 풀어드려요.
           </p>
           <Link
             href="/analyze"
             className="mt-6 inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 font-semibold text-white transition hover:bg-primary/90"
           >
-            지금 시작하기
+            지금 펼쳐보기
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>

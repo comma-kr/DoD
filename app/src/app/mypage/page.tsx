@@ -18,15 +18,15 @@ export default async function MyPage() {
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-surface text-foreground-sub">
             <Lock className="h-5 w-5" />
           </div>
-          <h1 className="mt-6 text-xl font-bold">보관함을 열려면 인증이 필요해요</h1>
+          <h1 className="mt-6 text-xl font-bold">보관함 열려면 인증부터</h1>
           <p className="mt-2 text-sm text-foreground-sub">
-            전화번호 인증만 하면 그동안 받은 리포트를 다시 보실 수 있어요.
+            번호 인증만 하면 그동안 펼쳤던 단지를 다시 보실 수 있어요.
           </p>
           <Link
             href="/analyze"
             className="mt-6 inline-flex rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white"
           >
-            분석하러 가기
+            펼쳐보기 시작
           </Link>
         </div>
       </main>
@@ -58,10 +58,10 @@ export default async function MyPage() {
               MY · 보관함
             </span>
             <h1 className="text-3xl font-bold sm:text-4xl">
-              내가 받은 <em className="report-highlight not-italic">리포트</em>
+              지금까지 <em className="report-highlight not-italic">펼친 단지</em>
             </h1>
             <p className="mt-3 text-sm leading-relaxed text-foreground-sub">
-              {maskedPhone} 번호로 받은 리포트를 모아봤어요.
+              {maskedPhone} 번호로 칠래말래? 펼쳐본 단지들 모음이에요.
             </p>
           </div>
           <LogoutButton />
@@ -89,10 +89,10 @@ export default async function MyPage() {
 
         {!reports || reports.length === 0 ? (
           <div className="rounded-3xl border border-dashed border-border bg-surface/40 p-10 text-center text-sm text-foreground-sub">
-            아직 받은 리포트가 없어요.
+            아직 펼친 단지가 없어요.
             <br />
             <Link href="/analyze" className="mt-4 inline-block text-primary">
-              분석 시작하기 →
+              한 장 펼쳐보기 →
             </Link>
           </div>
         ) : (

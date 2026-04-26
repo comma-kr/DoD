@@ -37,7 +37,7 @@ export default function ShareBar({ title }: Props) {
       try {
         await nav.share({
           title,
-          text: '입지990에서 받은 단지 분석 리포트',
+          text: '칠래말래? 단지 한 장 펼쳐봤음',
           url: window.location.href,
         });
       } catch {

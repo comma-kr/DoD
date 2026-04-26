@@ -48,7 +48,7 @@ export default async function ReportPage({ params }: PageProps) {
           href="/analyze"
           className="mt-6 rounded-xl bg-primary px-5 py-3 font-semibold text-white"
         >
-          분석 시작하기
+          한 장 펼쳐보기
         </Link>
       </main>
     );

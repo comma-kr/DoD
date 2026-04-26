@@ -237,11 +237,6 @@ export default function LifeScenario({
           </div>
         );
       })() : null}
-      {district ? (
-        <div className="mt-2 text-[10px] text-foreground-sub">
-          {district} 일반 정보 기반 시뮬레이션 · 부동산 투자 자문이 아닙니다
-        </div>
-      ) : null}
     </section>
   );
 }

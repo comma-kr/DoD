@@ -11,7 +11,7 @@ export default function SmartPickPage() {
           href="/analyze"
           className="mb-8 inline-flex items-center gap-1 text-sm text-foreground-sub hover:text-foreground"
         >
-          <ArrowLeft className="h-4 w-4" /> 분석으로 돌아가기
+          <ArrowLeft className="h-4 w-4" /> 펼쳐보기로 돌아가기
         </Link>
 
         <div className="text-center">
@@ -20,10 +20,10 @@ export default function SmartPickPage() {
             COMING SOON · 2,990원
           </span>
           <h1 className="text-3xl font-bold sm:text-4xl">
-            나한테 <em className="report-highlight not-italic">맞는 곳</em> 찾기
+            나한테 <em className="report-highlight not-italic">맞는 곳</em>은 어디
           </h1>
           <p className="mx-auto mt-4 max-w-md leading-relaxed text-foreground-sub">
-            내 예산·통근지·우선순위로 AI가 TOP 5 단지를 추천해드려요.
+            내 예산·통근지·우선순위 조합으로 칠 만한 단지 TOP 5를 골라드려요.
           </p>
         </div>
 
@@ -69,7 +69,7 @@ export default function SmartPickPage() {
             href="/analyze"
             className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:bg-primary/90"
           >
-            먼저 무료 단지 분석 받아보기
+            먼저 단지 한 장 무료로 펼쳐보기
           </Link>
         </div>
       </section>

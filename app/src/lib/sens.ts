@@ -64,5 +64,5 @@ export function generateOtpCode(): string {
 }
 
 export function formatOtpMessage(code: string): string {
-  return `[입지990] 인증번호 ${code} (3분 이내 입력)`;
+  return `[칠래말래] 인증번호 ${code} (3분 이내 입력)`;
 }

@@ -16,7 +16,9 @@ function SuccessContent() {
     const amount = Number(searchParams.get('amount'));
 
     if (!paymentKey || !orderId || !amount) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setStatus('error');
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setMessage('결제 정보가 누락되었어요');
       return;
     }

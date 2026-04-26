@@ -78,7 +78,7 @@ export default function ProfileEditPage() {
             href="/analyze"
             className="mt-6 inline-flex rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white"
           >
-            분석 시작하기
+            한 장 펼쳐보기
           </Link>
         </div>
       </main>

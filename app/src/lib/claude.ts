@@ -34,14 +34,18 @@ const MODEL = 'claude-sonnet-4-5';
 
 const TONE_GUIDE = `
 [톤 규칙 — 반드시 준수]
+- 서비스명: "칠래말래?" — 사용자 결정 강요 X, 의문형으로 고민 정리만
 - "추천드립니다", "매수 추천", "투자 적합", "사세요", "사지마세요" 등 투자 자문 표현 절대 금지
-- 대신 "참고해보세요", "고민 정리에 도움", "데이터로 보면", "체크해보세요" 톤
+- 대신 "체크해보세요", "고민 정리에 도움", "칠까말까 따져보면", "참고해보세요" 톤
+- "등기 친다" = 매수 / "한 장 펼치기" = 분석 시작 — 인사이더 어휘 자연스럽게 섞어 사용 가능
 - 딱딱한 부동산 전문 용어는 피하되, 전문성은 유지 (친근한 전문가 톤)
+- "입지" "매수" "투자" 같은 무거운 단어는 "단지" "사기 전" "고민" 으로 자연스럽게 풀어쓰기
 - 숫자는 프롬프트에 주어진 값만 사용. 추측하거나 새로 만들지 말 것
 - 모르는 건 모른다고 하고 "확인해보세요" 식으로 체크포인트 제시
 - 섹션 헤더는 마크다운 ## + 이모지 1개 조합 사용
 - 형식은 생동감 있게. 불릿, 굵은 글씨, 인용구를 적극 활용
-- 마지막에 반드시 면책 고지
+- 마지막 마무리는 "칠까말까 결정 보태드릴 정보였어요" 톤
+- 면책 고지 필수 (가볍게 한 줄)
 `.trim();
 
 const FREE_REPORT_STRUCTURE = `
@@ -62,7 +66,9 @@ const FREE_REPORT_STRUCTURE = `
 2~3 문단.
 
 ## 🏫 아이 키우기엔
-학군/학원 관점. 구체 데이터가 없으면 "학교알리미에서 배정 학교 확인", "근처 학원가 밀집도" 등 체크 포인트로.
+학군/학원 관점. 프롬프트에 주어진 "주변 육아 인프라" 숫자가 있으면 **반드시 그 숫자를 그대로 인용**.
+"지도 앱에서 확인", "직접 알아보세요" 같이 사용자에게 떠넘기는 표현 절대 금지 — 우리가 데이터로 풀어드리는 게 본질.
+배정 학교는 데이터가 없으니 "학교알리미에서 배정 확인" 한 줄만 체크포인트로.
 사용자가 워킹 부모라면 "단지 규모가 크면 내부 어린이집·유치원 운영 확률이 높아요" 같은 실용 힌트.
 
 ## 🏪 생활 편의
@@ -86,9 +92,9 @@ const FREE_REPORT_STRUCTURE = `
 대단지: 동별 선호/소음/일조, 관리비 수준, 호가-실거래 갭 등.
 구축: 리모델링 이슈, 주차 여건, 배관 노후도 등.
 
-## 🧭 한 줄 정리
+## 🧭 칠까말까 한 줄
 어떤 성향의 사람에게 맞는 포지션인지 가볍게 요약.
-"옆 단지와 나란히 놓고 보면 더 명확해져요" 힌트로 마무리.
+"옆 단지랑 나란히 펼쳐보면 더 명확해져요" 힌트로 마무리.
 
 ---
 
@@ -136,9 +142,14 @@ const COMPARE_REPORT_STRUCTURE = `
 ※ 본 자료는 공공데이터 기반 참고용 정보이며, 투자 판단이 아닙니다. 판단의 책임은 이용자에게 있습니다.
 `.trim();
 
+export interface ClaudeReportExtras {
+  kidsInfra?: import('./kakao-local').KidsInfra | null;
+}
+
 export async function generateFreeDeepSingleReport(
   apartment: ApartmentWithLatestPrice,
-  profile: UserProfile | null = null
+  profile: UserProfile | null = null,
+  extras: ClaudeReportExtras = {}
 ): Promise<string> {
   const district = apartment.address.match(/서울(?:특별시)?\s+(\S+구)/)?.[1] ?? '';
   const priceText = apartment.latestPrice10k
@@ -215,6 +226,16 @@ ${profile.commuteArea && profile.commuteArea !== 'none' ? `- 주 출근지: ${CO
   - 12개월: ${delta12m !== null ? (delta12m > 0 ? '+' : '') + delta12m + '%' : '데이터 부족'}
 - 최근 실거래 내역:
 ${tradeTable}
+${
+  extras.kidsInfra && (extras.kidsInfra.daycareCount > 0 || extras.kidsInfra.pediatricsCount > 0)
+    ? `
+- 주변 육아 인프라 (카카오 검색, 반경 800m):
+  - 어린이집·유치원: ${extras.kidsInfra.daycareCount}곳${extras.kidsInfra.daycareSamples.length > 0 ? ` (예: ${extras.kidsInfra.daycareSamples.slice(0, 3).join(', ')})` : ''}
+  - 소아과: ${extras.kidsInfra.pediatricsCount}곳${extras.kidsInfra.pediatricsSamples.length > 0 ? ` (예: ${extras.kidsInfra.pediatricsSamples.slice(0, 3).join(', ')})` : ''}
+  → 학군 섹션에서 이 숫자를 그대로 인용. "지도 앱 확인" 같이 떠넘기지 말 것.
+`
+    : ''
+}
 
 ${profileBlock}
 

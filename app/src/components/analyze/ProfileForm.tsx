@@ -389,7 +389,7 @@ function Step3({
           size="lg"
           className="flex-[2]"
         >
-          분석 시작하기
+          한 장 펼쳐보기
           <ArrowRight className="h-4 w-4" />
         </Button>
       </div>

@@ -13,6 +13,7 @@ import { calcPricePerPyeong } from '@/lib/utils';
 import type { ApartmentWithLatestPrice } from '@/types/apartment';
 import type { UserProfile } from '@/types/profile';
 import { buildMockFreeReport, buildMockTldr } from '@/lib/mock-reports';
+import { fetchKidsInfra, type KidsInfra } from '@/lib/kakao-local';
 
 const schema = z.object({
   apartmentId: z.string().uuid(),
@@ -165,12 +166,19 @@ export async function POST(request: Request) {
     }
   }
 
+  // 마크다운 본문에 사용할 보조 데이터 prefetch (지도앱 떠넘김 방지)
+  // 학교 섹션의 "주변 육아 인프라" — 카카오 PS3(어린이집·유치원) + HP8(소아과) 검색.
+  let kidsInfra: KidsInfra | null = null;
+  if (typeof apartment.latitude === 'number' && typeof apartment.longitude === 'number') {
+    kidsInfra = await fetchKidsInfra(apartment.latitude, apartment.longitude).catch(() => null);
+  }
+
   let markdown: string;
   try {
     if (process.env.NODE_ENV === 'development' && !process.env.ANTHROPIC_API_KEY) {
-      markdown = buildMockFreeReport(apartment, profile);
+      markdown = buildMockFreeReport(apartment, profile, { kidsInfra });
     } else {
-      markdown = await generateFreeDeepSingleReport(apartment, profile);
+      markdown = await generateFreeDeepSingleReport(apartment, profile, { kidsInfra });
     }
   } catch (err) {
     return NextResponse.json(

@@ -335,6 +335,45 @@ export interface WalkingRouteResult {
 }
 
 /**
+ * 단지 주변 육아 인프라 (어린이집·유치원 PS3 + 소아과/소아청소년과 keyword)
+ * mock-reports의 buildSchool에서 사용. 사용자에게 "지도앱 확인" 떠넘기지 말고
+ * 우리 데이터로 풀어주기 위함.
+ */
+export interface KidsInfra {
+  daycareCount: number;       // 어린이집·유치원 (PS3 카테고리, radius 내)
+  daycareSamples: string[];   // 가까운 N개 이름
+  pediatricsCount: number;    // 소아과·소아청소년과
+  pediatricsSamples: string[];
+}
+export async function fetchKidsInfra(
+  lat: number,
+  lng: number,
+  radius = 800
+): Promise<KidsInfra> {
+  if (!REST_KEY) {
+    return { daycareCount: 0, daycareSamples: [], pediatricsCount: 0, pediatricsSamples: [] };
+  }
+
+  // PS3 = 어린이집·유치원 (카카오 카테고리)
+  const daycare = await searchCategory('PS3', lat, lng, radius, 15, 1);
+
+  // 소아과는 카테고리 분류가 없어서 키워드 검색. HP8(병원) 안에서 이름 필터.
+  const pediatrics = await searchCategory('HP8', lat, lng, radius, 15, 1);
+  const pedFiltered = pediatrics.places.filter((p) => {
+    const name = p.place_name ?? '';
+    const cat = p.category_name ?? '';
+    return /소아|어린이/.test(name) || /소아|어린이/.test(cat);
+  });
+
+  return {
+    daycareCount: daycare.totalCount,
+    daycareSamples: daycare.places.slice(0, 3).map((p) => p.place_name),
+    pediatricsCount: pedFiltered.length,
+    pediatricsSamples: pedFiltered.slice(0, 3).map((p) => p.place_name),
+  };
+}
+
+/**
  * OSRM 공개 서버로 도보 경로 조회.
  * 실패 시 null → 호출자가 직선거리로 fallback.
  */

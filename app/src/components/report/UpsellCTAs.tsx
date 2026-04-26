@@ -17,9 +17,9 @@ function compareCtaBody(
   currentName: string | null | undefined
 ): string {
   if (currentName) {
-    return `${currentName}에 옆 단지 1~2개만 더 추가해서 나란히 비교해드려요`;
+    return `${currentName}에 옆 단지 1~2개만 더 얹어서 나란히 펼쳐드려요`;
   }
-  if (!household) return '2~3개 단지를 데이터로 비교';
+  if (!household) return '2~3개 단지를 한 장에 나란히';
   return HOUSEHOLD_SPEC[household].ctaSuggestion;
 }
 
@@ -32,8 +32,8 @@ export default function UpsellCTAs({
     ? `/compare?ids=${currentApartmentId}`
     : '/compare';
   const compareTitle = currentApartmentName
-    ? `${currentApartmentName} + 옆 단지 비교`
-    : '옆 단지랑 나란히 보기';
+    ? `${currentApartmentName} + 옆 단지 칠래말래?`
+    : '옆 단지도 칠래말래?';
 
   const ctas = [
     {
@@ -48,7 +48,7 @@ export default function UpsellCTAs({
       href: '/smart',
       icon: <Target className="h-5 w-5" />,
       title: '나한테 맞는 곳 찾기',
-      body: '내 조건에 맞는 TOP 5 추천',
+      body: '내 조건에 맞는 TOP 5, 칠 만한 곳만',
       price: '2,990원',
       color: 'secondary' as const,
     },
@@ -61,9 +61,9 @@ export default function UpsellCTAs({
 
   return (
     <section className="mt-12 rounded-3xl border border-border bg-surface p-6 shadow-sm">
-      <h2 className="mb-1 text-lg font-bold">다음 궁금증이 있다면</h2>
+      <h2 className="mb-1 text-lg font-bold">아직 칠까말까 싶다면</h2>
       <p className="mb-6 text-sm text-foreground-sub">
-        부담 없이 한 장씩 더 보실 수 있어요.
+        한 장씩 더 가볍게 펼쳐보세요.
       </p>
       <div className="grid gap-3 sm:grid-cols-2">
         {ctas.map((cta) => (

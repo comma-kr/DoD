@@ -148,13 +148,13 @@ function ComparePageContent() {
       <section className="mx-auto max-w-3xl px-6 pt-16 pb-24">
         <div className="mb-10 text-center">
           <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-warning-soft px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-warning">
-            990원 · 비교 리포트
+            990원 · 한 장 더 펼치기
           </span>
           <h1 className="text-3xl font-bold sm:text-4xl">
-            옆 단지랑 <em className="report-highlight not-italic">나란히</em> 보기
+            옆 단지도 <em className="report-highlight not-italic">칠래말래?</em>
           </h1>
           <p className="mt-4 leading-relaxed text-foreground-sub">
-            2~3개 단지를 골라주시면 데이터로 나란히 비교해드려요.
+            2~3개 단지를 골라주시면 데이터로 나란히 펼쳐드려요.
           </p>
         </div>
 
@@ -201,7 +201,7 @@ function ComparePageContent() {
         <div className="mt-10 rounded-3xl border border-border bg-surface p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-sm text-foreground-sub">나란히 보기</div>
+              <div className="text-sm text-foreground-sub">옆 단지도 칠래말래?</div>
               <div className="mt-1 text-2xl font-bold">{formatPrice(amount)}</div>
             </div>
             <Building2 className="h-8 w-8 text-foreground-sub" />
@@ -213,13 +213,13 @@ function ComparePageContent() {
             size="lg"
             className="mt-6 w-full"
           >
-            {formatPrice(amount)} 결제하고 비교 보기
+            {formatPrice(amount)} · 옆 단지도 칠래말래
           </Button>
           {error ? (
             <p className="mt-3 text-center text-sm text-danger">{error}</p>
           ) : null}
           <p className="mt-3 text-center text-xs text-foreground-sub">
-            투자 판단이 아니라 고민 정리에 도움을 드리는 참고용 정보예요
+            매수 자문이 아니라, 칠까말까 정리에 도움을 드리는 참고용 정보예요
           </p>
         </div>
       </section>

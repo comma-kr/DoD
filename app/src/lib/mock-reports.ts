@@ -350,7 +350,7 @@ function planSections(profile: UserProfile | null): SectionOrder {
       return {
         order: ['intro', 'strengths', 'price', 'trend', 'commute', 'convenience', 'school', 'checkpoints', 'closing'],
         emphasize: 'trend',
-        profileGreeting: `${greeting}의 관점으로 풀어드릴게요. (참고: 투자 판단 도구가 아닌 정보 정리용이에요)`,
+        profileGreeting: `${greeting} 시선으로 펼쳐드릴게요. (참고용 정보예요)`,
       };
   }
 }
@@ -507,7 +507,11 @@ function getCommutePositioning(district: string): string {
   );
 }
 
-function buildSchool(f: ApartmentFacts, profile: UserProfile | null): string {
+function buildSchool(
+  f: ApartmentFacts,
+  profile: UserProfile | null,
+  kidsInfra: import('./kakao-local').KidsInfra | null
+): string {
   const isParent =
     profile?.householdType === 'family_kids' ||
     profile?.householdType === 'school_parent' ||
@@ -522,17 +526,34 @@ function buildSchool(f: ApartmentFacts, profile: UserProfile | null): string {
 직접 해당되시진 않지만, 향후 가족 구성 변화 가능성을 염두에 두시면 이 지역 학군은 ${getAcademyCluster(f.district)}이라는 정도만 알아두시면 돼요.`;
   }
 
+  // 카카오 데이터 기반 육아 인프라 한 줄 — "지도앱 확인" 떠넘김 제거.
+  let kidsInfraLine = '';
+  if (kidsInfra && (kidsInfra.daycareCount > 0 || kidsInfra.pediatricsCount > 0)) {
+    const parts: string[] = [];
+    if (kidsInfra.daycareCount > 0) {
+      const samples = kidsInfra.daycareSamples.slice(0, 2).join(', ');
+      parts.push(`반경 800m 내 **어린이집·유치원 ${kidsInfra.daycareCount}곳**${samples ? ` (예: ${samples})` : ''}`);
+    }
+    if (kidsInfra.pediatricsCount > 0) {
+      const samples = kidsInfra.pediatricsSamples.slice(0, 2).join(', ');
+      parts.push(`**소아과 ${kidsInfra.pediatricsCount}곳**${samples ? ` (예: ${samples})` : ''}`);
+    }
+    kidsInfraLine = `- **주변 육아 인프라**: ${parts.join(' / ')}`;
+  } else if (kidsInfra) {
+    kidsInfraLine = '- **주변 육아 인프라**: 반경 800m 내 등록된 어린이집·소아과 데이터가 적어요. 직접 둘러보시는 걸 권장.';
+  }
+
   const block = `${heading}
 
-${f.district || '해당 지역'}${f.dong ? ' ' + f.dong : ''} 일대의 학군은 공공데이터만으로는 전체 그림이 보이지 않아요. 다음 포인트를 체크해보시는 걸 추천드려요.
+${f.district || '해당 지역'}${f.dong ? ' ' + f.dong : ''} 일대의 학군은 공공데이터만으로 전체 그림이 안 보여요. 다음 포인트를 체크해보세요.
 
 - **배정 초등학교**: 학교알리미(schoolinfo.go.kr)에서 단지 주소 기준 배정 학교 확인
 - **학원가 밀집도**: ${getAcademyCluster(f.district)}
 ${
   f.units >= 1500
-    ? `- **단지 내 시설**: ${f.units.toLocaleString()}세대 규모에서는 단지 내 어린이집·유치원이 자체 운영되는 경우가 많아, 워킹 부모라면 꼭 확인해보세요.`
-    : '- **주변 육아 인프라**: 반경 500m 내 어린이집·소아과·키즈카페 밀집도를 지도 앱으로 확인'
-}`;
+    ? `- **단지 내 시설**: ${f.units.toLocaleString()}세대 규모면 단지 내 어린이집·유치원이 자체 운영되는 경우가 많아요. 워킹 부모라면 꼭 확인.`
+    : ''
+}${kidsInfraLine ? '\n' + kidsInfraLine : ''}`;
 
   if (profile?.householdType === 'school_parent') {
     return `${block}
@@ -754,8 +775,8 @@ function buildClosing(f: ApartmentFacts, profile: UserProfile | null): string {
 
 ${profileMessage}
 
-> 💡 **다음 궁금증이 있다면**
-> - 🔵 옆 단지랑 나란히 보기 → **990원**
+> 💡 **아직 칠까말까 싶다면**
+> - 🔵 옆 단지도 칠래말래? → **990원**
 > - 🟣 내 조건에 맞는 곳 찾기 → **2,990원**`;
 }
 
@@ -808,47 +829,36 @@ export function buildMockTldr(
   const tagline = [stationWord, scale, ageWord].filter(Boolean).join(' · ');
   const where = `${f.district || '서울'}${f.dong ? ' ' + f.dong : ''}`;
 
+  // 첫 줄: 단지 정체성 한 줄 (팩트만)
+  const head = `${tagline} · ${where}`;
+
   if (!profile) {
-    return `${where} 일대의 ${tagline} 단지로, 데이터로 보면 ${f.scaleLabel || '주거 정체성이 뚜렷한'} 포지션이에요.`;
+    return `${head}. 칠까말까는 한 장 펼쳐보고 결정해보세요.`;
   }
 
-  // 1순위 우선순위 → 풀어드릴 핵심 관점
-  const top = profile.priorities[0];
-  const lens = top
-    ? {
-        transport: '출퇴근 동선',
-        school: '학군과 통학 환경',
-        convenience: '생활 편의와 상권',
-        quiet: '주거 분위기',
-        newbuild: '연식과 시설 상태',
-        size: '평수와 단지 규모',
-        price: '가격 안정성',
-        community: '단지 커뮤니티',
-      }[top]
-    : '입지 전반';
+  // 가구별 행동 가이드 한 줄 (메타 발언·추상어 없이 구체적으로)
+  const tail: Record<typeof profile.householdType, string> = {
+    single: '1인가구는 출퇴근 동선 하나만 깔끔하게 챙기면 충분해요.',
+    couple: '둘이 정주하기엔 무난한 포지션이에요.',
+    newlywed: '신혼은 지금 출퇴근에 미래 자녀 동선까지 같이 따져보세요.',
+    family_kids: '자녀 있는 집은 통학로부터 한 번 걸어보세요.',
+    school_parent: '학군 보러 왔으면 배정 학교·학원가부터 체크.',
+    retired: '은퇴 후라면 보행·의료 동선이 진짜 중요해요.',
+    investor: '데이터로만 가볍게 정리해드릴게요.',
+  };
 
-  // 가구별 1인칭 직접 화법
-  switch (profile.householdType) {
-    case 'single':
-      return `1인가구의 ${lens} 기준으로 보면, ${where}의 이 ${tagline} 단지는 자기 동선 하나에 집중할 수 있는 포지션이에요.`;
-    case 'couple':
-      return `2인가구의 ${lens} 기준으로 보면, ${where}의 이 ${tagline} 단지는 둘이 정주하기 좋은 안정감이 있는 단지예요.`;
-    case 'newlywed':
-      return `신혼부부의 ${lens} 관점에서 풀어드리면, ${where}의 이 ${tagline} 단지는 지금과 5~10년 후를 함께 견딜 수 있을지가 핵심이에요.`;
-    case 'family_kids':
-      return `자녀 있는 가족의 ${lens} 관점에서 보면, ${where}의 이 ${tagline} 단지는 통학로와 학군 동선부터 먼저 짚어봐야 해요.`;
-    case 'school_parent':
-      return `학군 중심 학부모의 관점에서 풀어드리면, ${where}의 이 ${tagline} 단지는 배정 학교와 학원가 접근성이 첫 번째 체크포인트예요.`;
-    case 'retired':
-      return `은퇴 후 정주의 관점에서 보면, ${where}의 이 ${tagline} 단지는 보행·의료·생활 편의가 어떻게 짜이는지가 핵심이에요.`;
-    case 'investor':
-      return `참고용 데이터로 보면, ${where}의 이 ${tagline} 단지는 ${lens} 측면에서 ${f.scaleLabel || '뚜렷한 포지션'}을 가진 단지예요.`;
-  }
+  return `${head}. ${tail[profile.householdType]}`;
+}
+
+export interface MockReportExtras {
+  // 단지 좌표 기반 카카오 검색 결과. free route에서 prefetch.
+  kidsInfra?: import('./kakao-local').KidsInfra | null;
 }
 
 export function buildMockFreeReport(
   apt: ApartmentWithLatestPrice,
-  profile: UserProfile | null
+  profile: UserProfile | null,
+  extras: MockReportExtras = {}
 ): string {
   const f = deriveFacts(apt);
   const plan = planSections(profile);
@@ -857,7 +867,7 @@ export function buildMockFreeReport(
     intro: () => buildIntro(f, profile),
     strengths: () => buildStrengths(f, profile),
     commute: () => buildCommute(f, profile),
-    school: () => buildSchool(f, profile),
+    school: () => buildSchool(f, profile, extras.kidsInfra ?? null),
     convenience: () => buildConvenience(f, profile),
     price: () => buildPrice(f, profile),
     trend: () => buildTrend(f, profile),

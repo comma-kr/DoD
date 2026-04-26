@@ -161,7 +161,7 @@ export async function fetchTransitPaths(
 function parseOdsayPath(p: OdsayPath): TransitPathResult {
   const hops: SubwayHop[] = [];
   let walkToFirstMin = 0;
-  let walkFromLastMin = 0;
+  const walkFromLastMin = 0;
 
   // 지하철·버스 구간을 hop으로 변환. 도보는 hop이 아니라 시간만 기록.
   // ODSay subPath는 [도보, 지하철, 도보, 지하철, 도보, ...] 같은 시퀀스.

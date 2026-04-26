@@ -222,9 +222,9 @@ function AnalyzeContent() {
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-border bg-surface">
           <span className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
         </div>
-        <h1 className="mt-6 text-2xl font-bold">리포트를 준비하고 있어요</h1>
+        <h1 className="mt-6 text-2xl font-bold">한 장 펼치는 중...</h1>
         <p className="mt-2 text-sm text-foreground-sub">
-          단지 데이터를 정리하고, 가족 형태에 맞게 풀어드리고 있어요.
+          단지 데이터 정리하고 가족 시선으로 다듬고 있어요.
         </p>
       </div>
     );
@@ -237,10 +237,10 @@ function AnalyzeContent() {
           FREE · 계정당 1회
         </span>
         <h1 className="text-3xl font-bold sm:text-4xl">
-          어떤 단지가 <em className="report-highlight not-italic">궁금</em>하세요?
+          어떤 단지부터 <em className="report-highlight not-italic">칠래말래?</em>
         </h1>
         <p className="mt-4 leading-relaxed text-foreground-sub">
-          단지를 하나 골라주시면 교통, 학군, 시세까지 제대로 정리해드려요.
+          단지 하나 고르면 교통·학군·시세까지 한 장에 펼쳐드려요.
         </p>
       </div>
 

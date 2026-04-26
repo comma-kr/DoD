@@ -15,12 +15,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: '입지990 — 내가 아는 단지, 제대로 정리해드려요',
+  title: '칠래말래? — 등기 치기 전에, 한 장 펼쳐봐',
   description:
-    '공짜로 단지 하나 제대로, 옆 단지랑 나란히 보기는 딱 990원. 데이터로 보는 우리 동네 아파트.',
+    '옆 단지랑 나란히, 시세 흐름, 인근 학교까지. 990원이면 단지 한 장. 사기 전에, 갈아타기 전에.',
   openGraph: {
-    title: '입지990',
-    description: '공짜로 단지 하나 제대로, 옆 단지랑 나란히 보기는 딱 990원',
+    title: '칠래말래? — 등기 치기 전에, 한 장 펼쳐봐',
+    description: '990원이면 옆 단지랑 나란히. 사기 전에, 갈아타기 전에.',
     locale: 'ko_KR',
     type: 'website',
   },

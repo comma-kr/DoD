@@ -202,6 +202,7 @@ export default function KakaoMapClient({
   // SDK 스크립트 로드
   useEffect(() => {
     if (!appkey) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setStatus('missing-key');
       return;
     }
