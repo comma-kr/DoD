@@ -8,6 +8,7 @@ import {
   formatPrice10k,
   formatPricePerPyeong,
   typicalPublicPyeong,
+  standardPrivateArea,
 } from '@/lib/utils';
 import type { TradePoint } from '@/types/apartment';
 
@@ -17,18 +18,19 @@ interface Props {
 }
 
 interface AreaBucket {
-  areaM2: number;       // 정수 ㎡ (Math.round)
-  pyeongSupply: number; // 시장 호칭 평형 (33평형 등)
+  areaM2: number;       // 시장 표준 전용 ㎡ (59/74/84/99/114/134 등 — 한국 통용 호칭)
+  pyeongSupply: number; // 시장 호칭 공급 평형 (33평형 등)
   trades: TradePoint[];
   count: number;
 }
 
-// 거래를 정수 ㎡ 키로 묶음. 거래 수 내림차순. (호갱노노/네이버부동산 동일 패턴)
+// 거래를 시장 표준 전용 평형으로 묶음. 거래 수 내림차순.
+// 측정값(60.12, 59.94 등)은 모두 같은 분양 타입(59㎡)이므로 표준 평형으로 통합.
 function groupByArea(trades: TradePoint[]): AreaBucket[] {
   if (trades.length === 0) return [];
   const map = new Map<number, TradePoint[]>();
   for (const t of trades) {
-    const key = Math.round(t.areaM2);
+    const key = standardPrivateArea(t.areaM2);
     if (!map.has(key)) map.set(key, []);
     map.get(key)!.push(t);
   }
@@ -176,13 +178,15 @@ export default function TradeFlowTabs({ trades, apartmentName }: Props) {
               const ppy = calcPricePerPyeong(t.priceM10k, t.areaM2);
               const isMax = realShowExtremes && i === maxIdx;
               const isMin = realShowExtremes && i === minIdx;
+              // 최고는 빨강 계열 (danger), 최저는 파랑 계열 (인라인 — 디자인 토큰에 blue 별도 X)
               const rowBg = isMax
                 ? 'bg-danger-soft/40'
                 : isMin
-                ? 'bg-primary-soft/30'
+                ? ''
                 : '';
+              const rowStyle = isMin ? { background: '#DBEAFE' } : undefined;
               return (
-                <tr key={i} className={`border-b border-border/40 ${rowBg}`}>
+                <tr key={i} className={`border-b border-border/40 ${rowBg}`} style={rowStyle}>
                   <td className="py-2 pr-3 text-foreground">{t.dealDate.slice(0, 7)}</td>
                   <td className="py-2 pr-3 font-semibold text-foreground">
                     {formatPrice10k(t.priceM10k)}
@@ -192,7 +196,10 @@ export default function TradeFlowTabs({ trades, apartmentName }: Props) {
                       </span>
                     ) : null}
                     {isMin ? (
-                      <span className="ml-1.5 inline-flex items-center rounded-md bg-primary-soft px-1.5 py-0.5 text-[9px] font-bold text-primary-ink">
+                      <span
+                        className="ml-1.5 inline-flex items-center rounded-md px-1.5 py-0.5 text-[9px] font-bold"
+                        style={{ background: '#DBEAFE', color: '#1D4ED8' }}
+                      >
                         ▼ 최저
                       </span>
                     ) : null}

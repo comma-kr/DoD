@@ -39,6 +39,24 @@ export function m2ToPyeong(m2: number): number {
   return Math.round((m2 / PYEONG_M2) * 10) / 10;
 }
 
+// 전용 m² 측정값을 한국 시장에서 통용되는 표준 전용 ㎡ 라벨로 매핑.
+// 분양 시점 공급 평형 호칭("84타입") 기준으로 실거래 측정값(84.97㎡)을 묶는다.
+// 이유: 사용자가 "녹번역 84㎡"로 검색하지 "녹번역 85㎡"로는 검색 안 함.
+// 호갱노노/네이버부동산/아실 모두 표준 평형 호칭(39/49/59/74/84/99/114/134) 사용.
+export function standardPrivateArea(areaM2: number): number {
+  if (areaM2 < 35) return Math.round(areaM2);
+  if (areaM2 < 42) return 39;
+  if (areaM2 < 50) return 46;
+  if (areaM2 < 56) return 49;
+  if (areaM2 < 65) return 59;
+  if (areaM2 < 78) return 74;
+  if (areaM2 < 92) return 84;
+  if (areaM2 < 107) return 99;
+  if (areaM2 < 125) return 114;
+  if (areaM2 < 145) return 134;
+  return Math.round(areaM2);
+}
+
 // 전용 m²를 한국 관용 "공급 평형"으로 근사.
 // 통상 공급면적 = 전용 / 0.77, 평 = 면적 / 3.3058.
 // 시장 호칭 매핑 (네이버부동산·호갱노노 표기 기준):

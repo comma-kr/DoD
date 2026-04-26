@@ -153,6 +153,14 @@ export default async function ReportPage({ params }: PageProps) {
 
         <ReportMarkdown markdown={markdown} />
 
+        {/* 실거래 흐름 — 마크다운 본문의 "📈 실거래 흐름" 섹션 직후로 위치.
+            평형 칩 탭으로 다른 평수 거래 전환. 디폴트는 거래 수 가장 많은 평형. */}
+        {specsTrades.length > 0 ? (
+          <div className="mt-6">
+            <TradeFlowTabs trades={specsTrades} apartmentName={apartmentName} />
+          </div>
+        ) : null}
+
         {regionPercentile ? (
           <div className="mt-10">
             <RegionPercentileBar data={regionPercentile} />
@@ -167,14 +175,6 @@ export default async function ReportPage({ params }: PageProps) {
               builtYear={mainApt?.builtYear ?? null}
               jeonseRatio={specsJeonse}
             />
-          </div>
-        ) : null}
-
-        {/* 실거래 흐름 — 평형 칩 탭으로 다른 평수 거래도 전환해서 볼 수 있음.
-            디폴트는 거래 수 가장 많은 평형. (이전: 단일 평형 PriceChart) */}
-        {specsTrades.length > 0 ? (
-          <div className="mt-6">
-            <TradeFlowTabs trades={specsTrades} apartmentName={apartmentName} />
           </div>
         ) : null}
 
