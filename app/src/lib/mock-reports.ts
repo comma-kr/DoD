@@ -49,10 +49,15 @@ interface ApartmentFacts {
   ageComment: string;
   walkComment: string;
   trades: TradePoint[];
-  priceDelta6m: number | null;   // 6개월 상승률 %
-  priceDelta12m: number | null;  // 12개월 상승률 %
-  priceMax: number | null;       // 관측 기간 최고가
-  priceMin: number | null;       // 관측 기간 최저가
+  priceDelta6m: number | null;        // 6개월 상승률 % (대표 평형 기준 — 같은 평형끼리 비교)
+  priceDelta12m: number | null;       // 12개월 상승률 % (대표 평형 기준)
+  priceMax: number | null;            // 관측 기간 최고가 (대표 평형)
+  priceMin: number | null;            // 관측 기간 최저가 (대표 평형)
+  // 정합성 메타 — buildTrend 카피에 명시 ("어떤 평형 기준 / 어느 기간"):
+  observationMonths: number;          // 관측 기간 개월 수 (가장 오래된 ~ 최신)
+  totalTradeCount: number;            // 단지 전체 거래 수 (모든 평형)
+  repAreaM2: number | null;           // 대표 평형 (표준 전용 ㎡, 거래 가장 많음)
+  repAreaCount: number;               // 대표 평형 거래 수
 }
 
 function deriveFacts(apt: ApartmentWithLatestPrice): ApartmentFacts {
@@ -78,33 +83,57 @@ function deriveFacts(apt: ApartmentWithLatestPrice): ApartmentFacts {
       ? calcPricePerPyeong(apt.latestPrice10k, rawAreaM2)                // 평당가 계산은 측정값 그대로 (정확)
       : null;
 
-  // 상승률: 가장 오래된 것 vs 가장 최근. 기간 설정
-  const latestTrade = sortedAsc[sortedAsc.length - 1];
-  const latestPrice = latestTrade?.priceM10k ?? null;
+  // ── 평형 정합성 ── 상승률은 반드시 "같은 평형끼리" 비교해야 의미 있음.
+  // 이전 버그: 84㎡ 14.8억 vs 1년 전 59㎡ 9.5억 비교해서 +55% 헛소리 가능.
+  // 수정: standardPrivateArea로 그룹핑 → 거래 가장 많은 평형(대표 평형) 내에서만 비교.
+  const repBucket = new Map<number, TradePoint[]>();
+  for (const t of trades) {
+    const k = standardPrivateArea(t.areaM2);
+    if (!repBucket.has(k)) repBucket.set(k, []);
+    repBucket.get(k)!.push(t);
+  }
+  const sortedBuckets = [...repBucket.entries()].sort((a, b) => b[1].length - a[1].length);
+  const repAreaM2 = sortedBuckets[0]?.[0] ?? null;
+  const repTrades = sortedBuckets[0]?.[1] ?? [];
+  const repAreaCount = repTrades.length;
+
+  const repSortedAsc = [...repTrades].sort(
+    (a, b) => new Date(a.dealDate).getTime() - new Date(b.dealDate).getTime()
+  );
+  const repLatest = repSortedAsc[repSortedAsc.length - 1];
+  const repLatestPrice = repLatest?.priceM10k ?? null;
 
   let priceDelta6m: number | null = null;
   let priceDelta12m: number | null = null;
-  if (latestTrade && latestPrice) {
-    const latestTime = new Date(latestTrade.dealDate).getTime();
+  if (repLatest && repLatestPrice) {
+    const latestTime = new Date(repLatest.dealDate).getTime();
     const sixMonthsAgo = latestTime - 180 * 24 * 60 * 60 * 1000;
     const twelveMonthsAgo = latestTime - 365 * 24 * 60 * 60 * 1000;
-    const trade6m = sortedAsc.find(
-      (t) => new Date(t.dealDate).getTime() >= sixMonthsAgo
-    );
-    const trade12m = sortedAsc.find(
-      (t) => new Date(t.dealDate).getTime() >= twelveMonthsAgo
-    );
-    if (trade6m && trade6m !== latestTrade) {
-      priceDelta6m = Math.round(((latestPrice - trade6m.priceM10k) / trade6m.priceM10k) * 1000) / 10;
+    // "그 시점에 가장 가까운 거래" = >= 기준일 첫 거래 (오름차순이라 6/12개월 직후 첫 거래)
+    const trade6m = repSortedAsc.find((t) => new Date(t.dealDate).getTime() >= sixMonthsAgo);
+    const trade12m = repSortedAsc.find((t) => new Date(t.dealDate).getTime() >= twelveMonthsAgo);
+    if (trade6m && trade6m !== repLatest) {
+      priceDelta6m = Math.round(((repLatestPrice - trade6m.priceM10k) / trade6m.priceM10k) * 1000) / 10;
     }
-    if (trade12m && trade12m !== latestTrade) {
-      priceDelta12m = Math.round(((latestPrice - trade12m.priceM10k) / trade12m.priceM10k) * 1000) / 10;
+    if (trade12m && trade12m !== repLatest) {
+      priceDelta12m = Math.round(((repLatestPrice - trade12m.priceM10k) / trade12m.priceM10k) * 1000) / 10;
     }
   }
 
-  const prices = trades.map((t) => t.priceM10k);
-  const priceMax = prices.length ? Math.max(...prices) : null;
-  const priceMin = prices.length ? Math.min(...prices) : null;
+  // 최고/최저는 대표 평형 기준 (이전엔 단지 전체라 평형 무관 비교 = 무의미)
+  const repPrices = repTrades.map((t) => t.priceM10k);
+  const priceMax = repPrices.length ? Math.max(...repPrices) : null;
+  const priceMin = repPrices.length ? Math.min(...repPrices) : null;
+
+  // 관측 기간 (전체 거래 기준 — 단지 전체 활동성 표현)
+  const oldestDate = sortedAsc[0]?.dealDate;
+  const newestDate = sortedAsc[sortedAsc.length - 1]?.dealDate;
+  let observationMonths = 0;
+  if (oldestDate && newestDate) {
+    const diffMs = new Date(newestDate).getTime() - new Date(oldestDate).getTime();
+    observationMonths = Math.max(1, Math.round(diffMs / (30 * 24 * 60 * 60 * 1000)));
+  }
+  const totalTradeCount = trades.length;
 
   const scaleLabel =
     units >= 5000
@@ -184,6 +213,10 @@ function deriveFacts(apt: ApartmentWithLatestPrice): ApartmentFacts {
     priceDelta12m,
     priceMax,
     priceMin,
+    observationMonths,
+    totalTradeCount,
+    repAreaM2,
+    repAreaCount,
   };
 }
 
@@ -698,16 +731,27 @@ function buildTrend(f: ApartmentFacts, _profile: UserProfile | null): string {
 
   const rangeLine =
     f.priceMax && f.priceMin && f.priceMax !== f.priceMin
-      ? ` · 관측 기간 ${formatPrice10k(f.priceMin)} ~ ${formatPrice10k(f.priceMax)}`
+      ? `관측 기간 ${formatPrice10k(f.priceMin)} ~ ${formatPrice10k(f.priceMax)}`
       : '';
+
+  // 정합성 핵심 — "어떤 평형을 어느 기간으로 비교했는지" 본문에 명시.
+  const repTag = f.repAreaM2
+    ? `전용 ${f.repAreaM2}㎡(공급 ${typicalPublicPyeong(f.repAreaM2)}평형) ${f.repAreaCount}건 기준`
+    : '';
+  const periodTag =
+    f.observationMonths > 0
+      ? `최근 **${f.observationMonths}개월 ${f.totalTradeCount}건** 실거래 흐름이에요`
+      : `최근 **${f.totalTradeCount}건** 실거래 흐름이에요`;
+
+  const deltaWithTag = deltaLine.length > 0 ? `\n\n${deltaLine.join(' · ')}` : '';
+  const repNote = repTag ? `\n\n📊 **상승률 기준**: ${repTag} (같은 평형끼리 비교해야 의미가 있어요)` : '';
+  const rangeWithBreak = rangeLine ? `\n\n${rangeLine}` : '';
 
   return `${heading}
 
-${f.name}의 단지 전체 최근 **${f.trades.length}건** 실거래 흐름이에요.
+${f.name}의 단지 전체 ${periodTag}.${deltaWithTag}${rangeWithBreak}${repNote}
 
-${deltaLine.join(' · ')}${rangeLine}
-
-> 💡 아래 카드에서 **평수별로** 골라서 볼 수 있어요. 디폴트는 가장 거래 많은 평형.`;
+> 💡 아래 카드에서 **평수별로** 골라서 볼 수 있어요. 디폴트는 거래 가장 많은 평형.`;
 }
 
 function buildCheckpoints(f: ApartmentFacts, profile: UserProfile | null): string {

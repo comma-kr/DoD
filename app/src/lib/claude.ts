@@ -87,9 +87,10 @@ const FREE_REPORT_STRUCTURE = `
 
 ## 📈 실거래 흐름
 짧은 컨텍스트 한 단락만 작성. **표·차트는 별도 인터랙티브 컴포넌트(TradeFlowTabs)가 담당**하므로 본문에 표를 만들지 말 것.
-포함할 내용:
-- "단지명의 최근 N건 실거래 흐름이에요 (대표 평형 전용 X㎡ · 공급 Y평형)" 한 줄
-- 6개월/12개월 상승률 (주어진 값만, 새 계산 금지)
+포함할 내용 (정합성 필수):
+- "단지명의 단지 전체 최근 N개월 M건 실거래 흐름이에요" — 기간 + 거래 수 명시
+- 6개월/12개월 상승률 (주어진 값만, 새 계산 금지) + **"전용 X㎡(공급 Y평형) N건 기준"임을 반드시 명시** (왜냐: 다른 평형끼리 비교 = 무의미)
+- "(같은 평형끼리 비교해야 의미가 있어요)" 같이 정합성 안내 한 줄
 - 마지막 한 줄: "아래 카드에서 다른 평수 거래도 칩 누르면 바로 전환돼요" 안내
 
 
@@ -186,21 +187,38 @@ export async function generateFreeDeepSingleReport(
           .join('\n')
       : '  - (실거래 데이터 없음)';
 
-  // 상승률 계산 (값만 계산, Claude에는 전달)
-  const latest = sortedTrades[sortedTrades.length - 1];
+  // 상승률은 반드시 같은 평형끼리 비교 (mock-reports와 동일 정합성).
+  // 단지 전체로 비교하면 84㎡ vs 59㎡ 같은 다른 평형 비교로 의미 없는 숫자 나옴.
+  const repBucketC = new Map<number, typeof sortedTrades>();
+  for (const t of sortedTrades) {
+    const k = standardPrivateArea(t.areaM2);
+    if (!repBucketC.has(k)) repBucketC.set(k, []);
+    repBucketC.get(k)!.push(t);
+  }
+  const repSortedC = [...repBucketC.entries()].sort((a, b) => b[1].length - a[1].length);
+  const repAreaForDelta = repSortedC[0]?.[0] ?? null;
+  const repTradesForDelta = repSortedC[0]?.[1] ?? [];
+  const repLatest = repTradesForDelta[repTradesForDelta.length - 1];
   let delta12m: number | null = null;
   let delta6m: number | null = null;
-  if (latest) {
-    const latestTime = new Date(latest.dealDate).getTime();
-    const t6 = sortedTrades.find((t) => new Date(t.dealDate).getTime() >= latestTime - 180 * 86400000);
-    const t12 = sortedTrades.find((t) => new Date(t.dealDate).getTime() >= latestTime - 365 * 86400000);
-    if (t6 && t6 !== latest) {
-      delta6m = Math.round(((latest.priceM10k - t6.priceM10k) / t6.priceM10k) * 1000) / 10;
+  if (repLatest) {
+    const latestTime = new Date(repLatest.dealDate).getTime();
+    const t6 = repTradesForDelta.find((t) => new Date(t.dealDate).getTime() >= latestTime - 180 * 86400000);
+    const t12 = repTradesForDelta.find((t) => new Date(t.dealDate).getTime() >= latestTime - 365 * 86400000);
+    if (t6 && t6 !== repLatest) {
+      delta6m = Math.round(((repLatest.priceM10k - t6.priceM10k) / t6.priceM10k) * 1000) / 10;
     }
-    if (t12 && t12 !== latest) {
-      delta12m = Math.round(((latest.priceM10k - t12.priceM10k) / t12.priceM10k) * 1000) / 10;
+    if (t12 && t12 !== repLatest) {
+      delta12m = Math.round(((repLatest.priceM10k - t12.priceM10k) / t12.priceM10k) * 1000) / 10;
     }
   }
+  // 관측 기간 (전체)
+  const oldestTradeC = sortedTrades[0];
+  const newestTradeC = sortedTrades[sortedTrades.length - 1];
+  const observationMonthsC =
+    oldestTradeC && newestTradeC && oldestTradeC !== newestTradeC
+      ? Math.max(1, Math.round((new Date(newestTradeC.dealDate).getTime() - new Date(oldestTradeC.dealDate).getTime()) / (30 * 86400000)))
+      : 0;
 
   const profileBlock = profile
     ? `
@@ -230,9 +248,12 @@ ${profile.commuteArea && profile.commuteArea !== 'none' ? `- 주 출근지: ${CO
 - 기준 면적: 전용 ${area}㎡ (전용 약 ${pyeongPrivate}평 / 공급 ${pyeongSupply}평형 — 시장 표준 호칭)
 - 최근 실거래가: ${priceText} (전용 ${area}㎡ 기준)
 - 평당가: ${pricePerPyeong ? pricePerPyeong.toLocaleString() + '만원/평 (공급면적 기준 · 시장 표준)' : '정보 없음'}
-- 상승률 (제공된 값, 새로 계산 금지):
+- 단지 전체 거래 수: ${sortedTrades.length}건 / 관측 기간: ${observationMonthsC > 0 ? observationMonthsC + '개월' : '단일 시점'}
+- 상승률 (제공된 값, 새로 계산 금지) — **반드시 같은 평형끼리 비교**해서 산출됨:
+  - 비교 기준: 거래 가장 많은 평형 = 전용 ${repAreaForDelta}㎡ (${repTradesForDelta.length}건)
   - 6개월: ${delta6m !== null ? (delta6m > 0 ? '+' : '') + delta6m + '%' : '데이터 부족'}
   - 12개월: ${delta12m !== null ? (delta12m > 0 ? '+' : '') + delta12m + '%' : '데이터 부족'}
+  → 흐름 섹션에서 "전용 X㎡ N건 기준"임을 반드시 명시할 것 (정합성).
 - 최근 실거래 내역:
 ${tradeTable}
 ${
