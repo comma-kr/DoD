@@ -538,7 +538,7 @@ export default function KakaoMapClient({
             border:1.5px solid #fff;
             white-space:nowrap;
             box-shadow:0 2px 6px rgba(0,0,0,0.3);
-          ">${walkingRoute.toName.toUpperCase()} · ${walkingRoute.distanceM}M · ${walkingRoute.walkMin}MIN</div>
+          ">${walkingRoute.toName} · ${walkingRoute.distanceM}m · 도보 ${walkingRoute.walkMin}분</div>
         </div>
       `;
       const label = new kakao.maps.CustomOverlay({

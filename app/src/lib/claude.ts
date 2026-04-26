@@ -78,7 +78,12 @@ const FREE_REPORT_STRUCTURE = `
 
 ## 💰 지금 시세는
 최근 실거래가를 절대값으로 소개 + **평당가**(주어진 경우)를 bullet로 정리.
-기준 면적(84㎡ 약 25.7평) 명시. 추이/상승률은 이 섹션에서 다루지 말고 다음 섹션으로.
+면적 표기 필수 규칙:
+  - 항상 **"전용 X㎡"** 명시 (단순 "84㎡"는 모호).
+  - 평형 호칭은 **"공급 약 Y평형"** 같이 시장 표준 호칭 사용 (예: 84㎡ → 34평형).
+  - **전용 평수와 공급 평형을 동시 표기**해서 사용자가 헷갈리지 않게 (예: "전용 25.7평 / 공급 34평형").
+  - 평당가는 **공급면적 기준**임을 라벨로 명시 (호갱노노/네이버부동산/아실 동일 표준).
+추이/상승률은 이 섹션에서 다루지 말고 다음 섹션으로.
 
 ## 📈 실거래 흐름
 주어진 trade 데이터(최대 12개월)를 표로 정리. 컬럼: 거래월, 거래가, 평당가, 층.
@@ -159,9 +164,11 @@ export async function generateFreeDeepSingleReport(
   const age = apartment.builtYear ? 2026 - apartment.builtYear : null;
 
   const area = apartment.latestAreaM2 ?? 84.99;
-  const pyeong = typicalPublicPyeong(area);
+  // 평수: 전용·공급 둘 다 산출. 시장 호칭은 공급평형 ("84타입=34평형")이 표준.
+  const pyeongPrivate = Math.round((area / 3.3058) * 10) / 10;  // 전용 평수
+  const pyeongSupply = typicalPublicPyeong(area);                // 공급 평형 (시장 호칭)
   const pricePerPyeong = apartment.latestPrice10k
-    ? calcPricePerPyeong(apartment.latestPrice10k, area)
+    ? calcPricePerPyeong(apartment.latestPrice10k, area)         // 공급면적 기준 (시장 표준)
     : null;
 
   const sortedTrades = [...(apartment.trades ?? [])].sort(
@@ -219,9 +226,9 @@ ${profile.commuteArea && profile.commuteArea !== 'none' ? `- 주 출근지: ${CO
 - 세대수: ${apartment.totalUnits ?? '정보 없음'}
 - 입주년도: ${apartment.builtYear ?? '정보 없음'}${age ? ` (${age}년 차)` : ''}
 - 가장 가까운 역: ${apartment.nearestStation ?? '정보 없음'} (${apartment.stationDistanceM ?? '?'}m)
-- 기준 면적: ${area}㎡ (약 ${pyeong}평)
-- 최근 실거래가: ${priceText}
-- 평당가: ${pricePerPyeong ? pricePerPyeong.toLocaleString() + '만원/평' : '정보 없음'}
+- 기준 면적: 전용 ${area}㎡ (전용 ${pyeongPrivate}평 / 공급 ${pyeongSupply}평형 — 시장에서 흔히 부르는 평형)
+- 최근 실거래가: ${priceText} (전용 ${Math.round(area)}㎡ 기준)
+- 평당가: ${pricePerPyeong ? pricePerPyeong.toLocaleString() + '만원/평 (공급면적 기준 · 시장 표준)' : '정보 없음'}
 - 상승률 (제공된 값, 새로 계산 금지):
   - 6개월: ${delta6m !== null ? (delta6m > 0 ? '+' : '') + delta6m + '%' : '데이터 부족'}
   - 12개월: ${delta12m !== null ? (delta12m > 0 ? '+' : '') + delta12m + '%' : '데이터 부족'}
@@ -293,7 +300,8 @@ export async function generateCompareReport(
         : '정보 없음';
 
       const area = apt.latestAreaM2 ?? 84.99;
-      const pyeong = typicalPublicPyeong(area);
+      const pyeongPrivate = Math.round((area / 3.3058) * 10) / 10;
+      const pyeongSupply = typicalPublicPyeong(area);
       const pricePerPyeong = apt.latestPrice10k
         ? calcPricePerPyeong(apt.latestPrice10k, area)
         : null;
@@ -333,9 +341,9 @@ export async function generateCompareReport(
 - 세대수: ${apt.totalUnits ?? '정보 없음'}
 - 입주년도: ${apt.builtYear ?? '정보 없음'}${age ? ` (${age}년 차)` : ''}
 - 가장 가까운 역: ${apt.nearestStation ?? '?'} (${apt.stationDistanceM ?? '?'}m${walkMin ? `, 도보 ${walkMin}분` : ''})
-- 기준 면적: ${area}㎡ (약 ${pyeong}평)
-- 최근 실거래가: ${priceText}
-- 평당가: ${pricePerPyeong ? pricePerPyeong.toLocaleString() + '만원/평' : '정보 없음'}
+- 기준 면적: 전용 ${area}㎡ (전용 ${pyeongPrivate}평 / 공급 ${pyeongSupply}평형)
+- 최근 실거래가: ${priceText} (전용 ${Math.round(area)}㎡ 기준)
+- 평당가: ${pricePerPyeong ? pricePerPyeong.toLocaleString() + '만원/평 (공급면적 기준)' : '정보 없음'}
 - 6개월 상승률 (제공값, 새로 계산 금지): ${fmtDelta(delta6m)}
 - 12개월 상승률 (제공값, 새로 계산 금지): ${fmtDelta(delta12m)}
 - 관측 거래 수: ${sortedTrades.length}건`.trim();

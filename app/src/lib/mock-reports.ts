@@ -18,6 +18,7 @@ import {
   calcPricePerPyeong,
   formatPricePerPyeong,
   m2ToPyeong,
+  typicalPublicPyeong,
 } from './utils';
 import { estimateCommute as sharedEstimateCommute } from './commute-matrix';
 import type { CommuteEstimate as SharedCommuteEstimate } from './commute-matrix';
@@ -37,9 +38,10 @@ interface ApartmentFacts {
   walkMin: number;
   price10k: number | null;
   priceText: string | null;
-  areaM2: number | null;
-  pyeong: number | null;
-  pricePerPyeong: number | null;
+  areaM2: number | null;       // 전용면적 (실거래가 기준)
+  pyeong: number | null;        // 전용 평수 (= areaM2 / 3.3058)
+  pyeongSupply: number | null;  // 공급 평형 (시장 호칭, 예: 84㎡ → 34평)
+  pricePerPyeong: number | null; // 공급면적 기준 평당가 (시장 표준)
   scaleLabel: string;
   scalePercentile: string;
   ageLabel: string;
@@ -66,10 +68,11 @@ function deriveFacts(apt: ApartmentWithLatestPrice): ApartmentFacts {
     (a, b) => new Date(a.dealDate).getTime() - new Date(b.dealDate).getTime()
   );
   const areaM2 = apt.latestAreaM2 ?? sortedAsc[sortedAsc.length - 1]?.areaM2 ?? null;
-  const pyeong = areaM2 ? m2ToPyeong(areaM2) : null;
+  const pyeong = areaM2 ? m2ToPyeong(areaM2) : null;                     // 전용 평수 (그대로 환산)
+  const pyeongSupply = areaM2 ? typicalPublicPyeong(areaM2) : null;     // 공급 평형 (시장 호칭, 84㎡→34평)
   const pricePerPyeong =
     apt.latestPrice10k && areaM2
-      ? calcPricePerPyeong(apt.latestPrice10k, areaM2)
+      ? calcPricePerPyeong(apt.latestPrice10k, areaM2)                   // 공급면적 기준 (시장 표준 = 호갱노노/네이버부동산)
       : null;
 
   // 상승률: 가장 오래된 것 vs 가장 최근. 기간 설정
@@ -166,6 +169,7 @@ function deriveFacts(apt: ApartmentWithLatestPrice): ApartmentFacts {
     priceText: apt.latestPrice10k ? formatPrice10k(apt.latestPrice10k) : null,
     areaM2,
     pyeong,
+    pyeongSupply,
     pricePerPyeong,
     scaleLabel,
     scalePercentile,
@@ -644,17 +648,25 @@ function buildPrice(f: ApartmentFacts, _profile: UserProfile | null): string {
       ? '서울 중상위권 가격대'
       : '서울 평균 수준 가격대';
 
+  // 평당가는 시장 표준인 공급면적 기준 (호갱노노/네이버부동산/아실 동일).
+  // 라벨에 "공급면적 기준" 명시해서 25.7평(전용)·34평(공급) 헷갈리는 모순 제거.
   const pyeongLine = f.pricePerPyeong
-    ? `\n\n- **평당가**: 약 **${formatPricePerPyeong(f.pricePerPyeong)}** (${f.pyeong}평 환산 기준)`
+    ? `\n\n- **평당가**: 약 **${formatPricePerPyeong(f.pricePerPyeong)}** (공급면적 기준 · 시장 표준)`
     : '';
 
+  // 면적: 전용/공급 둘 다 명시. 시장에서 "84타입=34평"이라 부르는 호칭 보존.
   const sizeLine = f.areaM2
-    ? `\n- **기준 면적**: ${f.areaM2}㎡ (약 ${f.pyeong}평)`
+    ? `\n- **기준 면적**: 전용 **${f.areaM2}㎡** (전용 ${f.pyeong}평 / 공급 약 ${f.pyeongSupply}평형)`
     : '';
+
+  // 메인 문장도 "전용 84㎡" 명시 + 공급평형 같이 표기 (시장 호칭 보존).
+  const sizeIntro = f.areaM2
+    ? `**전용 ${Math.round(f.areaM2)}㎡** (공급 ${f.pyeongSupply}평형)`
+    : '기준 평형';
 
   return `${heading}
 
-최근 실거래가는 **84㎡ 기준 ${f.priceText}**이에요. ${positionLabel}에 위치해 있어요.
+최근 실거래가는 ${sizeIntro} 기준 **${f.priceText}**이에요. ${positionLabel}에 위치해 있어요.
 ${sizeLine}${pyeongLine}`;
 }
 
@@ -721,7 +733,7 @@ function buildTrend(f: ApartmentFacts, _profile: UserProfile | null): string {
 
   return `${heading}
 
-${f.name}의 최근 ${sortedAsc.length}건 실거래 흐름이에요. (84㎡ 기준)
+${f.name}의 최근 ${sortedAsc.length}건 실거래 흐름이에요. (${f.areaM2 ? `전용 ${Math.round(f.areaM2)}㎡ (공급 ${f.pyeongSupply}평형)` : '동일 평형'} 기준)
 
 ${deltaLine.length > 0 ? deltaLine.join(' · ') + '\n' : ''}
 | 거래월 | 거래가 | 평당가 | 층 |

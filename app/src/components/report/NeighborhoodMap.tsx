@@ -248,7 +248,7 @@ export default function NeighborhoodMap({
             </button>
           </div>
           <div className="mt-2 pt-2 border-t border-border/40 text-[9px] text-foreground-sub">
-            범례 클릭하면 지도에서 보였다 안 보였다
+            👆 누르면 켰다 껐다
           </div>
         </div>
       </div>
