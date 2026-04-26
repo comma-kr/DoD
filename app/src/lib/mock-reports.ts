@@ -252,7 +252,7 @@ function getAcademyCluster(district: string): string {
     영등포구: '여의도 학원가 + 목동 접근성',
     양천구: '목동 학원가(강남 대치에 이은 2대 학원가)',
   };
-  return map[district] ?? '해당 지역 학원가 밀집도를 지도 앱에서 확인해보세요';
+  return map[district] ?? '해당 지역 학원가 정보는 아직 큐레이션이 안 됐어요';
 }
 
 function getDongFlavor(district: string): string {
@@ -264,7 +264,7 @@ function getDongFlavor(district: string): string {
     영등포구: '여의도 직장 수요와 한강 생활권이 결합된 구역이에요.',
     양천구: '학군 수요가 주도하는 조용한 주거 중심 구역이에요.',
   };
-  return map[district] ?? '생활 편의 시설은 지도 앱으로 반경별 확인을 권장드려요.';
+  return map[district] ?? '생활 편의 시설은 단지 동선 따라 분포가 다양해요. 한 번 직접 둘러보시면 좋아요.';
 }
 
 // ========= 출근지별 소요시간 추정 =========
@@ -512,7 +512,7 @@ ${verdictColor} **${estimate.verdict}** — 예상 소요 시간 **${estimate.mi
 
 ${estimate.description}. 가장 가까운 역은 **${f.stationName}** (${f.stationDistM}m, 도보 ${f.walkMin}분)이에요.
 
-> 💡 출근지 맞춤 교통 분석은 실제 시간대(러시아워)에 지도 앱으로 한 번 더 검증해보시면 확실해요.`;
+> 💡 실제 러시아워 시간대 통근 시간은 시간대마다 달라요. 동선 한 번 직접 타보시면 가장 정확해요.`;
   }
 
   // 프로필이 없거나 일반 케이스
@@ -543,7 +543,7 @@ function getCommutePositioning(district: string): string {
   };
   return (
     map[district] ??
-    '해당 역 기준으로 평소 통근 동선이 어떻게 잡히는지, 환승 횟수와 소요 시간을 지도 앱으로 먼저 시뮬레이션해보시는 걸 추천해요.'
+    '해당 역 기준 평소 통근 동선·환승 횟수·소요 시간은 위쪽 "주요 권역 접근성" 카드에서 확인하실 수 있어요.'
   );
 }
 
@@ -653,7 +653,7 @@ ${base}
 
 ${dongFlavor}
 
-> 💡 은퇴 후 주거에서는 **병원 접근성**이 특히 중요해요. 단지 반경 1km 내 종합병원·대형 약국·건강검진센터 위치를 지도 앱에서 확인해보세요. 또한 도보 생활권에서 일상이 해결되는지가 만족도의 핵심이에요.`;
+> 💡 은퇴 후 주거에서는 **병원 접근성**이 특히 중요해요. 단지 반경 1km 내 종합병원·대형 약국이 도보권인지 미리 한 번 둘러보시면 좋아요. 도보 생활권에서 일상이 해결되는지가 만족도의 핵심이에요.`;
   }
   if (profile?.householdType === 'family_kids' || profile?.householdType === 'school_parent') {
     return `${heading}
