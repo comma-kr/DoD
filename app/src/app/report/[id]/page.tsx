@@ -16,7 +16,7 @@ import LocationSection, {
   type ApartmentLocation,
 } from '@/components/report/LocationSection';
 import { PRODUCT_NAMES, type ProductId } from '@/lib/pricing';
-import { extractH2Headings } from '@/lib/markdown';
+import { extractH2Headings, splitMarkdownAfterSection } from '@/lib/markdown';
 import type {
   HouseholdType,
   Priority,
@@ -151,15 +151,27 @@ export default async function ReportPage({ params }: PageProps) {
           </div>
         ) : null}
 
-        <ReportMarkdown markdown={markdown} />
-
-        {/* 실거래 흐름 — 마크다운 본문의 "📈 실거래 흐름" 섹션 직후로 위치.
-            평형 칩 탭으로 다른 평수 거래 전환. 디폴트는 거래 수 가장 많은 평형. */}
-        {specsTrades.length > 0 ? (
-          <div className="mt-6">
-            <TradeFlowTabs trades={specsTrades} apartmentName={apartmentName} />
-          </div>
-        ) : null}
+        {/* 마크다운 본문을 "📈 실거래 흐름" 섹션 끝에서 split해서,
+            그 자리에 인터랙티브 카드(TradeFlowTabs)를 끼워넣음.
+            본문 흐름: ... → 시세 → 흐름(짧은 단락) → [TradeFlowTabs 카드] → 체크 → 한 줄 정리 */}
+        {(() => {
+          const [mdBefore, mdAfter] = splitMarkdownAfterSection(markdown, '실거래 흐름');
+          return (
+            <>
+              <ReportMarkdown markdown={mdBefore} />
+              {specsTrades.length > 0 ? (
+                <div className="mt-6">
+                  <TradeFlowTabs trades={specsTrades} apartmentName={apartmentName} />
+                </div>
+              ) : null}
+              {mdAfter ? (
+                <div className="mt-10">
+                  <ReportMarkdown markdown={mdAfter} />
+                </div>
+              ) : null}
+            </>
+          );
+        })()}
 
         {regionPercentile ? (
           <div className="mt-10">
