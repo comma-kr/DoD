@@ -202,6 +202,28 @@ function walkFiles(dir, files = []) {
 }
 
 // ============================================================
+// E. ODSay hops 정류장명 정합성
+// — rideLine 없는데 station이 "역"으로 끝남 = 버스 정류장에 잘못된 "역" 접미사
+//   (이전 버그: 서울신문사 버스 정류장 → "서울신문사역"으로 잘못 표기)
+// ============================================================
+async function verifyTransitStationNames() {
+  section('E. ODSay 정류장명 정합성 (버스에 "역" 접미사 잘못 붙음)');
+  const { data: all } = await sb.from('transit_path_cache').select('id, apartment_id, commute_area, raw_path');
+  const issues = [];
+  for (const c of all ?? []) {
+    const hops = c.raw_path?.hops ?? [];
+    const altsHops = (c.raw_path?.alternatives ?? []).flatMap((a) => a.hops ?? []);
+    const allHops = [...hops, ...altsHops];
+    const bad = allHops.filter((h) => !h.rideLine && /[가-힣]+역$/.test(h.station ?? ''));
+    if (bad.length > 0) {
+      issues.push(`${c.apartment_id.slice(0, 8)}/${c.commute_area}: ${bad.map((h) => h.station).slice(0, 2).join(', ')}`);
+    }
+  }
+  check(`버스 정류장에 잘못된 "역" 접미사 없음 (transit_path_cache 전체)`, issues.length === 0,
+    issues.length > 0 ? `${issues.length}건: ${issues.slice(0, 3).join(' / ')}` : '');
+}
+
+// ============================================================
 // D. 평수 모순 (시세 섹션 안에서 ㎡·평·평형 일관성)
 // ============================================================
 async function verifyAreaConsistency(reportId) {
@@ -289,6 +311,7 @@ try {
 }
 await verifyNewReport(reportId);
 await verifyAreaConsistency(reportId);
+await verifyTransitStationNames();
 
 // ============================================================
 // 결과 요약

@@ -188,8 +188,11 @@ function parseOdsayPath(p: OdsayPath): TransitPathResult {
     const lane = seg.lane?.[0] as { subwayCode?: number; busNo?: string; name?: string } | undefined;
     const lineCode = lane?.subwayCode ? SUBWAY_CODE_TO_LINE[lane.subwayCode] : undefined;
 
-    const startName = stripStation(seg.startName ?? '');
-    const endName = stripStation(seg.endName ?? '');
+    // trafficType=1(지하철)만 "역" 접미사 자동 보정. 버스 정류장은 원본 이름 그대로 사용.
+    // 이전 버그: 모든 정류장에 stripStation 적용 → "서울신문사" 버스 정류장이 "서울신문사역"으로 표기됨.
+    const isSubway = seg.trafficType === 1;
+    const startName = isSubway ? stripStation(seg.startName ?? '') : (seg.startName ?? '');
+    const endName = isSubway ? stripStation(seg.endName ?? '') : (seg.endName ?? '');
 
     // note 생성 — 지하철은 호선 + 정거장, 버스는 노선 번호 + 시간
     let noteText: string | undefined;
