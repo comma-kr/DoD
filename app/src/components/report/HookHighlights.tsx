@@ -1,40 +1,39 @@
-// 리포트 최상단 훅 하이라이트 카드
-// 부동산 초보·신혼부부가 한눈에 "오 이거 봐야겠다" 느낌을 받도록
-// 4개 핵심 정보를 큰 숫자 + 한 줄 설명으로 노출
+// 리포트 최상단 훅 하이라이트 — V3 (Hero + 보조 3 카드)
+//
+// 구조: 1순위 카드는 Hero (그라데이션 + text-5xl), 나머지 3장은 SubCard 그리드.
+// 카드 종류: price (대출 footer 포함) / transit / school / household (세대·연식)
+// 우선순위: HOUSEHOLD_SPEC + 사용자 priorities[0] → resolveHookOrder
 
 import {
   TrendingUp,
-  Wallet,
   Train,
   GraduationCap,
+  Home,
 } from 'lucide-react';
-import { CARD_TINT, type TintTone } from '@/lib/card-tint';
 import type { Priority, HouseholdType } from '@/types/profile';
 import { resolveHookOrder, type HookKey } from '@/lib/household-priorities';
 
 interface Props {
-  // 시세
-  pricePerPyeong?: number | null; // 만원/평
-  latestPriceM10k?: number | null; // 만원
-  priceDelta12m?: number | null; // 1년 상승률 %
+  pricePerPyeong?: number | null;
+  latestPriceM10k?: number | null;
+  priceDelta12m?: number | null;
+  monthlyMortgage?: number | null;
 
-  // 금융
-  monthlyMortgage?: number | null; // 70% 대출 + 30년 + 4.5% 가정 시 월 납부
-
-  // 교통
   nearestStation?: string | null;
   nearestStationDistanceM?: number | null;
   walkingMin?: number | null;
 
-  // 학군
   schoolName?: string | null;
   schoolDistanceM?: number | null;
 
-  // 가족 구성
   totalUnits?: number | null;
   builtYear?: number | null;
 
-  // 프로필 1순위 → 해당 카드를 첫번째로 끌어올림 + 강조
+  // Hero 우측 destination 블록 — 1순위가 transit일 때만 노출
+  destinationLabel?: string | null;
+  destinationTimeMin?: number | null;
+  destinationHint?: string | null;
+
   priorities?: Priority[];
   householdType?: HouseholdType | null;
 }
@@ -59,6 +58,54 @@ function shortenSchool(name: string): string {
     .replace(/고교$/, '고');
 }
 
+type CardTone = 'primary' | 'success' | 'warning' | 'secondary';
+
+interface HeroBlock {
+  label: string;
+  value: string;
+  hint?: string;
+  tone?: 'success' | 'warning' | 'danger';
+}
+
+interface CardSpec {
+  key: HookKey | 'household';
+  tone: CardTone;
+  icon: React.ReactNode;
+
+  heroBadge: string;          // "출퇴근" / "최근 실거래" / "학군" / "규모·연식"
+  heroTopRight?: string;      // 우측 상단 작은 라벨
+  heroMain: React.ReactNode;  // 큰 숫자/텍스트
+  heroMainSub: string;        // 큰 숫자 아래 한 줄
+  heroRight?: HeroBlock;      // 우측 강조 블록 (transit destination 등)
+
+  subTagBg: string;           // tailwind classes for tag chip
+  subTag: string;             // ↓ 1.6% / 도보 5분 / etc
+  subLabel: string;           // 최근 실거래 / 가까운 역 / etc
+  subValue: React.ReactNode;
+  subSub: string;
+  subFooter?: string;
+}
+
+const TONE_HERO_BG: Record<CardTone, string> = {
+  primary: 'border-primary bg-gradient-to-br from-primary-soft/50 via-primary-soft/20 to-surface',
+  success: 'border-success bg-gradient-to-br from-success-soft/50 via-success-soft/20 to-surface',
+  warning: 'border-warning bg-gradient-to-br from-warning-soft/50 via-warning-soft/20 to-surface',
+  secondary: 'border-secondary bg-gradient-to-br from-secondary/15 via-secondary/5 to-surface',
+};
+
+const TONE_BADGE_BG: Record<CardTone, string> = {
+  primary: 'bg-primary text-white',
+  success: 'bg-success text-white',
+  warning: 'bg-warning text-white',
+  secondary: 'bg-secondary text-white',
+};
+
+const HERO_RIGHT_TONE: Record<NonNullable<HeroBlock['tone']>, string> = {
+  success: 'text-success',
+  warning: 'text-warning',
+  danger: 'text-danger',
+};
+
 export default function HookHighlights({
   pricePerPyeong,
   latestPriceM10k,
@@ -71,173 +118,261 @@ export default function HookHighlights({
   schoolDistanceM,
   totalUnits,
   builtYear,
+  destinationLabel,
+  destinationTimeMin,
+  destinationHint,
   priorities,
   householdType,
 }: Props) {
-  const cards: Array<{
-    key: string;
-    icon: React.ReactNode;
-    label: string;
-    main: string;
-    sub: string;
-    accent: 'primary' | 'accent' | 'secondary' | 'amber';
-    badge?: { text: string; tone: 'up' | 'down' | 'flat' };
-  }> = [];
+  const cards: CardSpec[] = [];
 
-  // 1. 시세 카드
+  // 1. PRICE — 시세 + 대출 footer
   if (latestPriceM10k) {
-    const trendBadge =
+    const trendChip =
       priceDelta12m !== null && priceDelta12m !== undefined
         ? {
-            text: `${priceDelta12m > 0 ? '↑' : priceDelta12m < 0 ? '↓' : '→'}${Math.abs(priceDelta12m)}%`,
-            tone:
-              priceDelta12m > 0 ? ('up' as const) : priceDelta12m < 0 ? ('down' as const) : ('flat' as const),
+            text: `${priceDelta12m > 0 ? '↑' : priceDelta12m < 0 ? '↓' : '→'} ${Math.abs(priceDelta12m)}%`,
+            isUp: priceDelta12m > 0,
+            isDown: priceDelta12m < 0,
           }
-        : undefined;
+        : null;
 
     cards.push({
       key: 'price',
+      tone: 'success',
       icon: <TrendingUp className="h-4 w-4" />,
-      label: '최근 실거래가',
-      main: `${formatEok(latestPriceM10k)}원`,
-      sub: pricePerPyeong ? `평당 ${formatEok(pricePerPyeong)}원` : '84㎡ 기준',
-      accent: 'primary',
-      badge: trendBadge,
+      heroBadge: '시세',
+      heroTopRight: pricePerPyeong ? `평당 ${formatEok(pricePerPyeong)}` : '전용 84㎡',
+      heroMain: formatEok(latestPriceM10k),
+      heroMainSub: pricePerPyeong
+        ? `전용 84㎡ · 평당 ${formatEok(pricePerPyeong)}`
+        : '최근 실거래가',
+      heroRight: trendChip
+        ? {
+            label: '전년 대비',
+            value: trendChip.text,
+            tone: trendChip.isUp ? 'success' : trendChip.isDown ? 'danger' : undefined,
+          }
+        : undefined,
+      subTagBg: trendChip
+        ? trendChip.isUp
+          ? 'bg-success-soft text-success'
+          : trendChip.isDown
+          ? 'bg-danger-soft text-danger'
+          : 'bg-surface-soft text-foreground-sub'
+        : 'bg-surface-soft text-foreground-sub',
+      subTag: trendChip?.text ?? '실거래',
+      subLabel: '최근 실거래',
+      subValue: formatEok(latestPriceM10k),
+      subSub: pricePerPyeong ? `전용 84㎡ · 평당 ${formatEok(pricePerPyeong)}` : '전용 84㎡ 기준',
+      subFooter: monthlyMortgage
+        ? `월 ${monthlyMortgage.toLocaleString()}만 (대출 70%)`
+        : undefined,
     });
   }
 
-  // 2. 월 납부액 (대출 시뮬레이션)
-  if (monthlyMortgage) {
-    cards.push({
-      key: 'mortgage',
-      icon: <Wallet className="h-4 w-4" />,
-      label: '월 대출 상환액',
-      main: `${monthlyMortgage.toLocaleString()}만원`,
-      sub: '70% · 30년 · 4.5%',
-      accent: 'accent',
-    });
-  }
-
-  // 3. 교통
+  // 2. TRANSIT — 가까운 역
   if (nearestStation) {
+    const distanceText = nearestStationDistanceM
+      ? `${nearestStationDistanceM}m`
+      : '';
     cards.push({
       key: 'transit',
+      tone: 'primary',
       icon: <Train className="h-4 w-4" />,
-      label: '가장 가까운 역',
-      main: nearestStation.split(' ')[0],
-      sub: walkingMin ? `도보 ${walkingMin}분` : '',
-      accent: 'secondary',
+      heroBadge: '출퇴근',
+      heroTopRight: distanceText ? `${nearestStation} · ${distanceText}` : nearestStation,
+      heroMain: walkingMin ? (
+        <>
+          {walkingMin}
+          <span className="ml-1 text-2xl text-foreground-sub">분</span>
+        </>
+      ) : (
+        nearestStation
+      ),
+      heroMainSub: walkingMin
+        ? `단지 → ${nearestStation} 도보${distanceText ? ` (${distanceText})` : ''}`
+        : `단지에서 가까운 역`,
+      heroRight:
+        destinationLabel && destinationTimeMin
+          ? {
+              label: destinationLabel,
+              value: `${destinationTimeMin}분`,
+              hint: destinationHint ?? undefined,
+              tone: 'success',
+            }
+          : undefined,
+      subTagBg: 'bg-primary-soft text-primary-ink',
+      subTag: walkingMin ? `도보 ${walkingMin}분` : '근처',
+      subLabel: '가까운 역',
+      subValue: nearestStation,
+      subSub: distanceText ? `도보 ${walkingMin ?? '-'}분 · ${distanceText}` : '',
+      subFooter: destinationLabel && destinationTimeMin
+        ? `${destinationLabel} ${destinationTimeMin}분`
+        : undefined,
     });
   }
 
-  // 4. 학군
+  // 3. SCHOOL — 가까운 학교
   if (schoolName) {
     const schoolWalkMin = schoolDistanceM
       ? Math.max(1, Math.round(schoolDistanceM / 70))
       : null;
+    const shortened = shortenSchool(schoolName);
     cards.push({
       key: 'school',
+      tone: 'warning',
       icon: <GraduationCap className="h-4 w-4" />,
-      label: '가장 가까운 학교',
-      main: shortenSchool(schoolName),
-      sub: schoolWalkMin ? `도보 ${schoolWalkMin}분` : '',
-      accent: 'amber',
+      heroBadge: '학군',
+      heroTopRight: schoolDistanceM ? `${schoolDistanceM}m` : undefined,
+      heroMain: shortened,
+      heroMainSub: schoolWalkMin
+        ? `도보 ${schoolWalkMin}분 · 가장 가까운 학교`
+        : '가장 가까운 학교',
+      subTagBg: 'bg-success-soft text-success',
+      subTag: schoolWalkMin ? `도보 ${schoolWalkMin}분` : '학교',
+      subLabel: '가까운 학교',
+      subValue: shortened,
+      subSub: schoolDistanceM ? `${schoolDistanceM}m` : '',
+    });
+  }
+
+  // 4. HOUSEHOLD — 세대수·연식
+  if (totalUnits || builtYear) {
+    const age = builtYear ? 2026 - builtYear : null;
+    const ageLabel =
+      age === null ? '연식 정보 없음' : age <= 5 ? '준신축' : age <= 10 ? '5~10년차' : age <= 20 ? '10~20년차' : '구축';
+    cards.push({
+      key: 'household',
+      tone: 'secondary',
+      icon: <Home className="h-4 w-4" />,
+      heroBadge: '규모·연식',
+      heroTopRight: ageLabel,
+      heroMain: totalUnits ? (
+        <>
+          {totalUnits.toLocaleString()}
+          <span className="ml-1 text-2xl text-foreground-sub">세대</span>
+        </>
+      ) : (
+        '-'
+      ),
+      heroMainSub: builtYear
+        ? `${builtYear}년 입주${age !== null ? ` · ${age}년차` : ''}`
+        : '입주년 미상',
+      subTagBg: 'bg-secondary/15 text-secondary',
+      subTag: ageLabel,
+      subLabel: '규모 · 연식',
+      subValue: totalUnits ? (
+        <>
+          {totalUnits.toLocaleString()}
+          <span className="ml-0.5 text-base">세대</span>
+        </>
+      ) : (
+        '-'
+      ),
+      subSub: builtYear ? `${builtYear}년 입주${age !== null ? ` · ${age}년차` : ''}` : '',
     });
   }
 
   if (cards.length === 0) return null;
 
-  // 가구 본질 우선순위 + 사용자 1순위 → 카드 정렬
-  // (1인가구는 학군 자동으로 가장 뒤로, 가족은 학군 가장 앞으로)
-  const order = resolveHookOrder(householdType, priorities);
+  // 우선순위 정렬: 가구 base + 사용자 1순위
+  // resolveHookOrder는 'mortgage' 키도 반환할 수 있는데 우리는 'household'로 대체하므로
+  // mortgage가 1순위로 잡히면 같은 자리에 'household'를 매핑
+  const order: Array<HookKey | 'household'> = resolveHookOrder(householdType, priorities).map((k) =>
+    k === 'mortgage' ? 'household' : k
+  );
   cards.sort((a, b) => {
-    const ai = order.indexOf(a.key as HookKey);
-    const bi = order.indexOf(b.key as HookKey);
+    const ai = order.indexOf(a.key);
+    const bi = order.indexOf(b.key);
     return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
   });
-  const topCardKey = cards[0]?.key;
 
-  // 단지 정체성 한 줄 (세대수 + 연식)
-  const identity =
-    totalUnits && builtYear
-      ? `${totalUnits.toLocaleString()}세대 · ${builtYear}년 입주 · ${2026 - builtYear}년차`
-      : null;
-
-  const accentMap = {
-    primary: 'border-primary/40 bg-primary/10 text-primary',
-    accent: 'border-success/40 bg-success-soft text-success',
-    secondary: 'border-secondary/40 bg-secondary/10 text-secondary',
-    amber: 'border-warning/40 bg-warning-soft text-warning',
-  };
-
-  // 카드별 accent를 공용 tint tone으로 매핑 (배경 tint용)
-  const toneMap: Record<'primary' | 'accent' | 'secondary' | 'amber', TintTone> = {
-    primary: 'primary',
-    accent: 'success',
-    secondary: 'primary',
-    amber: 'warning',
-  };
+  const hero = cards[0];
+  const subs = cards.slice(1);
 
   return (
     <section className="space-y-3">
-      {identity ? (
-        <div className="flex items-center gap-2 text-xs text-foreground-sub">
-          <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary" />
-          {identity}
-        </div>
-      ) : null}
-
-      <div className="grid auto-rows-fr grid-cols-2 gap-3 break-keep lg:grid-cols-4">
-        {cards.map((card, idx) => {
-          const isTop = idx === 0;
-          return (
-          <div
-            key={card.key}
-            className={`relative flex flex-col overflow-hidden rounded-2xl border border-border bg-surface p-4 shadow-sm ${CARD_TINT[toneMap[card.accent]]} ${
-              isTop ? 'ring-2 ring-primary/30' : ''
-            }`}
+      {/* HERO — 1순위 */}
+      <div className={`rounded-3xl border-2 ${TONE_HERO_BG[hero.tone]} p-7 shadow-sm`}>
+        <div className="flex items-center justify-between gap-2">
+          <span
+            className={`inline-flex items-center gap-1.5 rounded-full ${TONE_BADGE_BG[hero.tone]} px-3 py-1 text-[10px] font-bold uppercase tracking-wider`}
           >
-            <div className="flex items-center justify-between">
-              <div
-                className={`flex h-7 w-7 items-center justify-center rounded-lg border ${accentMap[card.accent]}`}
-              >
-                {card.icon}
+            {hero.icon}
+            <span>★ 1순위 — {hero.heroBadge}</span>
+          </span>
+          {hero.heroTopRight ? (
+            <span className="truncate text-xs font-semibold text-foreground-sub">
+              {hero.heroTopRight}
+            </span>
+          ) : null}
+        </div>
+        <div className="mt-4 flex items-end gap-3">
+          <div className="min-w-0">
+            <div className="text-5xl font-extrabold tracking-tight leading-none break-keep">
+              <span className="report-highlight">{hero.heroMain}</span>
+            </div>
+            <div className="mt-1 text-xs text-foreground-sub break-keep">{hero.heroMainSub}</div>
+          </div>
+          {hero.heroRight ? (
+            <div className="ml-auto shrink-0 text-right">
+              <div className="text-[11px] font-bold uppercase tracking-wider text-foreground-sub">
+                {hero.heroRight.label}
               </div>
-              {card.badge ? (
-                <span
-                  className={`rounded-md border px-1.5 py-0.5 text-[10px] font-bold ${
-                    card.badge.tone === 'up'
-                      ? 'border-success/40 bg-success-soft text-success'
-                      : card.badge.tone === 'down'
-                      ? 'border-danger/40 bg-danger-soft text-danger'
-                      : 'border-border bg-background text-foreground-sub'
-                  }`}
-                >
-                  {card.badge.text}
-                </span>
+              <div
+                className={`mt-0.5 text-2xl font-extrabold ${
+                  hero.heroRight.tone ? HERO_RIGHT_TONE[hero.heroRight.tone] : 'text-foreground'
+                }`}
+              >
+                {hero.heroRight.value}
+              </div>
+              {hero.heroRight.hint ? (
+                <div className="text-[10px] text-foreground-sub">{hero.heroRight.hint}</div>
               ) : null}
             </div>
-            <div className="mt-3 text-[10px] font-semibold uppercase tracking-wide text-foreground-sub">
-              {card.label}
-            </div>
-            <div className="mt-1 text-lg font-extrabold leading-tight text-foreground">
-              <span className="report-highlight">{card.main}</span>
-            </div>
-            <div className="mt-1 text-[11px] text-foreground-sub">{card.sub}</div>
-          </div>
-          );
-        })}
+          ) : null}
+        </div>
       </div>
+
+      {/* SUB CARDS — 2~4순위 */}
+      {subs.length > 0 ? (
+        <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
+          {subs.map((c) => (
+            <div
+              key={c.key}
+              className="flex flex-col rounded-2xl border border-border bg-surface p-5 shadow-sm"
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-foreground-sub">{c.icon}</span>
+                <span className={`rounded-md px-1.5 py-0.5 text-[9px] font-bold ${c.subTagBg}`}>
+                  {c.subTag}
+                </span>
+              </div>
+              <div className="mt-3 text-[10px] font-bold uppercase tracking-wider text-foreground-sub">
+                {c.subLabel}
+              </div>
+              <div className="mt-1 text-2xl font-extrabold leading-tight tracking-tight break-keep">
+                <span className="report-highlight">{c.subValue}</span>
+              </div>
+              {c.subSub ? (
+                <div className="mt-0.5 text-[11px] text-foreground-sub break-keep">{c.subSub}</div>
+              ) : null}
+              {c.subFooter ? (
+                <div className="mt-2 rounded-lg bg-surface-soft px-2 py-1 text-[10px] text-foreground-sub break-keep">
+                  {c.subFooter}
+                </div>
+              ) : null}
+            </div>
+          ))}
+        </div>
+      ) : null}
     </section>
   );
 }
 
 /**
  * 단순 대출 상환 시뮬레이션
- * @param principalManWon 원금 (만원)
- * @param annualRate 연이율 (%, 기본 4.5)
- * @param years 상환 기간 (기본 30년)
- * @returns 월 납부액 (만원)
  */
 export function calcMonthlyMortgage(
   principalManWon: number,

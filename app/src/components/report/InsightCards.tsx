@@ -1,3 +1,8 @@
+// 단지 인사이트 6선 — V3 (큰 헤드라인 + 컬러 액센트 + 칩, 1순위 ★ ring)
+//
+// 가구별 6개 슬롯 결정은 pickInsightCardsForHousehold(household, priorities)에 위임.
+// 각 카드는 { icon, label, headline, sub, chips }로 단순화.
+
 import {
   GraduationCap,
   Train,
@@ -12,9 +17,8 @@ import {
 } from 'lucide-react';
 import type { DistrictInsight } from '@/lib/district-insights';
 import type { NearbyApartment } from '@/lib/nearby-apartments';
-import { CARD_TINT, type TintTone } from '@/lib/card-tint';
 import type { Priority, HouseholdType } from '@/types/profile';
-import { pickInsightCardsForHousehold, type InsightKey } from '@/lib/household-priorities';
+import { pickInsightCardsForHousehold } from '@/lib/household-priorities';
 
 interface Props {
   apartment: {
@@ -28,342 +32,256 @@ interface Props {
   householdType?: HouseholdType | null;
 }
 
+type Tone = 'primary' | 'success' | 'secondary' | 'danger' | 'warning';
+
+const TONE: Record<Tone, { iconBg: string; tagBg: string; ring: string }> = {
+  primary: {
+    iconBg: 'bg-primary/10 text-primary',
+    tagBg: 'bg-primary-soft text-primary-ink',
+    ring: 'ring-primary/30',
+  },
+  success: {
+    iconBg: 'bg-success-soft text-success',
+    tagBg: 'bg-success-soft text-success',
+    ring: 'ring-success/30',
+  },
+  secondary: {
+    iconBg: 'bg-secondary/15 text-secondary',
+    tagBg: 'bg-secondary/15 text-secondary',
+    ring: 'ring-secondary/30',
+  },
+  danger: {
+    iconBg: 'bg-danger-soft text-danger',
+    tagBg: 'bg-danger-soft text-danger',
+    ring: 'ring-danger/30',
+  },
+  warning: {
+    iconBg: 'bg-warning-soft text-warning',
+    tagBg: 'bg-warning-soft text-warning',
+    ring: 'ring-warning/30',
+  },
+};
+
+interface CardSpec {
+  key: string;
+  icon: React.ReactNode;
+  label: string;
+  tone: Tone;
+  headline: string | null;
+  sub: string | null;
+  chips: string[];
+  fallback: string;
+}
+
 export default function InsightCards({ apartment, insights, nearby, priorities, householdType }: Props) {
   const walkMin = apartment.stationDistanceM
     ? Math.max(1, Math.round(apartment.stationDistanceM / 70))
     : null;
 
-  const cards: Array<{
-    key: string;
-    icon: React.ReactNode;
-    title: string;
-    accent: string;
-    tone: TintTone;
-    content: React.ReactNode;
-  }> = [
+  // 호재 첫번째 + 그외 — sub에는 첫번째 status·note, chips에는 다른 호재 title
+  const firstDev = insights.developments?.[0] ?? null;
+  const otherDevs = (insights.developments ?? []).slice(1, 4).map((d) => `${d.title} (${d.status})`);
+
+  // 주변 대단지 — 첫번째 단지가 headline, 나머지는 chips
+  const firstNearby = nearby[0] ?? null;
+  const otherNearby = nearby.slice(1, 3).map((n) => `${n.name} ${n.distanceKm.toFixed(1)}km`);
+
+  const cards: CardSpec[] = [
     {
       key: 'school',
-      icon: <GraduationCap className="h-5 w-5" />,
-      title: '학군',
-      accent: 'text-accent bg-accent/15 border-accent/30',
+      icon: <GraduationCap className="h-4 w-4" />,
+      label: '학군',
       tone: 'success',
-      content: (
-        <div className="space-y-2">
-          {insights.schoolDistrictLabel ? (
-            <div className="text-sm font-bold text-foreground">
-              <span className="report-highlight">{insights.schoolDistrictLabel}</span>
-            </div>
-          ) : null}
-          {insights.academyCluster ? (
-            <div className="text-xs text-foreground-sub">
-              📚 {insights.academyCluster}
-            </div>
-          ) : null}
-          {insights.schoolNotes && insights.schoolNotes.length > 0 ? (
-            <ul className="mt-2 space-y-1 text-xs text-foreground-sub">
-              {insights.schoolNotes.slice(0, 2).map((n, i) => (
-                <li key={i}>· {n}</li>
-              ))}
-            </ul>
-          ) : null}
-          {!insights.schoolDistrictLabel && !insights.academyCluster ? (
-            <div className="text-xs text-foreground-sub">
-              학교알리미에서 배정 확인
-            </div>
-          ) : null}
-        </div>
-      ),
+      headline: insights.schoolDistrictLabel ?? null,
+      sub: insights.academyCluster ?? null,
+      chips: (insights.schoolNotes ?? []).slice(0, 2),
+      fallback: '학교알리미에서 배정 확인',
     },
     {
       key: 'transport',
-      icon: <Train className="h-5 w-5" />,
-      title: '교통',
-      accent: 'text-primary bg-primary-soft border-primary/30',
+      icon: <Train className="h-4 w-4" />,
+      label: '교통',
       tone: 'primary',
-      content: (
-        <div className="space-y-2">
-          {apartment.nearestStation ? (
-            <>
-              <div className="text-sm font-bold text-foreground">
-                <span className="report-highlight">{apartment.nearestStation}</span>
-              </div>
-              <div className="text-xs text-foreground-sub">
-                {walkMin ? `도보 ${walkMin}분` : ''}
-              </div>
-            </>
-          ) : (
-            <div className="text-xs text-foreground-sub">
-              주변 역 정보는 카카오맵에서 확인
-            </div>
-          )}
-        </div>
-      ),
+      headline: apartment.nearestStation,
+      sub: walkMin ? `도보 ${walkMin}분` : null,
+      chips: [],
+      fallback: '주변 역 정보는 카카오맵에서 확인',
     },
     {
       key: 'commercial',
-      icon: <ShoppingBag className="h-5 w-5" />,
-      title: '상권·생활권',
-      accent: 'text-secondary bg-secondary/15 border-secondary/30',
-      tone: 'primary',
-      content: (
-        <div className="space-y-2">
-          {insights.commercialArea ? (
-            <div className="text-sm font-bold text-foreground">
-              <span className="report-highlight">{insights.commercialArea}</span>
-            </div>
-          ) : null}
-          {insights.majorStores && insights.majorStores.length > 0 ? (
-            <div className="flex flex-wrap gap-1 pt-1">
-              {insights.majorStores.slice(0, 3).map((store) => (
-                <span
-                  key={store}
-                  className="rounded-md bg-surface-soft px-2 py-0.5 text-[11px] text-foreground-sub"
-                >
-                  {store}
-                </span>
-              ))}
-            </div>
-          ) : null}
-          {!insights.commercialArea ? (
-            <div className="text-xs text-foreground-sub">상권 정보 준비 중</div>
-          ) : null}
-        </div>
-      ),
+      icon: <ShoppingBag className="h-4 w-4" />,
+      label: '상권·생활권',
+      tone: 'secondary',
+      headline: insights.commercialArea ?? null,
+      sub: insights.majorStores && insights.majorStores.length > 0
+        ? `${insights.majorStores.length}개 주요 매장`
+        : null,
+      chips: (insights.majorStores ?? []).slice(0, 3),
+      fallback: '상권 정보 준비 중',
     },
     {
       key: 'infra',
-      icon: <Hospital className="h-5 w-5" />,
-      title: '인프라',
-      accent: 'text-danger bg-danger-soft border-danger/30',
+      icon: <Hospital className="h-4 w-4" />,
+      label: '인프라',
       tone: 'danger',
-      content: (
-        <div className="space-y-2">
-          {insights.hospitals && insights.hospitals.length > 0 ? (
-            <div>
-              <div className="text-[11px] uppercase tracking-wide text-foreground-sub">
-                병원
-              </div>
-              <div className="text-sm text-foreground">
-                {insights.hospitals.slice(0, 2).join(', ')}
-              </div>
-            </div>
-          ) : null}
-          {insights.parks && insights.parks.length > 0 ? (
-            <div>
-              <div className="text-[11px] uppercase tracking-wide text-foreground-sub">
-                공원·자연
-              </div>
-              <div className="text-sm text-foreground">
-                {insights.parks.slice(0, 3).join(', ')}
-              </div>
-            </div>
-          ) : null}
-          {!insights.hospitals && !insights.parks ? (
-            <div className="text-xs text-foreground-sub">인프라 정보 준비 중</div>
-          ) : null}
-        </div>
-      ),
+      headline: insights.hospitals?.[0] ?? insights.parks?.[0] ?? null,
+      sub:
+        insights.hospitals && insights.hospitals.length > 0
+          ? '병원 · 공원 도보권'
+          : insights.parks && insights.parks.length > 0
+          ? '공원·자연 도보권'
+          : null,
+      chips: [
+        ...(insights.hospitals ?? []).slice(1, 2),
+        ...(insights.parks ?? []).slice(0, 2),
+      ],
+      fallback: '인프라 정보 준비 중',
     },
     {
       key: 'development',
-      icon: <Hammer className="h-5 w-5" />,
-      title: '개발 호재',
-      accent: 'text-warning bg-warning-soft border-warning/30',
+      icon: <Hammer className="h-4 w-4" />,
+      label: '개발 호재',
       tone: 'warning',
-      content: (
-        <div className="space-y-2">
-          {insights.developments && insights.developments.length > 0 ? (
-            <ul className="space-y-2">
-              {insights.developments.slice(0, 3).map((d, i) => (
-                <li key={i} className="text-xs">
-                  <div className="flex items-center gap-1.5">
-                    <span className="font-semibold text-foreground">{d.title}</span>
-                    <span
-                      className={`rounded-md border px-1.5 py-0.5 text-[10px] ${
-                        d.status === '완료'
-                          ? 'border-success/30 bg-success-soft text-success'
-                          : d.status === '진행중'
-                          ? 'border-warning/30 bg-warning-soft text-warning'
-                          : 'border-border bg-surface-soft text-foreground-sub'
-                      }`}
-                    >
-                      {d.status}
-                    </span>
-                  </div>
-                  <div className="mt-0.5 text-foreground-sub">{d.note}</div>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <div className="text-xs text-foreground-sub">
-              큐레이션된 호재 없음
-            </div>
-          )}
-        </div>
-      ),
+      headline: firstDev?.title ?? null,
+      sub: firstDev ? `${firstDev.status} · ${firstDev.note}` : null,
+      chips: otherDevs,
+      fallback: '큐레이션된 호재 없음',
     },
     {
       key: 'nearby',
-      icon: <Building2 className="h-5 w-5" />,
-      title: '주변 대단지',
-      accent: 'text-primary bg-primary/15 border-primary/30',
+      icon: <Building2 className="h-4 w-4" />,
+      label: '주변 대단지',
       tone: 'primary',
-      content: (
-        <div className="space-y-2">
-          {nearby.length > 0 ? (
-            <ul className="space-y-1.5">
-              {nearby.map((n) => (
-                <li key={n.id} className="text-xs">
-                  <div className="flex items-baseline justify-between gap-2">
-                    <span className="font-semibold text-foreground">{n.name}</span>
-                    <span className="shrink-0 text-[10px] text-foreground-sub">
-                      {n.distanceKm.toFixed(1)}km
-                    </span>
-                  </div>
-                  <div className="text-[11px] text-foreground-sub">
-                    {n.totalUnits.toLocaleString()}세대
-                    {n.builtYear ? ` · ${n.builtYear}년` : ''}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <div className="text-xs text-foreground-sub">
-              반경 3km 내 1,500세대 이상 없음
-            </div>
-          )}
-        </div>
-      ),
+      headline: firstNearby
+        ? `${nearby.length}개 대단지 도보권`
+        : null,
+      sub: firstNearby
+        ? `${firstNearby.name}${firstNearby.builtYear ? ` · ${firstNearby.builtYear}년` : ''}`
+        : null,
+      chips: otherNearby,
+      fallback: '반경 3km 내 1,500세대 이상 없음',
     },
-    // ===== 신규 카드 4종 — 가구별 가변 슬롯에 들어감 =====
+    // ===== 가변 슬롯 카드 4종 =====
     {
       key: 'hobby',
-      icon: <Film className="h-5 w-5" />,
-      title: '취미·문화',
-      accent: 'text-primary bg-primary-soft border-primary/30',
+      icon: <Film className="h-4 w-4" />,
+      label: '취미·문화',
       tone: 'primary',
-      content: (
-        <div className="space-y-2">
-          {insights.hobbySpots && insights.hobbySpots.length > 0 ? (
-            <ul className="space-y-1.5 text-xs text-foreground-sub">
-              {insights.hobbySpots.slice(0, 4).map((s, i) => (
-                <li key={i}>· {s}</li>
-              ))}
-            </ul>
-          ) : (
-            <div className="text-xs text-foreground-sub">
-              영화관·서점·갤러리 정보 준비 중
-            </div>
-          )}
-        </div>
-      ),
+      headline:
+        insights.hobbySpots && insights.hobbySpots.length > 0
+          ? insights.hobbySpots[0]
+          : null,
+      sub:
+        insights.hobbySpots && insights.hobbySpots.length > 1
+          ? `${insights.hobbySpots.length}개 문화 공간`
+          : null,
+      chips: (insights.hobbySpots ?? []).slice(1, 4),
+      fallback: '영화관·서점·갤러리 정보 준비 중',
     },
     {
       key: 'parks',
-      icon: <Trees className="h-5 w-5" />,
-      title: '공원·산책',
-      accent: 'text-success bg-success-soft border-success/30',
+      icon: <Trees className="h-4 w-4" />,
+      label: '공원·산책',
       tone: 'success',
-      content: (
-        <div className="space-y-2">
-          {insights.parks && insights.parks.length > 0 ? (
-            <ul className="space-y-1.5 text-xs text-foreground-sub">
-              {insights.parks.slice(0, 4).map((p, i) => (
-                <li key={i}>🌳 {p}</li>
-              ))}
-            </ul>
-          ) : (
-            <div className="text-xs text-foreground-sub">
-              근거리 공원·산책 코스 정보 준비 중
-            </div>
-          )}
-        </div>
-      ),
+      headline: insights.parks?.[0] ?? null,
+      sub:
+        insights.parks && insights.parks.length > 1
+          ? `${insights.parks.length}개 공원·산책로`
+          : null,
+      chips: (insights.parks ?? []).slice(1, 4),
+      fallback: '근거리 공원·산책 코스 정보 준비 중',
     },
     {
       key: 'academy',
-      icon: <BookOpen className="h-5 w-5" />,
-      title: '학원가 심화',
-      accent: 'text-warning bg-warning-soft border-warning/30',
+      icon: <BookOpen className="h-4 w-4" />,
+      label: '학원가 심화',
       tone: 'warning',
-      content: (
-        <div className="space-y-2">
-          {insights.academyCluster ? (
-            <div className="text-sm font-bold text-foreground">
-              <span className="report-highlight">{insights.academyCluster}</span>
-            </div>
-          ) : null}
-          {insights.schoolNotes && insights.schoolNotes.length > 0 ? (
-            <ul className="space-y-1 text-xs text-foreground-sub">
-              {insights.schoolNotes.slice(0, 3).map((n, i) => (
-                <li key={i}>📚 {n}</li>
-              ))}
-            </ul>
-          ) : null}
-          {!insights.academyCluster ? (
-            <div className="text-xs text-foreground-sub">
-              학원가 정보 준비 중 — 학교알리미에서도 배정 확인
-            </div>
-          ) : null}
-        </div>
-      ),
+      headline: insights.academyCluster ?? null,
+      sub: null,
+      chips: (insights.schoolNotes ?? []).slice(0, 3),
+      fallback: '학원가 정보 준비 중 — 학교알리미에서도 배정 확인',
     },
     {
       key: 'medical',
-      icon: <Stethoscope className="h-5 w-5" />,
-      title: '의료 심화',
-      accent: 'text-danger bg-danger-soft border-danger/30',
+      icon: <Stethoscope className="h-4 w-4" />,
+      label: '의료 심화',
       tone: 'danger',
-      content: (
-        <div className="space-y-2">
-          {insights.hospitals && insights.hospitals.length > 0 ? (
-            <ul className="space-y-1.5 text-xs text-foreground-sub">
-              {insights.hospitals.slice(0, 4).map((h, i) => (
-                <li key={i}>🏥 {h}</li>
-              ))}
-            </ul>
-          ) : (
-            <div className="text-xs text-foreground-sub">
-              종합병원 정보 준비 중
-            </div>
-          )}
-        </div>
-      ),
+      headline: insights.hospitals?.[0] ?? null,
+      sub:
+        insights.hospitals && insights.hospitals.length > 1
+          ? `${insights.hospitals.length}개 종합병원·의료기관`
+          : null,
+      chips: (insights.hospitals ?? []).slice(1, 4),
+      fallback: '종합병원 정보 준비 중',
     },
   ];
 
-  // 가구별 6개 카드 슬롯 결정 (학군은 모든 가구에 일반 톤 노출)
+  // 가구별 6개 카드 슬롯 결정 (1순위가 가장 앞)
   const slotKeys = pickInsightCardsForHousehold(householdType, priorities);
   const visibleCards = slotKeys
     .map((k) => cards.find((c) => c.key === k))
-    .filter((c): c is NonNullable<typeof c> => !!c);
+    .filter((c): c is CardSpec => !!c);
 
   return (
     <div className="grid auto-rows-fr gap-3 break-keep sm:grid-cols-2 lg:grid-cols-3">
       {visibleCards.map((card, idx) => {
         const isTop = idx === 0;
+        const t = TONE[card.tone];
         return (
-        <div
-          key={card.key}
-          className={`flex flex-col rounded-2xl border border-border bg-surface p-5 shadow-sm ${CARD_TINT[card.tone]} ${
-            isTop ? 'ring-2 ring-primary/30' : ''
-          }`}
-        >
-          <div className="mb-4 flex items-center gap-2">
-            <span
-              className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border ${card.accent}`}
-            >
-              {card.icon}
-            </span>
-            <h3 className="text-sm font-bold text-foreground">{card.title}</h3>
-            {isTop ? (
-              <span className="ml-auto rounded-full bg-primary-soft px-2 py-0.5 text-[10px] font-bold text-primary-ink">
-                ★ 가장 먼저 봐주세요
+          <div
+            key={card.key}
+            className={`flex flex-col rounded-2xl border border-border bg-surface p-5 shadow-sm ${
+              isTop ? `ring-2 ${t.ring}` : ''
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <span
+                className={`flex h-8 w-8 items-center justify-center rounded-lg ${t.iconBg}`}
+              >
+                {card.icon}
               </span>
+              {isTop ? (
+                <span className={`rounded-md px-1.5 py-0.5 text-[9px] font-bold ${t.tagBg}`}>
+                  ★ 1순위
+                </span>
+              ) : (
+                <span className="text-[10px] font-bold uppercase tracking-wider text-foreground-sub">
+                  {card.label}
+                </span>
+              )}
+            </div>
+            {isTop ? (
+              <div className="mt-3 text-[10px] font-bold uppercase tracking-wider text-foreground-sub">
+                {card.label}
+              </div>
+            ) : null}
+            <div
+              className={`${
+                isTop ? 'mt-1' : 'mt-3'
+              } text-base font-extrabold leading-tight tracking-tight text-foreground`}
+            >
+              {card.headline ? (
+                <span className="report-highlight">{card.headline}</span>
+              ) : (
+                <span className="text-sm font-semibold text-foreground-sub">{card.fallback}</span>
+              )}
+            </div>
+            {card.sub ? (
+              <div className="mt-1 text-[11px] text-foreground-sub">{card.sub}</div>
+            ) : null}
+            {card.chips.length > 0 ? (
+              <div className="mt-3 flex flex-wrap gap-1">
+                {card.chips.map((c, i) => (
+                  <span
+                    key={i}
+                    className="rounded-md bg-surface-soft px-1.5 py-0.5 text-[10px] text-foreground-sub"
+                  >
+                    {c}
+                  </span>
+                ))}
+              </div>
             ) : null}
           </div>
-          <div className="flex-1">{card.content}</div>
-        </div>
         );
       })}
     </div>

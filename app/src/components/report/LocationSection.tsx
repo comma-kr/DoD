@@ -16,7 +16,8 @@ import {
 import { getNearbyOfficialZones } from '@/lib/commercial-zones-official';
 import { createSupabaseAdminClient } from '@/lib/supabase/server';
 import { calcPricePerPyeong } from '@/lib/utils';
-import type { CommuteArea, HouseholdType, Priority } from '@/types/profile';
+import { getTransitPath, CBD_COORDS } from '@/lib/transit-path';
+import { COMMUTE_LABELS, type CommuteArea, type HouseholdType, type Priority } from '@/types/profile';
 
 export interface ApartmentLocation {
   id: string;
@@ -132,6 +133,34 @@ export default async function LocationSection({
 
   const nearestSchool = nearbySchools[0] ?? null;
 
+  // 출근지 destination 정보 — Hero 우측 블록 + 사용자에게 핵심 ETA 즉시 노출
+  // RouteOptions와 동일한 getTransitPath 사용 (DB 캐싱이라 재호출 비용 거의 없음)
+  let destinationLabel: string | null = null;
+  let destinationTimeMin: number | null = null;
+  let destinationHint: string | null = null;
+  if (
+    hasCoord &&
+    highlightCommuteArea &&
+    highlightCommuteArea !== 'none' &&
+    highlightCommuteArea !== 'etc'
+  ) {
+    const dest = CBD_COORDS[highlightCommuteArea];
+    if (dest) {
+      const livePath = await getTransitPath(
+        primary.id,
+        { lat: primary.latitude!, lng: primary.longitude! },
+        highlightCommuteArea,
+        dest
+      );
+      if (livePath) {
+        destinationLabel = COMMUTE_LABELS[highlightCommuteArea].replace('·', ' ');
+        destinationTimeMin = livePath.totalTimeMin;
+        destinationHint =
+          livePath.transitCount === 0 ? '직결' : `환승 ${livePath.transitCount}회`;
+      }
+    }
+  }
+
   return (
     <section className="space-y-5">
       <div className="flex items-center gap-2">
@@ -157,6 +186,9 @@ export default async function LocationSection({
         schoolDistanceM={nearestSchool?.distanceM ?? null}
         totalUnits={primary.totalUnits ?? null}
         builtYear={primary.builtYear ?? null}
+        destinationLabel={destinationLabel}
+        destinationTimeMin={destinationTimeMin}
+        destinationHint={destinationHint}
         priorities={priorities ?? undefined}
         householdType={householdType}
       />
