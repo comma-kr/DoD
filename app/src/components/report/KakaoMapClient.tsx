@@ -652,11 +652,14 @@ export default function KakaoMapClient({
                 ① <strong>JavaScript 키</strong>인지 확인 (REST API 키·Admin 키 아님)
               </li>
               <li>
-                ② 카카오 개발자 콘솔 → 플랫폼 → Web →{' '}
-                <strong>사이트 도메인에 <code className="rounded bg-surface-soft px-1">http://localhost:3000</code></strong> 등록
+                ② 카카오 개발자 콘솔 → 플랫폼 → Web → 사이트 도메인에 다음 모두 등록
+                <ul className="mt-1 ml-3 list-disc">
+                  <li>로컬: <code className="rounded bg-surface-soft px-1">http://localhost:3000</code></li>
+                  <li>운영: <code className="rounded bg-surface-soft px-1">https://comma-dod.vercel.app</code></li>
+                </ul>
               </li>
               <li>
-                ③ 도메인은 프로토콜 포함 <strong>정확한 형식</strong>이어야 함 (예: <code>http://localhost:3000</code> ✓, <code>localhost</code> ✗, <code>https://localhost:3000</code> ✗)
+                ③ 도메인은 프로토콜 포함 <strong>정확한 형식</strong>이어야 함 (운영은 <code>https://</code>, 로컬은 <code>http://</code>)
               </li>
               <li>
                 ④ 저장 후 반영까지 <strong>1~2분</strong> 딜레이 있을 수 있음

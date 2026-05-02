@@ -36,6 +36,10 @@ fs.readFileSync(envPath, 'utf8')
 
 const sb = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
+// 검증 대상 URL — 환경변수 우선, 없으면 dev 기본값.
+// 로컬 검증: 그대로 / 운영 검증: BASE_URL=https://comma-dod.vercel.app node scripts/verify-...
+const BASE_URL = process.env.VERIFY_BASE_URL?.trim() || process.env.NEXT_PUBLIC_APP_URL?.trim() || 'http://localhost:3000';
+
 // ============================================================
 // 유틸
 // ============================================================
@@ -103,12 +107,12 @@ async function verifyNewReport(apartmentId) {
 
   // 테스트 인증
   const cookieStore = { jar: '' };
-  await fetch('http://localhost:3000/api/auth/send-otp', {
+  await fetch(`${BASE_URL}/api/auth/send-otp`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ phone: '01011111234' }),
   });
-  const verifyRes = await fetch('http://localhost:3000/api/auth/verify-otp', {
+  const verifyRes = await fetch(`${BASE_URL}/api/auth/verify-otp`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ phone: '01011111234', code: '111111' }),
@@ -117,7 +121,7 @@ async function verifyNewReport(apartmentId) {
   if (setCookie) cookieStore.jar = setCookie;
 
   // 분석 호출
-  const analysisRes = await fetch('http://localhost:3000/api/analyze/free', {
+  const analysisRes = await fetch(`${BASE_URL}/api/analyze/free`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', cookie: cookieStore.jar },
     body: JSON.stringify({
@@ -261,7 +265,8 @@ const TEST_APT_ID = aptArg !== '--apartment' && aptArg ? aptArg : '62dc2287-ac1a
 
 console.log('🧪 리포트 정합성 자동 검증 시작');
 console.log('   테스트 단지:', TEST_APT_ID);
-console.log('   ⚠ dev 서버가 http://localhost:3000 에서 실행 중이어야 합니다.\n');
+console.log('   대상 URL:', BASE_URL);
+console.log('   ⚠ 위 URL에서 서비스가 응답해야 합니다.\n');
 
 await verifyAreaMapping();
 verifyCodeCopy();
@@ -269,18 +274,18 @@ let reportId = null;
 try {
   // verifyNewReport 결과를 캡처해서 verifyAreaConsistency에 전달
   const cookieStore = { jar: '' };
-  await fetch('http://localhost:3000/api/auth/send-otp', {
+  await fetch(`${BASE_URL}/api/auth/send-otp`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ phone: '01011111234' }),
   });
-  const v = await fetch('http://localhost:3000/api/auth/verify-otp', {
+  const v = await fetch(`${BASE_URL}/api/auth/verify-otp`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ phone: '01011111234', code: '111111' }),
   });
   cookieStore.jar = v.headers.get('set-cookie') ?? '';
-  const a = await fetch('http://localhost:3000/api/analyze/free', {
+  const a = await fetch(`${BASE_URL}/api/analyze/free`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', cookie: cookieStore.jar },
     body: JSON.stringify({

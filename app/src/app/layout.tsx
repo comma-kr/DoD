@@ -14,7 +14,13 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
+// Vercel 등 운영 환경에서 OG 이미지·alternates 등 절대 URL이 필요하므로 metadataBase 명시.
+// 환경변수가 비어있으면 운영 도메인 기본값 사용 (로컬 dev에서도 OG 미리보기 안전).
+const APP_URL =
+  process.env.NEXT_PUBLIC_APP_URL?.trim() || 'https://comma-dod.vercel.app';
+
 export const metadata: Metadata = {
+  metadataBase: new URL(APP_URL),
   title: '칠래말래? — 등기 치기 전에, 한 장 펼쳐봐',
   description:
     '옆 단지랑 나란히, 시세 흐름, 인근 학교까지. 990원이면 단지 한 장. 사기 전에, 갈아타기 전에.',
@@ -23,6 +29,7 @@ export const metadata: Metadata = {
     description: '990원이면 옆 단지랑 나란히. 사기 전에, 갈아타기 전에.',
     locale: 'ko_KR',
     type: 'website',
+    url: APP_URL,
   },
 };
 
