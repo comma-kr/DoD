@@ -82,8 +82,8 @@ function displayLabelOf(mode: PathMode, kind: 'main' | 'alt', fallback: string):
   return fallback;
 }
 
-// 새 단순 디자인 — 각 row 좌측에 노선/버스 컬러칩 + 역명 + 우측에 역할 라벨(탑승/환승/하차).
-// 환승은 row 사이 노선 칩이 바뀜으로 자연스럽게 표현. 도착 row는 직전 이동 수단으로.
+// V1 미니 지하철도형 — 각 station = 원(노선색 테두리), 사이에 세로선(노선색) + 노선칩.
+// 탑승·환승·하차 라벨은 작은 chip으로 역명 옆에 표시.
 const ROLE_LABEL = { board: '탑승', transfer: '환승', arrive: '하차' } as const;
 const ROLE_TONE = {
   board: 'bg-primary-soft text-primary-ink',
@@ -91,26 +91,80 @@ const ROLE_TONE = {
   arrive: 'bg-success-soft text-success',
 } as const;
 
+const FALLBACK_LINE_COLOR = '#94A3B8'; // 정보 없을 때 회색
+
+// 버스 권역색 휴리스틱 (BusChip과 동일 로직 — 라인 색에 사용)
+function busColorOf(busNote: string | undefined): string {
+  if (!busNote) return FALLBACK_LINE_COLOR;
+  const m = busNote.match(/^(\S+?)번/);
+  const num = parseInt(m?.[1] ?? '', 10);
+  if (isNaN(num)) return '#3D5BA9';
+  if (num >= 9000) return '#E60012';
+  if (num >= 1000) return '#3CB44C';
+  return '#3D5BA9';
+}
+
 function SubwayPathDisplay({ path }: { path: SubwayHop[] }) {
   return (
-    <ol className="mt-3 flex flex-col gap-1.5">
+    <ol className="mt-4 flex flex-col">
       {path.map((hop, i) => {
-        // 이 row의 칩 결정: 자기 hop이 탑승/환승이면 자기 rideLine·busNote, 도착이면 직전 hop의 거.
-        const refHop = hop.rideLine || hop.note ? hop : path[i - 1] ?? hop;
-        const lineCode = refHop.rideLine;
-        const busNote = !lineCode ? refHop.note : undefined;
+        const isLast = i === path.length - 1;
+        // 이 hop의 출발 segment 색 (= 이 역에서 타고 가는 노선의 색)
+        const ridingLine = !isLast ? hop.rideLine : undefined;
+        const ridingBus = !isLast && !hop.rideLine ? hop.note : undefined;
+        const departColor: string = ridingLine
+          ? LINE_COLOR[ridingLine].bg
+          : ridingBus
+          ? busColorOf(ridingBus)
+          : FALLBACK_LINE_COLOR;
+
+        // 원 테두리색: 자기가 탑승하는 노선이 있으면 그 색, 없으면 직전 hop의 노선색 (도착 hop)
+        const prevLine = i > 0 ? path[i - 1].rideLine : undefined;
+        const prevBus = i > 0 && !path[i - 1].rideLine ? path[i - 1].note : undefined;
+        const circleColor: string = hop.rideLine
+          ? LINE_COLOR[hop.rideLine].bg
+          : prevLine
+          ? LINE_COLOR[prevLine].bg
+          : prevBus
+          ? busColorOf(prevBus)
+          : FALLBACK_LINE_COLOR;
 
         return (
-          <li key={i} className="flex items-center gap-2 text-[13px]">
-            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white">
-              {i + 1}
-            </span>
-            {lineCode ? <LineChip line={lineCode} /> : null}
-            {!lineCode && busNote ? <BusChip busNote={busNote} /> : null}
-            <span className="flex-1 truncate font-semibold text-foreground">{hop.station}</span>
-            <span className={`shrink-0 rounded-md px-1.5 py-0.5 text-[9px] font-bold ${ROLE_TONE[hop.role]}`}>
-              {ROLE_LABEL[hop.role]}
-            </span>
+          <li key={i} className="flex gap-3">
+            {/* 좌측 레일: 원 + 세로선 */}
+            <div className="flex w-7 shrink-0 flex-col items-center">
+              <span
+                className="h-7 w-7 shrink-0 rounded-full border-[3px] bg-white"
+                style={{ borderColor: circleColor }}
+              />
+              {!isLast ? (
+                <div
+                  className="my-1 w-[3px] flex-1 rounded-full"
+                  style={{ background: departColor }}
+                />
+              ) : null}
+            </div>
+
+            {/* 우측: 역명·역할·다음 노선칩 */}
+            <div className={`flex-1 min-w-0 ${isLast ? '' : 'pb-3'}`}>
+              <div className="flex items-center gap-2">
+                <span className="truncate text-sm font-bold text-foreground">{hop.station}</span>
+                <span
+                  className={`shrink-0 rounded-md px-1.5 py-0.5 text-[9px] font-bold ${ROLE_TONE[hop.role]}`}
+                >
+                  {ROLE_LABEL[hop.role]}
+                </span>
+              </div>
+              {!isLast ? (
+                <div className="mt-1.5 inline-flex">
+                  {ridingLine ? (
+                    <LineChip line={ridingLine} />
+                  ) : ridingBus ? (
+                    <BusChip busNote={ridingBus} />
+                  ) : null}
+                </div>
+              ) : null}
+            </div>
           </li>
         );
       })}
