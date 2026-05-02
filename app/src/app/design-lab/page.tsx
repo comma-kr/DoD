@@ -72,8 +72,8 @@ export default function DesignLabPage() {
       <div className="mb-10 rounded-2xl border-2 border-success/30 bg-success-soft/30 p-5">
         <div className="text-[11px] font-bold uppercase tracking-wider text-success">USER 채택 현황</div>
         <ul className="mt-2 space-y-1 text-sm">
-          <li>✅ <strong>MY ROUTE (4번)</strong> — V1 미니 지하철도형 채택</li>
-          <li>🔄 <strong>HookHighlights (1번)</strong> — V3 혼합안 (V1 큰 숫자 + V2 우선순위 hero) 신규 추가</li>
+          <li>✅ <strong>MY ROUTE (4번)</strong> — V1 미니 지하철도형</li>
+          <li>🆕 <strong>HookHighlights (1번)</strong> — 카드 디자인 자체 새로 (V4~V7 4안 추가). "좌측 띠" 패턴 폐기</li>
           <li>⏳ 2·3·5번 — 미결정</li>
         </ul>
       </div>
@@ -155,7 +155,7 @@ export default function DesignLabPage() {
           </div>
         </Variant>
 
-        <Variant label="V3 ⭐ 혼합안 (V1 큰 숫자 + V2 우선순위 hero)" note="우선순위 1순위 = Hero 카드(2 col, 큰 숫자·sub 라인 풍부). 보조 3개 = 컬러 액센트 + 큰 값. 작은 카드도 정보 풍부, 빈약함 해소">
+        <Variant label="V3 — V1 큰 숫자 + V2 우선순위 hero 혼합" note="우선순위 1순위 Hero + 보조 3 카드. 좌측 띠 패턴 일부 잔존">
           <div className="space-y-3">
             {/* HERO — 1순위 (출퇴근) — 2 col 폭, 큰 숫자 + 부가 라인 풍부 */}
             <div className="rounded-3xl border-2 border-primary bg-gradient-to-br from-primary-soft/50 via-primary-soft/20 to-surface p-7 shadow-sm">
@@ -212,6 +212,119 @@ export default function DesignLabPage() {
                 <div className="mt-1 text-2xl font-extrabold leading-tight tracking-tight">2,569<span className="ml-0.5 text-base">세대</span></div>
                 <div className="mt-0.5 text-[11px] text-foreground-sub">2021년 입주 · 5년차</div>
                 <div className="mt-2 rounded-lg bg-surface-soft px-2 py-1 text-[10px] text-foreground-sub">준신축 + 커뮤니티 풍부</div>
+              </div>
+            </div>
+          </div>
+        </Variant>
+
+        {/* === 카드 디자인 자체를 새로 — 요즘 한국 서비스 트렌드 4안 === */}
+        <div className="mt-8 rounded-xl bg-foreground/5 p-4">
+          <div className="text-[11px] font-bold uppercase tracking-wider text-primary">🆕 카드 디자인 자체 새로 — 요즘 한국 서비스 트렌드</div>
+          <p className="mt-1 text-xs text-foreground-sub">"좌측 띠 + 작은 카드" 패턴 자체를 버리고 4가지 다른 결 디자인 비교. 1순위 Hero 카드만 우선 보여드림 (보조 카드는 동일 패턴 확장 가능).</p>
+        </div>
+
+        <Variant label="V4 — 토스/카카오뱅크 스타일 (미니멀)" note="흰 배경 + 큰 숫자 + soft shadow + 라운드 큰. 띠·테두리 강조 X. 우상단 컬러 칩으로 trend 표시">
+          <div className="rounded-3xl bg-white p-7 shadow-[0_2px_12px_rgba(0,0,0,0.06)]">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold text-foreground-sub">🚇 출퇴근 동선</span>
+              <span className="rounded-full bg-success-soft px-2 py-0.5 text-[10px] font-bold text-success">★ 1순위</span>
+            </div>
+            <div className="mt-4 flex items-baseline gap-1.5">
+              <span className="text-[44px] font-extrabold leading-none tracking-tight">5</span>
+              <span className="text-xl font-bold text-foreground-sub">분</span>
+              <span className="ml-3 text-sm text-foreground-sub">단지 → 녹번역</span>
+            </div>
+            <div className="mt-5 flex items-center justify-between rounded-2xl bg-foreground/[0.03] px-4 py-3">
+              <div>
+                <div className="text-[11px] text-foreground-sub">광화문</div>
+                <div className="mt-0.5 text-xl font-extrabold">21<span className="ml-0.5 text-sm font-semibold text-foreground-sub">분</span></div>
+              </div>
+              <span className="rounded-full bg-success-soft px-2.5 py-1 text-[10px] font-bold text-success">3호선 직결</span>
+            </div>
+          </div>
+        </Variant>
+
+        <Variant label="V5 — 인스타 그라데이션 (감각적)" note="카드별 시그니처 그라데이션. 흰 텍스트 + 큰 typography. 인스타 스토리·릴스 결">
+          <div className="overflow-hidden rounded-[28px] bg-gradient-to-br from-[#FF6B6B] via-[#E25555] to-[#C13C3C] p-7 text-white shadow-lg">
+            <div className="flex items-center justify-between">
+              <span className="rounded-full bg-white/20 px-3 py-1 text-[10px] font-bold uppercase tracking-wider backdrop-blur">★ 1순위 출퇴근</span>
+              <span className="text-xs font-semibold opacity-80">녹번역 · 3호선</span>
+            </div>
+            <div className="mt-6">
+              <div className="text-xs font-semibold opacity-80">단지 도보 거리</div>
+              <div className="mt-1 flex items-baseline">
+                <span className="text-[64px] font-black leading-none tracking-tighter">5</span>
+                <span className="ml-2 text-3xl font-bold opacity-90">분</span>
+              </div>
+            </div>
+            <div className="mt-6 flex items-center justify-between rounded-2xl bg-white/15 px-4 py-3 backdrop-blur">
+              <div>
+                <div className="text-[11px] opacity-80">광화문까지</div>
+                <div className="text-xl font-extrabold">21분</div>
+              </div>
+              <div className="text-right text-[11px] opacity-80">
+                직결<br />환승 0회
+              </div>
+            </div>
+          </div>
+        </Variant>
+
+        <Variant label="V6 — 부동산 커뮤니티 위트 (자조 + 큰 숫자)" note="벼락거지·영끌 톤. 위트 한 줄 카피 + 큰 숫자 + 이모지. 칠래말래 톤 매칭">
+          <div className="rounded-3xl border border-border bg-white p-7 shadow-sm">
+            <div className="flex items-center gap-2">
+              <span className="text-xl">🚇</span>
+              <span className="text-sm font-bold text-foreground">출근, 솔직히 5분</span>
+              <span className="ml-auto rounded-full bg-warning-soft px-2 py-0.5 text-[10px] font-bold text-warning">★ 1순위</span>
+            </div>
+            <div className="mt-3 text-base font-semibold leading-snug text-foreground">
+              녹번역 도보 5분, 광화문은 21분 직결.<br />
+              <span className="text-foreground-sub">"이 동선이면 영끌각이지" 싶은 분들에게.</span>
+            </div>
+            <div className="mt-5 grid grid-cols-3 gap-2 border-t border-border pt-4">
+              <Stat label="단지→역" value="5분" sub="330m" />
+              <Stat label="환승" value="0회" sub="3호선 직결" />
+              <Stat label="광화문" value="21분" sub="실시간" />
+            </div>
+          </div>
+        </Variant>
+
+        <Variant label="V7 — iOS 위젯 (정보 다수, 깔끔)" note="모서리 큰 라운드 + 카드 안 mini 분할 정보 풍부. 한 카드에 4~5개 데이터">
+          <div className="grid gap-3 md:grid-cols-2">
+            <div className="rounded-[24px] bg-foreground p-6 text-background shadow-lg">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-bold uppercase tracking-wider opacity-70">출퇴근 ★</span>
+                <span className="rounded-md bg-white/15 px-1.5 py-0.5 text-[9px] font-bold">3호선</span>
+              </div>
+              <div className="mt-4 text-[44px] font-extrabold leading-none tracking-tight">21분</div>
+              <div className="mt-1 text-xs opacity-70">광화문 직결</div>
+              <div className="mt-5 grid grid-cols-2 gap-3">
+                <div>
+                  <div className="text-[10px] opacity-60">단지 → 녹번역</div>
+                  <div className="text-sm font-bold">도보 5분 (330m)</div>
+                </div>
+                <div>
+                  <div className="text-[10px] opacity-60">환승</div>
+                  <div className="text-sm font-bold">0회</div>
+                </div>
+              </div>
+            </div>
+            {/* 보조 카드 — 같은 결의 흰 버전 */}
+            <div className="rounded-[24px] border border-border bg-white p-6 shadow-sm">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-foreground-sub">시세</span>
+                <span className="rounded-md bg-danger-soft px-1.5 py-0.5 text-[9px] font-bold text-danger">↓ 1.6%</span>
+              </div>
+              <div className="mt-4 text-[44px] font-extrabold leading-none tracking-tight">14.8억</div>
+              <div className="mt-1 text-xs text-foreground-sub">전용 84㎡ 최근 실거래</div>
+              <div className="mt-5 grid grid-cols-2 gap-3">
+                <div>
+                  <div className="text-[10px] text-foreground-sub">평당</div>
+                  <div className="text-sm font-bold">4,434만</div>
+                </div>
+                <div>
+                  <div className="text-[10px] text-foreground-sub">월 524만</div>
+                  <div className="text-sm font-bold">대출 70%</div>
+                </div>
               </div>
             </div>
           </div>
@@ -533,6 +646,16 @@ function Variant({ label, note, children }: { label: string; note: string; child
         <span className="text-[11px] text-foreground-sub">{note}</span>
       </div>
       {children}
+    </div>
+  );
+}
+
+function Stat({ label, value, sub }: { label: string; value: string; sub: string }) {
+  return (
+    <div>
+      <div className="text-[10px] font-semibold text-foreground-sub">{label}</div>
+      <div className="mt-0.5 text-base font-extrabold tracking-tight">{value}</div>
+      <div className="text-[10px] text-foreground-sub">{sub}</div>
     </div>
   );
 }
