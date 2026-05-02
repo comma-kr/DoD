@@ -104,21 +104,65 @@ function busColorOf(busNote: string | undefined): string {
   return '#3D5BA9';
 }
 
+// 역(station) 블록: [원][역할 + 역명] 가로로 묶음.
+function StationBlock({
+  hop,
+  color,
+}: {
+  hop: SubwayHop;
+  color: string;
+}) {
+  return (
+    <div className="flex shrink-0 items-center gap-2">
+      <span
+        className="h-7 w-7 shrink-0 rounded-full border-[3px] bg-white"
+        style={{ borderColor: color }}
+      />
+      <div className="min-w-0">
+        <div className={`text-[10px] font-bold leading-tight ${ROLE_TONE[hop.role]} inline-block rounded px-1`}>
+          {ROLE_LABEL[hop.role]}
+        </div>
+        <div className="mt-0.5 truncate text-sm font-bold leading-tight text-foreground">
+          {hop.station}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// 연결자(connector): ── [노선칩] ──.  flex-1로 양쪽 station 사이 늘어남.
+function Connector({
+  color,
+  ride,
+  bus,
+}: {
+  color: string;
+  ride?: LineCode;
+  bus?: string;
+}) {
+  return (
+    <div className="flex min-w-[40px] flex-1 items-center gap-1.5">
+      <div className="h-1 flex-1 rounded-full" style={{ background: color }} />
+      {ride ? <LineChip line={ride} /> : bus ? <BusChip busNote={bus} /> : null}
+      <div className="h-1 flex-1 rounded-full" style={{ background: color }} />
+    </div>
+  );
+}
+
 function SubwayPathDisplay({ path }: { path: SubwayHop[] }) {
   return (
-    <ol className="mt-4 flex flex-col">
+    <div className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-3">
       {path.map((hop, i) => {
         const isLast = i === path.length - 1;
-        // 이 hop의 출발 segment 색 (= 이 역에서 타고 가는 노선의 색)
         const ridingLine = !isLast ? hop.rideLine : undefined;
         const ridingBus = !isLast && !hop.rideLine ? hop.note : undefined;
-        const departColor: string = ridingLine
+        const segColor: string = ridingLine
           ? LINE_COLOR[ridingLine].bg
           : ridingBus
           ? busColorOf(ridingBus)
           : FALLBACK_LINE_COLOR;
 
-        // 원 테두리색: 자기가 탑승하는 노선이 있으면 그 색, 없으면 직전 hop의 노선색 (도착 hop)
+        // 원 테두리색 — 본인 rideLine이 있으면 그 색, 없으면 직전 hop의 색 (도착 hop용)
         const prevLine = i > 0 ? path[i - 1].rideLine : undefined;
         const prevBus = i > 0 && !path[i - 1].rideLine ? path[i - 1].note : undefined;
         const circleColor: string = hop.rideLine
@@ -130,45 +174,15 @@ function SubwayPathDisplay({ path }: { path: SubwayHop[] }) {
           : FALLBACK_LINE_COLOR;
 
         return (
-          <li key={i} className="flex gap-3">
-            {/* 좌측 레일: 원 + 세로선 */}
-            <div className="flex w-7 shrink-0 flex-col items-center">
-              <span
-                className="h-7 w-7 shrink-0 rounded-full border-[3px] bg-white"
-                style={{ borderColor: circleColor }}
-              />
-              {!isLast ? (
-                <div
-                  className="my-1 w-[3px] flex-1 rounded-full"
-                  style={{ background: departColor }}
-                />
-              ) : null}
-            </div>
-
-            {/* 우측: 역명·역할·다음 노선칩 */}
-            <div className={`flex-1 min-w-0 ${isLast ? '' : 'pb-3'}`}>
-              <div className="flex items-center gap-2">
-                <span className="truncate text-sm font-bold text-foreground">{hop.station}</span>
-                <span
-                  className={`shrink-0 rounded-md px-1.5 py-0.5 text-[9px] font-bold ${ROLE_TONE[hop.role]}`}
-                >
-                  {ROLE_LABEL[hop.role]}
-                </span>
-              </div>
-              {!isLast ? (
-                <div className="mt-1.5 inline-flex">
-                  {ridingLine ? (
-                    <LineChip line={ridingLine} />
-                  ) : ridingBus ? (
-                    <BusChip busNote={ridingBus} />
-                  ) : null}
-                </div>
-              ) : null}
-            </div>
-          </li>
+          <div key={i} className="contents">
+            <StationBlock hop={hop} color={circleColor} />
+            {!isLast ? (
+              <Connector color={segColor} ride={ridingLine} bus={ridingBus} />
+            ) : null}
+          </div>
         );
       })}
-    </ol>
+    </div>
   );
 }
 
