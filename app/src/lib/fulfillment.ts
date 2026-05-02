@@ -130,7 +130,8 @@ export async function fulfillPendingPayment(
   let markdown: string;
   try {
     if (productId === 'compare_report') {
-      if (process.env.NODE_ENV === 'development' && !process.env.ANTHROPIC_API_KEY) {
+      // 운영 안정성 안전망: ANTHROPIC_API_KEY 없으면 dev/prod 무관 mock 사용.
+      if (!process.env.ANTHROPIC_API_KEY) {
         markdown = buildMockCompareReport(apartments, profile);
       } else {
         markdown = await generateCompareReport(apartments, profile);

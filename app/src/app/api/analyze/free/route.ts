@@ -192,7 +192,9 @@ export async function POST(request: Request) {
 
   let markdown: string;
   try {
-    if (process.env.NODE_ENV === 'development' && !process.env.ANTHROPIC_API_KEY) {
+    // 운영 안정성 안전망: ANTHROPIC_API_KEY가 없으면 dev/prod 무관 mock 사용.
+    // (이전: production에서는 무조건 Claude 호출 → 키 누락 시 502. Vercel 환경변수 미등록 시 사용자 화면에 에러.)
+    if (!process.env.ANTHROPIC_API_KEY) {
       markdown = buildMockFreeReport(apartment, profile, { kidsInfra, nearbySchools, academyCluster });
     } else {
       markdown = await generateFreeDeepSingleReport(apartment, profile, { kidsInfra, nearbySchools });
