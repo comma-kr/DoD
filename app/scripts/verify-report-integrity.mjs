@@ -101,43 +101,19 @@ async function verifyAreaMapping() {
 
 // ============================================================
 // B. 새 무료 리포트 생성 + 본문 정합성
+// reportId를 인자로 받음 (메인에서 한 번만 생성, 중복 호출 방지)
 // ============================================================
-async function verifyNewReport(apartmentId) {
+async function verifyNewReport(reportId) {
   section('B. 신규 무료 리포트 생성 + 본문 정합성');
 
-  // 테스트 인증
-  const cookieStore = { jar: '' };
-  await fetch(`${BASE_URL}/api/auth/send-otp`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ phone: '01011111234' }),
-  });
-  const verifyRes = await fetch(`${BASE_URL}/api/auth/verify-otp`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ phone: '01011111234', code: '111111' }),
-  });
-  const setCookie = verifyRes.headers.get('set-cookie');
-  if (setCookie) cookieStore.jar = setCookie;
-
-  // 분석 호출
-  const analysisRes = await fetch(`${BASE_URL}/api/analyze/free`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', cookie: cookieStore.jar },
-    body: JSON.stringify({
-      apartmentId,
-      profile: { householdType: 'newlywed', priorities: ['transport'], commuteArea: 'gwanghwamun' },
-    }),
-  });
-  const analysisJson = await analysisRes.json();
-  if (!analysisJson.ok) {
-    check('신규 리포트 생성', false, `API 응답 실패: ${JSON.stringify(analysisJson)}`);
+  if (!reportId) {
+    check('신규 리포트 생성', false, '메인에서 리포트 생성 실패 (인증·분석 호출 점검 필요)');
     return;
   }
-  check('신규 리포트 생성', true, `id=${analysisJson.reportId}`);
+  check('신규 리포트 생성', true, `id=${reportId}`);
 
   // 리포트 fetch
-  const { data: report } = await sb.from('reports').select('content').eq('id', analysisJson.reportId).single();
+  const { data: report } = await sb.from('reports').select('content').eq('id', reportId).single();
   const md = report?.content?.markdown ?? '';
   const tldr = report?.content?.tldr ?? '';
 
@@ -270,21 +246,33 @@ console.log('   ⚠ 위 URL에서 서비스가 응답해야 합니다.\n');
 
 await verifyAreaMapping();
 verifyCodeCopy();
+
+// 인증 + 분석 한 번만 호출 (이전 버그: 두 번 호출해서 timeout 발생).
+// fetch에 명시적 timeout 추가 (분석 + Claude/카카오 fetch 시간 고려해 2분).
 let reportId = null;
 try {
-  // verifyNewReport 결과를 캡처해서 verifyAreaConsistency에 전달
   const cookieStore = { jar: '' };
+  const ctrl1 = new AbortController();
+  const t1 = setTimeout(() => ctrl1.abort(), 30_000);
   await fetch(`${BASE_URL}/api/auth/send-otp`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ phone: '01011111234' }),
-  });
+    signal: ctrl1.signal,
+  }).finally(() => clearTimeout(t1));
+
+  const ctrl2 = new AbortController();
+  const t2 = setTimeout(() => ctrl2.abort(), 30_000);
   const v = await fetch(`${BASE_URL}/api/auth/verify-otp`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ phone: '01011111234', code: '111111' }),
-  });
+    signal: ctrl2.signal,
+  }).finally(() => clearTimeout(t2));
   cookieStore.jar = v.headers.get('set-cookie') ?? '';
+
+  const ctrl3 = new AbortController();
+  const t3 = setTimeout(() => ctrl3.abort(), 120_000); // 분석은 길 수 있음 (ODSay 6 + 카카오 4 fetch)
   const a = await fetch(`${BASE_URL}/api/analyze/free`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', cookie: cookieStore.jar },
@@ -292,11 +280,14 @@ try {
       apartmentId: TEST_APT_ID,
       profile: { householdType: 'newlywed', priorities: ['transport'], commuteArea: 'gwanghwamun' },
     }),
-  });
+    signal: ctrl3.signal,
+  }).finally(() => clearTimeout(t3));
   const aj = await a.json();
-  reportId = aj.reportId;
-} catch {}
-await verifyNewReport(TEST_APT_ID);
+  reportId = aj.reportId ?? null;
+} catch (err) {
+  console.log('  ⚠ 인증·분석 호출 실패:', err?.name === 'AbortError' ? 'timeout' : err?.message);
+}
+await verifyNewReport(reportId);
 await verifyAreaConsistency(reportId);
 
 // ============================================================
