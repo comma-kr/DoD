@@ -35,9 +35,16 @@ async function loadZones(): Promise<ZonesGeoJson> {
     'seoul-commercial-zones',
     'zones.geojson'
   );
-  const raw = await fs.readFile(fpath, 'utf8');
-  cached = JSON.parse(raw) as ZonesGeoJson;
-  return cached;
+  try {
+    const raw = await fs.readFile(fpath, 'utf8');
+    cached = JSON.parse(raw) as ZonesGeoJson;
+    return cached;
+  } catch {
+    // 파일 없거나 파싱 실패 → 빈 데이터로 안전 fallback.
+    // (.gitignore로 제외된 SBA 원본 데이터셋이 운영 빌드에 미포함되는 경우 대응)
+    cached = { features: [] };
+    return cached;
+  }
 }
 
 // Haversine 거리 (m)
