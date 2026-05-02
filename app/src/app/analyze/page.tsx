@@ -3,12 +3,20 @@
 import { Suspense, useState, useEffect, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowRight, Building2, ArrowLeft, FileText } from 'lucide-react';
+import { ArrowRight, Building2, ArrowLeft, FileText, UserCog } from 'lucide-react';
 import SearchBar, { type SearchResult } from '@/components/search/SearchBar';
 import PhoneAuthModal from '@/components/auth/PhoneAuthModal';
 import ProfileForm from '@/components/analyze/ProfileForm';
 import Button from '@/components/ui/Button';
-import type { HouseholdType, Priority, CommuteArea } from '@/types/profile';
+import {
+  HOUSEHOLD_LABELS,
+  HOUSEHOLD_EMOJIS,
+  PRIORITY_LABELS,
+  COMMUTE_LABELS,
+  type HouseholdType,
+  type Priority,
+  type CommuteArea,
+} from '@/types/profile';
 
 type Stage = 'pick' | 'profile' | 'running';
 
@@ -30,6 +38,11 @@ function AnalyzeContent() {
   const [authenticated, setAuthenticated] = useState<boolean | null>(null);
   const [profileLoaded, setProfileLoaded] = useState<boolean>(false);
   const [hasProfile, setHasProfile] = useState<boolean>(false);
+  // 현재 저장된 프로필 (ProfileForm prefill + 단지 카드 요약 표시용).
+  // 사용자가 [조건 변경] 누르면 ProfileForm으로 진입, 새 입력으로 분석.
+  const [savedProfile, setSavedProfile] = useState<ProfileInput | null>(null);
+  // 일회성 override: ProfileForm에서 변경한 값 — runFreeAnalyze에 전달
+  const [overrideProfile, setOverrideProfile] = useState<ProfileInput | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [quotaState, setQuotaState] = useState<{
     exhausted: boolean;
@@ -53,6 +66,14 @@ function AnalyzeContent() {
           if (profRes.ok) {
             const profData = await profRes.json();
             setHasProfile(!!profData.profile);
+            if (profData.profile) {
+              setSavedProfile({
+                householdType: profData.profile.householdType,
+                priorities: profData.profile.priorities,
+                commuteArea: profData.profile.commuteArea,
+                workplaceAddress: profData.profile.workplaceAddress,
+              });
+            }
           }
         }
 
@@ -134,6 +155,12 @@ function AnalyzeContent() {
         const profileExists = !!d?.profile;
         setHasProfile(profileExists);
         if (profileExists) {
+          setSavedProfile({
+            householdType: d.profile.householdType,
+            priorities: d.profile.priorities,
+            commuteArea: d.profile.commuteArea,
+            workplaceAddress: d.profile.workplaceAddress,
+          });
           runFreeAnalyze();
         } else {
           setStage('profile');
@@ -154,12 +181,19 @@ function AnalyzeContent() {
       setStage('profile');
       return;
     }
-    runFreeAnalyze();
+    // override가 있으면 그걸로, 없으면 저장 프로필 (서버에서 자동 사용)
+    runFreeAnalyze(overrideProfile ?? undefined);
   }
 
   function handleProfileComplete(profile: ProfileInput) {
     setHasProfile(true);
+    setOverrideProfile(profile);
+    setSavedProfile(profile); // 화면 표시용 동기화
     runFreeAnalyze(profile);
+  }
+
+  function handleEditProfile() {
+    setStage('profile');
   }
 
   // --- RENDER ---
@@ -211,7 +245,10 @@ function AnalyzeContent() {
           <br className="hidden sm:block" /> 이 정보는 리포트가 어떤 관점으로 풀릴지
           결정해요.
         </p>
-        <ProfileForm onComplete={handleProfileComplete} />
+        <ProfileForm
+          onComplete={handleProfileComplete}
+          initialProfile={overrideProfile ?? savedProfile ?? undefined}
+        />
       </section>
     );
   }
@@ -275,6 +312,36 @@ function AnalyzeContent() {
               </div>
             </div>
           </div>
+
+          {/* 현재 조건 요약 + [조건 변경] — 사용자가 다른 가구·우선순위로 분석 가능 */}
+          {hasProfile && savedProfile ? (
+            <button
+              onClick={handleEditProfile}
+              className="mt-5 flex w-full items-center gap-3 rounded-2xl border border-border bg-surface-soft px-4 py-3 text-left transition hover:border-primary/40 hover:bg-primary-soft/30"
+            >
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary">
+                <UserCog className="h-4 w-4" />
+              </div>
+              <div className="flex-1">
+                <div className="text-[11px] text-foreground-sub">내 조건</div>
+                <div className="text-sm font-semibold text-foreground">
+                  {HOUSEHOLD_EMOJIS[savedProfile.householdType]}{' '}
+                  {HOUSEHOLD_LABELS[savedProfile.householdType]}
+                  {savedProfile.priorities[0] ? (
+                    <span className="ml-1.5 text-foreground-sub">
+                      · {PRIORITY_LABELS[savedProfile.priorities[0]]}
+                    </span>
+                  ) : null}
+                  {savedProfile.commuteArea && savedProfile.commuteArea !== 'none' ? (
+                    <span className="ml-1.5 text-foreground-sub">
+                      · {COMMUTE_LABELS[savedProfile.commuteArea]} 출근
+                    </span>
+                  ) : null}
+                </div>
+              </div>
+              <span className="shrink-0 text-xs font-semibold text-primary">변경 →</span>
+            </button>
+          ) : null}
 
           {quotaState.exhausted ? (
             <div className="mt-6 rounded-2xl border border-secondary/30 bg-secondary/10 p-5">
