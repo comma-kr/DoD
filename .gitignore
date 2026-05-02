@@ -60,7 +60,9 @@ next-env.d.ts
 # Claude Code 설정 (로컬)
 .claude/settings.local.json
 
-# SBA 공식 상권 데이터셋 (재배포 제한·대용량) — README로 다운로드 안내
+# SBA 공식 상권 데이터셋 — 원본은 ignore (대용량·재배포 제한),
+# 단 빌드 산출물 zones.geojson(9MB)만 예외로 git 포함 (Vercel 빌드에 필요).
+# 라이선스: 공공누리 제3유형 (출처 표시 — NeighborhoodMap 하단 캡션에 SBA 표기).
 app/data/seoul-commercial-zones/*.shp
 app/data/seoul-commercial-zones/*.dbf
 app/data/seoul-commercial-zones/*.shx
@@ -68,4 +70,5 @@ app/data/seoul-commercial-zones/*.prj
 app/data/seoul-commercial-zones/*.cpg
 app/data/seoul-commercial-zones/*.json
 app/data/seoul-commercial-zones/*.geojson
+!app/data/seoul-commercial-zones/zones.geojson
 app/data/seoul-commercial-zones/*.csv
