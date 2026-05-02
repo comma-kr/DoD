@@ -58,23 +58,31 @@ const MOCK_TRADES = [
 export default function DesignLabPage() {
   return (
     <main className="mx-auto max-w-5xl px-6 pt-12 pb-24">
-      <header className="mb-10">
+      <header className="mb-8">
         <span className="mb-3 inline-block rounded-full bg-warning-soft px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-warning">
           DESIGN LAB · 비공개
         </span>
         <h1 className="text-3xl font-bold tracking-tight">단지 상세분석 카드 디자인 비교</h1>
         <p className="mt-3 text-sm leading-relaxed text-foreground-sub">
-          현재 디자인 옆에 개선안 V1/V2를 같이 띄워서 비교. 마음에 드는 안 골라서 적용 요청해주세요.
-          <br />
-          ⚠ 메인 메뉴에 노출 안 되는 페이지. URL 직접 접근만.
+          현재 디자인 옆에 개선안 V1/V2/V3을 비교. 마음에 드는 안 골라서 적용 요청.
         </p>
       </header>
+
+      {/* 사용자 채택 현황 */}
+      <div className="mb-10 rounded-2xl border-2 border-success/30 bg-success-soft/30 p-5">
+        <div className="text-[11px] font-bold uppercase tracking-wider text-success">USER 채택 현황</div>
+        <ul className="mt-2 space-y-1 text-sm">
+          <li>✅ <strong>MY ROUTE (4번)</strong> — V1 미니 지하철도형 채택</li>
+          <li>🔄 <strong>HookHighlights (1번)</strong> — V3 혼합안 (V1 큰 숫자 + V2 우선순위 hero) 신규 추가</li>
+          <li>⏳ 2·3·5번 — 미결정</li>
+        </ul>
+      </div>
 
       {/* ============================================================
           1. HookHighlights — 첫 인상 4 카드
          ============================================================ */}
       <Section number={1} title="시세·교통·학군·세대 4 카드 (HookHighlights)">
-        <Variant label="현재 (V0)" note="구획별 4 카드, 모든 정보 균등 노출">
+        <Variant label="현재 (V0) — ❌ 문제 있음" note="단일 카드가 작고 정보 빈약 (예: '가장 가까운 역 / 녹번역 / 도보 5분'만). 우선순위 ★도 동일 폭이라 시각 임팩트 약함">
           <HookHighlights
             pricePerPyeong={4434}
             latestPriceM10k={148000}
@@ -142,6 +150,68 @@ export default function DesignLabPage() {
                 </div>
                 <div className="mt-1 text-lg font-bold">2,569세대</div>
                 <div className="text-[10px] text-foreground-sub">2021년 · 5년차</div>
+              </div>
+            </div>
+          </div>
+        </Variant>
+
+        <Variant label="V3 ⭐ 혼합안 (V1 큰 숫자 + V2 우선순위 hero)" note="우선순위 1순위 = Hero 카드(2 col, 큰 숫자·sub 라인 풍부). 보조 3개 = 컬러 액센트 + 큰 값. 작은 카드도 정보 풍부, 빈약함 해소">
+          <div className="space-y-3">
+            {/* HERO — 1순위 (출퇴근) — 2 col 폭, 큰 숫자 + 부가 라인 풍부 */}
+            <div className="rounded-3xl border-2 border-primary bg-gradient-to-br from-primary-soft/50 via-primary-soft/20 to-surface p-7 shadow-sm">
+              <div className="flex items-center justify-between">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white">
+                  <Train className="h-3 w-3" /> ★ 1순위 — 출퇴근
+                </span>
+                <span className="text-xs font-semibold text-foreground-sub">녹번역 3호선</span>
+              </div>
+              <div className="mt-4 flex items-end gap-3">
+                <div>
+                  <div className="text-5xl font-extrabold tracking-tight leading-none">5<span className="ml-1 text-2xl text-foreground-sub">분</span></div>
+                  <div className="mt-1 text-xs text-foreground-sub">단지 → 녹번역 도보 (330m)</div>
+                </div>
+                <div className="ml-auto text-right">
+                  <div className="text-[11px] font-bold uppercase tracking-wider text-foreground-sub">광화문</div>
+                  <div className="mt-0.5 text-2xl font-extrabold text-success">21분</div>
+                  <div className="text-[10px] text-foreground-sub">직결 · 3호선</div>
+                </div>
+              </div>
+            </div>
+
+            {/* 보조 3 카드 — 균등 grid, 컬러 액센트 + 큰 값 */}
+            <div className="grid gap-3 md:grid-cols-3">
+              {/* 시세 */}
+              <div className="rounded-2xl border border-border bg-surface p-5 shadow-sm">
+                <div className="flex items-center justify-between">
+                  <Wallet className="h-4 w-4 text-foreground-sub" />
+                  <span className="rounded-md bg-danger-soft px-1.5 py-0.5 text-[9px] font-bold text-danger">↓ 1.6%</span>
+                </div>
+                <div className="mt-3 text-[10px] font-bold uppercase tracking-wider text-foreground-sub">최근 실거래</div>
+                <div className="mt-1 text-2xl font-extrabold leading-tight tracking-tight">14.8억</div>
+                <div className="mt-0.5 text-[11px] text-foreground-sub">전용 84㎡ · 평당 4,434만</div>
+                <div className="mt-2 rounded-lg bg-surface-soft px-2 py-1 text-[10px] text-foreground-sub">월 524만 (대출 70%)</div>
+              </div>
+              {/* 학군 */}
+              <div className="rounded-2xl border border-border bg-surface p-5 shadow-sm">
+                <div className="flex items-center justify-between">
+                  <GraduationCap className="h-4 w-4 text-foreground-sub" />
+                  <span className="rounded-md bg-success-soft px-1.5 py-0.5 text-[9px] font-bold text-success">초 420m</span>
+                </div>
+                <div className="mt-3 text-[10px] font-bold uppercase tracking-wider text-foreground-sub">가까운 초등</div>
+                <div className="mt-1 text-2xl font-extrabold leading-tight tracking-tight">서울은평초</div>
+                <div className="mt-0.5 text-[11px] text-foreground-sub">은평·연신내권 학군</div>
+                <div className="mt-2 rounded-lg bg-surface-soft px-2 py-1 text-[10px] text-foreground-sub">연신내·불광 학원가</div>
+              </div>
+              {/* 세대 */}
+              <div className="rounded-2xl border border-border bg-surface p-5 shadow-sm">
+                <div className="flex items-center justify-between">
+                  <Home className="h-4 w-4 text-foreground-sub" />
+                  <span className="rounded-md bg-primary-soft px-1.5 py-0.5 text-[9px] font-bold text-primary-ink">대단지</span>
+                </div>
+                <div className="mt-3 text-[10px] font-bold uppercase tracking-wider text-foreground-sub">규모 · 연식</div>
+                <div className="mt-1 text-2xl font-extrabold leading-tight tracking-tight">2,569<span className="ml-0.5 text-base">세대</span></div>
+                <div className="mt-0.5 text-[11px] text-foreground-sub">2021년 입주 · 5년차</div>
+                <div className="mt-2 rounded-lg bg-surface-soft px-2 py-1 text-[10px] text-foreground-sub">준신축 + 커뮤니티 풍부</div>
               </div>
             </div>
           </div>
@@ -309,7 +379,7 @@ export default function DesignLabPage() {
           </div>
         </Variant>
 
-        <Variant label="V1 — 미니 지하철도형" note="역 사이 굵은 컬러 라인 + 역 동그라미 (실제 노선도 느낌)">
+        <Variant label="V1 ✅ 채택" note="역 사이 굵은 컬러 라인 + 역 동그라미 (실제 노선도 느낌)">
           <div className="rounded-3xl border border-border bg-surface p-6 shadow-sm">
             <div className="flex items-baseline justify-between">
               <h3 className="text-base font-bold">🚇 광화문까지</h3>
