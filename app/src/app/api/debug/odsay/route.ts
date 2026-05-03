@@ -26,7 +26,9 @@ export async function GET() {
   url.searchParams.set('apiKey', apiKey);
 
   try {
-    const res = await fetch(url.toString());
+    const res = await fetch(url.toString(), {
+      headers: { Referer: 'https://comma-dod.vercel.app/' },
+    });
     const text = await res.text();
     let json: unknown;
     try {

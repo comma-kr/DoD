@@ -97,6 +97,12 @@ export async function fetchTransitPath(
   try {
     const res = await fetch(url.toString(), {
       // ODSay는 GET이며 캐시 가능. 단지+출근지 페어가 동일하면 동일 결과.
+      // Referer 명시 — ODSay 키가 comma-dod.vercel.app 도메인으로 등록돼 있어서
+      // Vercel preview·다른 deployment에서도 통과시키려면 Referer를 등록 도메인으로 박아야 함.
+      // (server-side fetch는 기본 Referer 미전송 → ODSay가 ApiKeyAuthFailed 응답)
+      headers: {
+        Referer: 'https://comma-dod.vercel.app/',
+      },
       next: { revalidate: 60 * 60 * 24 * 30 }, // 30일
     });
     if (!res.ok) return null;
