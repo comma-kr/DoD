@@ -1,7 +1,7 @@
 // ODSay 대중교통 길찾기 API 래퍼
 // https://lab.odsay.com/guide/serviceList — searchPubTransPathT
 //
-// 무료 개발 키: 일일 5,000 호출. 단지×출근지 캐시로 사실상 무한 운영 가능.
+// 무료 개발 키: 일일 1,000 호출. 단지×출근지 캐시로 사실상 무한 운영 가능.
 // 키 없거나 호출 실패 시 null 반환 → 호출부에서 하드코딩 매트릭스 fallback.
 
 import type { LineCode, SubwayHop } from './subway-paths';

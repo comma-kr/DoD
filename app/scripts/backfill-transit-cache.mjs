@@ -13,7 +13,7 @@
 //   node scripts/backfill-transit-cache.mjs --limit 1000   # 최대 호출 수
 //   node scripts/backfill-transit-cache.mjs --throttle-ms 800  # 호출 간 대기 (기본 1000)
 //
-// 일일 ODSay 무료 한도 5,000 호출. 안전 margin 위해 limit 4500 권장.
+// 일일 ODSay 무료 한도 1,000 호출. 안전 margin 위해 limit 900 권장.
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -68,7 +68,7 @@ const args = process.argv.slice(2);
 const flags = {
   all: args.includes('--all'),
   district: args.find((_, i) => args[i - 1] === '--district'),
-  limit: parseInt(args.find((_, i) => args[i - 1] === '--limit') ?? '4500', 10),
+  limit: parseInt(args.find((_, i) => args[i - 1] === '--limit') ?? '900', 10),
   throttleMs: parseInt(args.find((_, i) => args[i - 1] === '--throttle-ms') ?? '1000', 10),
 };
 
@@ -170,45 +170,125 @@ async function fetchTransitPaths(origin, dest) {
   return { primary, alternatives };
 }
 
+// ─── 신혼부부 선호 자치구 우선순위 ───
+// Wave 1 (가장 인기): 직장 가까움 + 신축 + 신도시
+// Wave 2: 차순위 (전통 강세 + 신축 신도시)
+// 그 외: Wave 3로 자동 분류
+//
+// address ilike 매칭이라 "성동"이 "성동구"·"성동(서울)" 다 잡힘.
+// 단, "강남"은 "강남대로"·"강남구청"도 매칭 가능 → 자치구 키워드는 가능한 정확하게.
+const PRIORITY_DISTRICTS = [
+  // ━━━ Wave 1 — 신혼 hot place ━━━
+  // 서울 (직장+신축+교통)
+  '서울특별시 마포구',
+  '서울특별시 성동구',
+  '서울특별시 광진구',
+  '서울특별시 송파구',
+  '서울특별시 동작구',
+  '서울특별시 영등포구',
+  '서울특별시 강서구',
+  '서울특별시 양천구',
+  // 경기 신도시 (DB 주소 형식 = 시군구 공백 없음: '성남분당구')
+  '성남분당구',
+  '화성시',       // 동탄 (RTMS 시드 - "경기 화성시" prefix)
+  '수원영통구',   // 광교
+  '고양일산동구',
+  '고양일산서구',
+  '안양동안구',   // 평촌
+  '용인수지구',
+  // 인천
+  '인천광역시 연수구', // 송도
+
+  // ━━━ Wave 2 — 차순위 ━━━
+  '서울특별시 강남구',
+  '서울특별시 서초구',
+  '서울특별시 용산구',
+  '서울특별시 강동구',
+  '성남수정구',   // 위례
+  '경기도 하남시',  // 미사
+  '경기도 남양주시', // 다산·별내
+  '안양만안구',
+  '경기도 군포시',
+  '경기도 의왕시',
+  '인천광역시 서구', // 청라
+];
+
 // ─── 단지 목록 결정 ───
 async function getApartmentList() {
-  // 1) 리포트가 있는 단지 ID 수집 (우선순위)
+  // 1) 리포트가 있는 단지 ID 수집 (최우선 — 즉시 사용자가 다시 볼 가능성)
   const { data: reports } = await sb.from('reports').select('apartment_ids');
   const reportIds = new Set();
   reports?.forEach((r) => (r.apartment_ids || []).forEach((id) => reportIds.add(id)));
 
-  // 2) 단지 조회
-  let q = sb
-    .from('apartments')
-    .select('id, name, address, latitude, longitude')
-    .not('latitude', 'is', null)
-    .not('longitude', 'is', null);
-
+  // 2) 단지 조회 (페이지네이션 — Supabase 기본 1000 제한 우회)
+  let allApts = [];
   if (flags.district) {
-    q = q.ilike('address', `%${flags.district}%`);
-  } else if (!flags.all) {
+    const { data } = await sb
+      .from('apartments')
+      .select('id, name, address, latitude, longitude')
+      .not('latitude', 'is', null)
+      .not('longitude', 'is', null)
+      .ilike('address', `%${flags.district}%`);
+    allApts = data ?? [];
+  } else if (flags.all) {
+    // 전체 단지 — 1000개씩 페이지네이션
+    for (let from = 0; from < 20000; from += 1000) {
+      const { data } = await sb
+        .from('apartments')
+        .select('id, name, address, latitude, longitude')
+        .not('latitude', 'is', null)
+        .not('longitude', 'is', null)
+        .range(from, from + 999);
+      if (!data || data.length === 0) break;
+      allApts.push(...data);
+    }
+  } else {
     // 기본: 리포트 발생 단지만
-    q = q.in('id', Array.from(reportIds));
+    const { data } = await sb
+      .from('apartments')
+      .select('id, name, address, latitude, longitude')
+      .not('latitude', 'is', null)
+      .not('longitude', 'is', null)
+      .in('id', Array.from(reportIds));
+    allApts = data ?? [];
   }
 
-  const { data, error } = await q;
-  if (error) throw error;
+  // 3) 우선순위 점수 부여 → 정렬
+  // 점수 낮을수록 먼저 처리:
+  //   0 = 리포트 발생 단지 (최우선)
+  //   1~N = PRIORITY_DISTRICTS 인덱스 (Wave 1 → 2 순)
+  //   999 = 미분류 (Wave 3)
+  function scoreOf(apt) {
+    if (reportIds.has(apt.id)) return 0;
+    const idx = PRIORITY_DISTRICTS.findIndex((d) => apt.address?.includes(d));
+    return idx === -1 ? 999 : idx + 1;
+  }
 
-  // 리포트 있는 단지 우선 정렬
-  return (data || []).sort((a, b) => {
-    const aHas = reportIds.has(a.id) ? 0 : 1;
-    const bHas = reportIds.has(b.id) ? 0 : 1;
-    return aHas - bHas;
-  });
+  return allApts.sort((a, b) => scoreOf(a) - scoreOf(b));
 }
 
 // ─── 메인 ───
 async function main() {
   const apts = await getApartmentList();
+
+  // 기존 캐시 in-memory set — 매번 SQL 쿼리하지 않고 빠르게 skip 판단
+  // (전체 backfill은 캐시 hit 체크가 누적되며 매일 수만 건 query 부담)
+  const cachedSet = new Set();
+  for (let from = 0; from < 100000; from += 1000) {
+    const { data } = await sb
+      .from('transit_path_cache')
+      .select('apartment_id, commute_area')
+      .range(from, from + 999);
+    if (!data || data.length === 0) break;
+    data.forEach((r) => cachedSet.add(`${r.apartment_id}:${r.commute_area}`));
+    if (data.length < 1000) break;
+  }
+
   console.log(`\n🚇 transit_path_cache backfill`);
   console.log(`   단지: ${apts.length}개 × 6 CBD = ${apts.length * 6}쌍 최대`);
+  console.log(`   기 캐시: ${cachedSet.size}쌍 (skip 대상)`);
   console.log(`   limit: ${flags.limit} 호출 / throttle: ${flags.throttleMs}ms`);
-  console.log(`   ${flags.all ? '전체 단지' : flags.district ? `자치구: ${flags.district}` : '리포트 발생 단지만'}`);
+  console.log(`   ${flags.all ? '전체 단지 (Wave 1 → 2 → 3 순)' : flags.district ? `자치구: ${flags.district}` : '리포트 발생 단지만'}`);
 
   let calls = 0;
   let cached = 0;
@@ -223,14 +303,8 @@ async function main() {
         break outer;
       }
 
-      // 캐시 hit 체크
-      const { data: existing } = await sb
-        .from('transit_path_cache')
-        .select('apartment_id')
-        .eq('apartment_id', apt.id)
-        .eq('commute_area', area)
-        .maybeSingle();
-      if (existing) { cached++; continue; }
+      // 캐시 hit 체크 (in-memory)
+      if (cachedSet.has(`${apt.id}:${area}`)) { cached++; continue; }
 
       // ODSay 호출
       const dest = CBD_COORDS[area];
