@@ -84,13 +84,23 @@ function displayLabelOf(mode: PathMode, kind: 'main' | 'alt', fallback: string):
   return fallback;
 }
 
-// V1 미니 지하철도형 — 진짜 지하철 노선도처럼 점(역) + 가로선(노선) + 역명(아래).
+// V1 미니 지하철도형 — 두 가지 변형:
 //
-// 보조 카드(좁은 너비)에서도 가독성 유지하려 compact 모드 지원:
-//   - 점/선/칩 모두 한 단계 작게
-//   - 노선칩은 약어("3", "BD") 사용 — 풀네임("3호선") 대신
-//   - 역명 잘리지 않게 break-keep + 짧은 fixed 폭
+// SubwayPathDisplay (메인 카드용 / production 버전): 세로 레이아웃.
+//   왼쪽 레일에 원 + 세로 컬러선, 오른쪽에 역명 + 역할 chip + 다음 노선 chip.
+//   메인 카드는 너비 충분 → 환승 라벨 명확히 보여주는 게 우선.
+//
+// SubwayPathDisplayCompact (보조 카드용 / 좁은 alt 카드): 가로 레이아웃.
+//   점 + 이름(아래) + 가로선 + 노선 약어 chip — 진짜 노선도 톤.
+//   보조 카드는 좁아서 세로 layout 쓰면 뚱뚱해짐 → 가로로 압축.
 const FALLBACK_LINE_COLOR = '#94A3B8';
+
+const ROLE_LABEL = { board: '탑승', transfer: '환승', arrive: '하차' } as const;
+const ROLE_TONE = {
+  board: 'bg-primary-soft text-primary-ink',
+  transfer: 'bg-warning-soft text-warning',
+  arrive: 'bg-success-soft text-success',
+} as const;
 
 // 버스 권역색 휴리스틱 (BusChip과 동일 로직)
 function busColorOf(busNote: string | undefined): string {
@@ -103,28 +113,86 @@ function busColorOf(busNote: string | undefined): string {
   return '#3D5BA9';
 }
 
-// 역명에서 끝의 "역" 떼기 — 점이 이미 역임을 시각적으로 표현.
-// "광화문역" → "광화문". "건대입구역" → "건대입구".
+// 역명에서 끝의 "역" 떼기 (compact 전용 — 점이 이미 역임을 시각화)
 function trimStation(name: string): string {
   return name.replace(/역$/, '');
 }
 
-function SubwayPathDisplay({
-  path,
-  compact = false,
-}: {
-  path: SubwayHop[];
-  compact?: boolean;
-}) {
-  const dotSize = compact ? 'h-3 w-3 border-[2px]' : 'h-4 w-4 border-[2.5px]';
-  const lineH = compact ? 'h-[3px]' : 'h-1';
-  const nameSize = compact ? 'text-[10px]' : 'text-[11px]';
-  const stationW = compact ? 'w-12' : 'w-16';
-  const lineTopPad = compact ? 'pt-1' : 'pt-1.5';
-  const margin = compact ? 'mt-3' : 'mt-4';
-
+// ─── 메인 카드용 (production 버전) ───
+// 좌측 레일(원+세로선) + 우측(역명+역할 chip+노선 chip)
+function SubwayPathDisplay({ path }: { path: SubwayHop[] }) {
   return (
-    <div className={`${margin} flex items-start`}>
+    <ol className="mt-4 flex flex-col">
+      {path.map((hop, i) => {
+        const isLast = i === path.length - 1;
+        const ridingLine = !isLast ? hop.rideLine : undefined;
+        const ridingBus = !isLast && !hop.rideLine ? hop.note : undefined;
+        const departColor: string = ridingLine
+          ? LINE_COLOR[ridingLine].bg
+          : ridingBus
+          ? busColorOf(ridingBus)
+          : FALLBACK_LINE_COLOR;
+
+        const prevLine = i > 0 ? path[i - 1].rideLine : undefined;
+        const prevBus = i > 0 && !path[i - 1].rideLine ? path[i - 1].note : undefined;
+        const circleColor: string = hop.rideLine
+          ? LINE_COLOR[hop.rideLine].bg
+          : prevLine
+          ? LINE_COLOR[prevLine].bg
+          : prevBus
+          ? busColorOf(prevBus)
+          : FALLBACK_LINE_COLOR;
+
+        return (
+          <li key={i} className="flex gap-3">
+            {/* 좌측 레일: 원 + 세로선 (원 중앙에 line이 정확히 정렬되도록 w-7 고정) */}
+            <div className="flex w-7 shrink-0 flex-col items-center">
+              <span
+                className="h-7 w-7 shrink-0 rounded-full border-[3px] bg-white"
+                style={{ borderColor: circleColor }}
+              />
+              {!isLast ? (
+                <div
+                  className="w-[3px] flex-1 rounded-full"
+                  style={{ background: departColor }}
+                />
+              ) : null}
+            </div>
+
+            {/* 우측: 역명·역할 chip 한 줄, 다음 노선 chip 그 아래.
+                pt-1로 원 중심선과 텍스트 baseline을 맞춤 (h-7 = 28px, 텍스트 baseline ~14px). */}
+            <div className={`flex-1 min-w-0 pt-1 ${isLast ? '' : 'pb-3'}`}>
+              <div className="flex items-center gap-2">
+                <span className="truncate text-sm font-bold leading-none text-foreground">
+                  {hop.station}
+                </span>
+                <span
+                  className={`shrink-0 rounded-md px-1.5 py-0.5 text-[9px] font-bold ${ROLE_TONE[hop.role]}`}
+                >
+                  {ROLE_LABEL[hop.role]}
+                </span>
+              </div>
+              {!isLast ? (
+                <div className="mt-2 inline-flex">
+                  {ridingLine ? (
+                    <LineChip line={ridingLine} />
+                  ) : ridingBus ? (
+                    <BusChip busNote={ridingBus} />
+                  ) : null}
+                </div>
+              ) : null}
+            </div>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
+// ─── 보조 카드용 (compact 가로 노선도) ───
+function SubwayPathDisplayCompact({ path }: { path: SubwayHop[] }) {
+  return (
+    <div className="mt-3 flex items-start">
       {path.map((hop, i) => {
         const isLast = i === path.length - 1;
         const ridingLine = !isLast ? hop.rideLine : undefined;
@@ -147,28 +215,26 @@ function SubwayPathDisplay({
 
         return (
           <div key={i} className="contents">
-            {/* 역(station) — 점 + 이름 (아래) */}
-            <div className={`flex ${stationW} shrink-0 flex-col items-center`}>
+            {/* 역(station) — 점 + 이름(아래). h-3 점 중심을 컨테이너 위에서 6px 위치에. */}
+            <div className="flex w-12 shrink-0 flex-col items-center">
               <span
-                className={`${dotSize} shrink-0 rounded-full bg-white`}
+                className="h-3 w-3 shrink-0 rounded-full border-[2px] bg-white"
                 style={{ borderColor: dotColor }}
               />
-              <span
-                className={`mt-1 ${nameSize} font-bold leading-tight text-center break-keep text-foreground`}
-              >
+              <span className="mt-1 text-[10px] font-bold leading-tight text-center break-keep text-foreground">
                 {trimStation(hop.station)}
               </span>
             </div>
-            {/* 연결선 + 노선칩 — 점 중심 라인에 맞추려 pt 살짝 */}
+            {/* 연결선 — 점 중심선(6px)에 정확히 맞춰 mt-[5px]. */}
             {!isLast ? (
-              <div className={`flex flex-1 items-center min-w-[20px] gap-0.5 ${lineTopPad}`}>
-                <div className={`${lineH} flex-1 rounded-full`} style={{ background: segColor }} />
+              <div className="flex flex-1 min-w-[20px] items-center gap-0.5 mt-[5px]">
+                <div className="h-[3px] flex-1 rounded-full" style={{ background: segColor }} />
                 {ridingLine ? (
-                  <LineChip line={ridingLine} compact={compact} />
+                  <LineChip line={ridingLine} compact />
                 ) : ridingBus ? (
-                  <BusChip busNote={ridingBus} compact={compact} />
+                  <BusChip busNote={ridingBus} compact />
                 ) : null}
-                <div className={`${lineH} flex-1 rounded-full`} style={{ background: segColor }} />
+                <div className="h-[3px] flex-1 rounded-full" style={{ background: segColor }} />
               </div>
             ) : null}
           </div>
@@ -349,7 +415,7 @@ export default async function RouteOptions({
                           </div>
                         ) : null}
                         {altPath.hops.length >= 2 ? (
-                          <SubwayPathDisplay path={altPath.hops} compact />
+                          <SubwayPathDisplayCompact path={altPath.hops} />
                         ) : null}
                       </div>
                     );
