@@ -253,6 +253,153 @@ const SUBWAY_PATHS: Record<string, Partial<Record<CommuteArea, SubwayHop[]>>> = 
       { station: '판교역', lines: ['SBD', 'GTXA'], role: 'arrive' },
     ],
   },
+  서대문구: {
+    gwanghwamun: [
+      { station: '서대문역', lines: ['5'], role: 'board', rideLine: '5', note: '5호선 직결 1정거장' },
+      { station: '광화문역', lines: ['5'], role: 'arrive' },
+    ],
+    yeouido: [
+      { station: '충정로역', lines: ['2', '5'], role: 'board', rideLine: '5', note: '5호선 직결' },
+      { station: '여의도역', lines: ['5', '9'], role: 'arrive' },
+    ],
+    gangnam: [
+      { station: '신촌역', lines: ['2'], role: 'board', rideLine: '2', note: '2호선 직결' },
+      { station: '강남역', lines: ['2', 'SBD'], role: 'arrive' },
+    ],
+    jamsil: [
+      { station: '신촌역', lines: ['2'], role: 'board', rideLine: '2', note: '2호선 순환선' },
+      { station: '잠실역', lines: ['2', '8'], role: 'arrive' },
+    ],
+    seongsu: [
+      { station: '신촌역', lines: ['2'], role: 'board', rideLine: '2', note: '2호선 직결' },
+      { station: '성수역', lines: ['2'], role: 'arrive' },
+    ],
+    pangyo: [
+      { station: '신촌역', lines: ['2'], role: 'board', rideLine: '2' },
+      { station: '강남역', lines: ['2', 'SBD'], role: 'transfer', rideLine: 'SBD', note: '신분당 환승' },
+      { station: '판교역', lines: ['SBD', 'GTXA'], role: 'arrive' },
+    ],
+  },
+  종로구: {
+    gwanghwamun: [
+      { station: '종로3가역', lines: ['1', '3', '5'], role: 'board', rideLine: '5', note: '5호선 1정거장' },
+      { station: '광화문역', lines: ['5'], role: 'arrive' },
+    ],
+    gangnam: [
+      { station: '종로3가역', lines: ['1', '3', '5'], role: 'board', rideLine: '3', note: '3호선 직결' },
+      { station: '교대역', lines: ['2', '3'], role: 'transfer', rideLine: '2', note: '2호선 환승' },
+      { station: '강남역', lines: ['2', 'SBD'], role: 'arrive' },
+    ],
+    yeouido: [
+      { station: '종로3가역', lines: ['1', '3', '5'], role: 'board', rideLine: '5', note: '5호선 직결' },
+      { station: '여의도역', lines: ['5', '9'], role: 'arrive' },
+    ],
+    jamsil: [
+      { station: '종로3가역', lines: ['1', '3', '5'], role: 'board', rideLine: '3', note: '3호선' },
+      { station: '교대역', lines: ['2', '3'], role: 'transfer', rideLine: '2', note: '2호선 환승' },
+      { station: '잠실역', lines: ['2', '8'], role: 'arrive' },
+    ],
+    seongsu: [
+      { station: '동대문역사문화공원역', lines: ['2', '4', '5'], role: 'board', rideLine: '2', note: '2호선 직결' },
+      { station: '성수역', lines: ['2'], role: 'arrive' },
+    ],
+    pangyo: [
+      { station: '종로3가역', lines: ['1', '3', '5'], role: 'board', rideLine: '3' },
+      { station: '양재역', lines: ['3', 'SBD'], role: 'transfer', rideLine: 'SBD', note: '신분당 환승' },
+      { station: '판교역', lines: ['SBD', 'GTXA'], role: 'arrive' },
+    ],
+  },
+  중구: {
+    gwanghwamun: [
+      { station: '시청역', lines: ['1', '2'], role: 'board', rideLine: '1', note: '광화문 도보권' },
+      { station: '광화문역', lines: ['5'], role: 'arrive' },
+    ],
+    gangnam: [
+      { station: '을지로3가역', lines: ['2', '3'], role: 'board', rideLine: '2', note: '2호선 직결' },
+      { station: '강남역', lines: ['2', 'SBD'], role: 'arrive' },
+    ],
+    yeouido: [
+      { station: '충무로역', lines: ['3', '4'], role: 'board', rideLine: '3' },
+      { station: '교대역', lines: ['2', '3'], role: 'transfer', rideLine: '2', note: '2호선 환승' },
+      { station: '여의도역', lines: ['5', '9'], role: 'arrive', note: '환승 1회' },
+    ],
+    jamsil: [
+      { station: '동대문역사문화공원역', lines: ['2', '4', '5'], role: 'board', rideLine: '2', note: '2호선 직결' },
+      { station: '잠실역', lines: ['2', '8'], role: 'arrive' },
+    ],
+    seongsu: [
+      { station: '동대문역사문화공원역', lines: ['2', '4', '5'], role: 'board', rideLine: '2', note: '2호선 직결' },
+      { station: '성수역', lines: ['2'], role: 'arrive' },
+    ],
+    pangyo: [
+      { station: '을지로3가역', lines: ['2', '3'], role: 'board', rideLine: '2' },
+      { station: '강남역', lines: ['2', 'SBD'], role: 'transfer', rideLine: 'SBD', note: '신분당 환승' },
+      { station: '판교역', lines: ['SBD', 'GTXA'], role: 'arrive' },
+    ],
+  },
+  성북구: {
+    gwanghwamun: [
+      { station: '한성대입구역', lines: ['4'], role: 'board', rideLine: '4' },
+      { station: '동대문역사문화공원역', lines: ['2', '4', '5'], role: 'transfer', rideLine: '5', note: '5호선 환승' },
+      { station: '광화문역', lines: ['5'], role: 'arrive' },
+    ],
+    gangnam: [
+      { station: '한성대입구역', lines: ['4'], role: 'board', rideLine: '4' },
+      { station: '사당역', lines: ['2', '4'], role: 'transfer', rideLine: '2', note: '2호선 환승' },
+      { station: '강남역', lines: ['2', 'SBD'], role: 'arrive' },
+    ],
+    yeouido: [
+      { station: '한성대입구역', lines: ['4'], role: 'board', rideLine: '4' },
+      { station: '동대문역사문화공원역', lines: ['2', '4', '5'], role: 'transfer', rideLine: '5', note: '5호선 환승' },
+      { station: '여의도역', lines: ['5', '9'], role: 'arrive' },
+    ],
+    jamsil: [
+      { station: '한성대입구역', lines: ['4'], role: 'board', rideLine: '4' },
+      { station: '동대문역사문화공원역', lines: ['2', '4', '5'], role: 'transfer', rideLine: '2', note: '2호선 환승' },
+      { station: '잠실역', lines: ['2', '8'], role: 'arrive' },
+    ],
+    seongsu: [
+      { station: '한성대입구역', lines: ['4'], role: 'board', rideLine: '4' },
+      { station: '동대문역사문화공원역', lines: ['2', '4', '5'], role: 'transfer', rideLine: '2', note: '2호선 환승' },
+      { station: '성수역', lines: ['2'], role: 'arrive' },
+    ],
+    pangyo: [
+      { station: '한성대입구역', lines: ['4'], role: 'board', rideLine: '4' },
+      { station: '사당역', lines: ['2', '4'], role: 'transfer', rideLine: '2', note: '2호선 환승' },
+      { station: '강남역', lines: ['2', 'SBD'], role: 'transfer', rideLine: 'SBD', note: '신분당 환승' },
+      { station: '판교역', lines: ['SBD', 'GTXA'], role: 'arrive' },
+    ],
+  },
+  은평구: {
+    gwanghwamun: [
+      { station: '연신내역', lines: ['3', '6', 'GTXA'], role: 'board', rideLine: '3' },
+      { station: '종로3가역', lines: ['1', '3', '5'], role: 'transfer', rideLine: '5', note: '5호선 환승' },
+      { station: '광화문역', lines: ['5'], role: 'arrive' },
+    ],
+    gangnam: [
+      { station: '연신내역', lines: ['3', '6', 'GTXA'], role: 'board', rideLine: '3', note: '3호선 직결' },
+      { station: '교대역', lines: ['2', '3'], role: 'transfer', rideLine: '2', note: '2호선 환승' },
+      { station: '강남역', lines: ['2', 'SBD'], role: 'arrive' },
+    ],
+    yeouido: [
+      { station: '연신내역', lines: ['3', '6', 'GTXA'], role: 'board', rideLine: '6' },
+      { station: '공덕역', lines: ['5', '6', 'GJ', 'AR'], role: 'transfer', rideLine: '5', note: '5호선 환승' },
+      { station: '여의도역', lines: ['5', '9'], role: 'arrive' },
+    ],
+    jamsil: [
+      { station: '연신내역', lines: ['3', '6', 'GTXA'], role: 'board', rideLine: '3' },
+      { station: '교대역', lines: ['2', '3'], role: 'transfer', rideLine: '2', note: '2호선 환승' },
+      { station: '잠실역', lines: ['2', '8'], role: 'arrive' },
+    ],
+    seongsu: [
+      { station: '연신내역', lines: ['3', '6', 'GTXA'], role: 'board', rideLine: '6', note: '6호선 직결' },
+      { station: '성수역', lines: ['2'], role: 'arrive', note: '디지털미디어시티 환승' },
+    ],
+    pangyo: [
+      { station: '연신내역', lines: ['3', '6', 'GTXA'], role: 'board', rideLine: 'GTXA', note: 'GTX-A 직결' },
+      { station: '판교역', lines: ['SBD', 'GTXA'], role: 'arrive' },
+    ],
+  },
 };
 
 export function getSubwayPath(
