@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { ArrowRight, Check } from 'lucide-react';
 import Button from '@/components/ui/Button';
-import Input from '@/components/ui/Input';
 import {
   HOUSEHOLD_LABELS,
   HOUSEHOLD_DESCRIPTIONS,
@@ -77,9 +76,9 @@ export default function ProfileForm({ onComplete, initialProfile }: Props) {
   const [commuteArea, setCommuteArea] = useState<CommuteArea | null>(
     initialProfile?.commuteArea ?? null
   );
-  const [workplaceAddress, setWorkplaceAddress] = useState(
-    initialProfile?.workplaceAddress ?? ''
-  );
+  // 자유 주소 입력 제거 — 6개 CBD 권역만 사용 (사전 캐시 가능 범위로 한정)
+  // 기존 프로필에 주소 있으면 그대로 유지(읽기 전용), 신규 입력 X
+  const workplaceAddress = initialProfile?.workplaceAddress ?? '';
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -177,8 +176,6 @@ export default function ProfileForm({ onComplete, initialProfile }: Props) {
         <Step3
           selected={commuteArea}
           onSelect={setCommuteArea}
-          workplaceAddress={workplaceAddress}
-          onWorkplaceChange={setWorkplaceAddress}
           onBack={() => setStep(2)}
           onSubmit={handleSubmit}
           submitting={submitting}
@@ -310,8 +307,6 @@ function Step2({
 function Step3({
   selected,
   onSelect,
-  workplaceAddress,
-  onWorkplaceChange,
   onBack,
   onSubmit,
   submitting,
@@ -320,8 +315,6 @@ function Step3({
 }: {
   selected: CommuteArea | null;
   onSelect: (v: CommuteArea) => void;
-  workplaceAddress: string;
-  onWorkplaceChange: (v: string) => void;
   onBack: () => void;
   onSubmit: () => void;
   submitting: boolean;
@@ -357,21 +350,6 @@ function Step3({
             );
           })}
         </div>
-      </div>
-
-      <div className="mt-6 space-y-2">
-        <div className="text-xs font-semibold text-foreground-sub">
-          또는 정확한 회사 주소 (선택)
-        </div>
-        <Input
-          type="text"
-          placeholder="예: 서울 강남구 테헤란로 152"
-          value={workplaceAddress}
-          onChange={(e) => onWorkplaceChange(e.target.value)}
-        />
-        <p className="text-[11px] text-foreground-sub">
-          주소를 입력하면 리포트에 그 주소가 함께 표시돼요.
-        </p>
       </div>
 
       {error ? (

@@ -97,6 +97,9 @@ export async function fetchTransitPath(
   try {
     const res = await fetch(url.toString(), {
       // ODSay는 GET이며 캐시 가능. 단지+출근지 페어가 동일하면 동일 결과.
+      // 운영(Vercel)에선 ODSay 키 IP 화이트리스트 미통과 → 호출 실패. 정상.
+      // 대신 scripts/backfill-transit-cache.mjs 로컬 실행 → DB 캐시 채움 →
+      // 운영은 transit_path_cache에서 읽음 (lib/transit-path.ts).
       next: { revalidate: 60 * 60 * 24 * 30 }, // 30일
     });
     if (!res.ok) return null;

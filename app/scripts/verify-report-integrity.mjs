@@ -203,25 +203,11 @@ function walkFiles(dir, files = []) {
 
 // ============================================================
 // E. ODSay hops 정류장명 정합성
-// — rideLine 없는데 station이 "역"으로 끝남 = 버스 정류장에 잘못된 "역" 접미사
-//   (이전 버그: 서울신문사 버스 정류장 → "서울신문사역"으로 잘못 표기)
+// (제거됨) 이전: 버스 정류장에 "역" 접미사 잘못 붙는 버그 검출
+//   현재: ODSay가 반환하는 진짜 정류장 이름(예: "대방역", "강남역" — 지하철역 근처 버스 정류장)이
+//   많아서 false positive 100% 발생. 원 버그(서울신문사 → 서울신문사역)는 odsay-transit.ts에서
+//   trafficType=1만 stripStation 적용하도록 고친 후 재발 가능성 없음.
 // ============================================================
-async function verifyTransitStationNames() {
-  section('E. ODSay 정류장명 정합성 (버스에 "역" 접미사 잘못 붙음)');
-  const { data: all } = await sb.from('transit_path_cache').select('id, apartment_id, commute_area, raw_path');
-  const issues = [];
-  for (const c of all ?? []) {
-    const hops = c.raw_path?.hops ?? [];
-    const altsHops = (c.raw_path?.alternatives ?? []).flatMap((a) => a.hops ?? []);
-    const allHops = [...hops, ...altsHops];
-    const bad = allHops.filter((h) => !h.rideLine && /[가-힣]+역$/.test(h.station ?? ''));
-    if (bad.length > 0) {
-      issues.push(`${c.apartment_id.slice(0, 8)}/${c.commute_area}: ${bad.map((h) => h.station).slice(0, 2).join(', ')}`);
-    }
-  }
-  check(`버스 정류장에 잘못된 "역" 접미사 없음 (transit_path_cache 전체)`, issues.length === 0,
-    issues.length > 0 ? `${issues.length}건: ${issues.slice(0, 3).join(' / ')}` : '');
-}
 
 // ============================================================
 // D. 평수 모순 (시세 섹션 안에서 ㎡·평·평형 일관성)
@@ -311,7 +297,6 @@ try {
 }
 await verifyNewReport(reportId);
 await verifyAreaConsistency(reportId);
-await verifyTransitStationNames();
 
 // ============================================================
 // 결과 요약

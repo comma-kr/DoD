@@ -22,39 +22,41 @@ const LINE_FULL_LABEL: Record<LineCode, string> = {
   GTXA: 'GTX-A',
 };
 
-// 호선 칩 — 서울 지하철 공식 컬러 + 풀네임 라벨
-function LineChip({ line }: { line: LineCode }) {
+// 호선 칩 — 서울 지하철 공식 컬러. compact 모드는 약어 (LINE_COLOR.label) 사용.
+function LineChip({ line, compact }: { line: LineCode; compact?: boolean }) {
   const c = LINE_COLOR[line];
   return (
     <span
-      className="inline-flex shrink-0 items-center justify-center rounded-md px-2 py-0.5 text-[10px] font-bold leading-tight whitespace-nowrap"
+      className={`inline-flex shrink-0 items-center justify-center rounded font-bold leading-tight whitespace-nowrap ${
+        compact ? 'px-1 py-0 text-[9px]' : 'rounded-md px-2 py-0.5 text-[10px]'
+      }`}
       style={{ background: c.bg, color: c.fg }}
     >
-      {LINE_FULL_LABEL[line]}
+      {compact ? c.label : LINE_FULL_LABEL[line]}
     </span>
   );
 }
 
-// 버스 칩 — 서울 시내버스 권역색 (간선 파랑 / 지선 초록 / 광역 빨강 / 마을 노랑)
-// 정확한 분류는 ODSay type 코드로 가능하지만, 단순화: busNo 기준 휴리스틱.
-function BusChip({ busNote }: { busNote: string }) {
+// 버스 칩 — 서울 시내버스 권역색 (간선 파랑 / 지선 초록 / 광역 빨강).
+// busNo 기준 휴리스틱 분류.
+function BusChip({ busNote, compact }: { busNote: string; compact?: boolean }) {
   const m = busNote.match(/^(\S+?)번/);
-  const label = m ? `${m[1]}번` : busNote.split('·')[0].trim();
-  // 권역색 휴리스틱 — 첫 숫자 기준 (서울 버스 번호 체계)
-  // 100~999 = 간선(파랑), 4자리 = 지선(초록), 9000번대/광역 = 빨강
+  const label = m ? `${m[1]}` : busNote.split('·')[0].trim();
   const num = parseInt(m?.[1] ?? '', 10);
-  let bg = '#3D5BA9'; // 기본: 간선 파랑
+  let bg = '#3D5BA9';
   if (!isNaN(num)) {
-    if (num >= 9000) bg = '#E60012';      // 광역
-    else if (num >= 1000) bg = '#3CB44C'; // 지선
-    else bg = '#3D5BA9';                  // 간선
+    if (num >= 9000) bg = '#E60012';
+    else if (num >= 1000) bg = '#3CB44C';
+    else bg = '#3D5BA9';
   }
   return (
     <span
-      className="inline-flex min-w-[36px] shrink-0 items-center justify-center rounded-md px-1.5 py-0.5 text-[10px] font-bold leading-tight"
+      className={`inline-flex shrink-0 items-center justify-center rounded font-bold leading-tight ${
+        compact ? 'px-1 py-0 text-[9px]' : 'rounded-md min-w-[36px] px-1.5 py-0.5 text-[10px]'
+      }`}
       style={{ background: bg, color: '#FFFFFF' }}
     >
-      {label}
+      {compact ? label : `${label}번`}
     </span>
   );
 }
@@ -82,18 +84,19 @@ function displayLabelOf(mode: PathMode, kind: 'main' | 'alt', fallback: string):
   return fallback;
 }
 
-// V1 미니 지하철도형 — 각 station = 원(노선색 테두리), 사이에 세로선(노선색) + 노선칩.
-// 탑승·환승·하차 라벨은 작은 chip으로 역명 옆에 표시.
-const ROLE_LABEL = { board: '탑승', transfer: '환승', arrive: '하차' } as const;
-const ROLE_TONE = {
-  board: 'bg-primary-soft text-primary-ink',
-  transfer: 'bg-warning-soft text-warning',
-  arrive: 'bg-success-soft text-success',
-} as const;
+// V1 미니 지하철도형 — 두 가지 변형 (둘 다 가로 노선도 톤):
+//
+// SubwayPathDisplay (메인 카드 / 너비 충분):
+//   점(h-4) + 이름(아래, text-[11px]) + 가로선(h-1) + 노선칩 풀라벨("3호선")
+//
+// SubwayPathDisplayCompact (보조 alt 카드 / 좁은 너비):
+//   점(h-3) + 이름(아래, text-[10px]) + 가로선(h-[3px]) + 노선칩 약어("3")
+//
+// 핵심 정렬: 연결선·노선칩 컨테이너 height = 점 높이 → items-center로
+//   라인·칩 모두 점 중심 y와 정확히 일치.
+const FALLBACK_LINE_COLOR = '#94A3B8';
 
-const FALLBACK_LINE_COLOR = '#94A3B8'; // 정보 없을 때 회색
-
-// 버스 권역색 휴리스틱 (BusChip과 동일 로직 — 라인 색에 사용)
+// 버스 권역색 휴리스틱
 function busColorOf(busNote: string | undefined): string {
   if (!busNote) return FALLBACK_LINE_COLOR;
   const m = busNote.match(/^(\S+?)번/);
@@ -104,54 +107,34 @@ function busColorOf(busNote: string | undefined): string {
   return '#3D5BA9';
 }
 
-// 역(station) 블록: [원][역할 + 역명] 가로로 묶음.
-function StationBlock({
-  hop,
-  color,
-}: {
-  hop: SubwayHop;
-  color: string;
-}) {
-  return (
-    <div className="flex shrink-0 items-center gap-2">
-      <span
-        className="h-7 w-7 shrink-0 rounded-full border-[3px] bg-white"
-        style={{ borderColor: color }}
-      />
-      <div className="min-w-0">
-        <div className={`text-[10px] font-bold leading-tight ${ROLE_TONE[hop.role]} inline-block rounded px-1`}>
-          {ROLE_LABEL[hop.role]}
-        </div>
-        <div className="mt-0.5 truncate text-sm font-bold leading-tight text-foreground">
-          {hop.station}
-        </div>
-      </div>
-    </div>
-  );
+// 역명에서 끝의 "역" 제거 (점이 이미 역 표시)
+function trimStation(name: string): string {
+  return name.replace(/역$/, '');
 }
 
-// 연결자(connector): ── [노선칩] ──.  flex-1로 양쪽 station 사이 늘어남.
-function Connector({
-  color,
-  ride,
-  bus,
-}: {
-  color: string;
-  ride?: LineCode;
-  bus?: string;
-}) {
-  return (
-    <div className="flex min-w-[40px] flex-1 items-center gap-1.5">
-      <div className="h-1 flex-1 rounded-full" style={{ background: color }} />
-      {ride ? <LineChip line={ride} /> : bus ? <BusChip busNote={bus} /> : null}
-      <div className="h-1 flex-1 rounded-full" style={{ background: color }} />
-    </div>
-  );
+interface DisplayProps {
+  path: SubwayHop[];
 }
 
-function SubwayPathDisplay({ path }: { path: SubwayHop[] }) {
+// ─── 공통 빌더 ───
+// 단일 함수로 main/compact 둘 다 처리 — 사이즈 토큰만 다름.
+function buildSubwayDisplay(
+  path: SubwayHop[],
+  size: {
+    dot: string;       // ex 'h-4 w-4 border-[2.5px]'
+    dotPx: number;     // dot height in px (line/chip 컨테이너 정렬용)
+    line: string;      // ex 'h-1'
+    name: string;      // text size
+    stationW: string;  // 역 블록 width
+    nameMt: string;    // 점과 이름 사이 간격
+    minConn: string;   // connector min width
+    chipCompact: boolean; // LineChip/BusChip compact 여부
+    gap: string;       // connector 내부 gap
+    margin: string;    // 컨테이너 mt
+  }
+) {
   return (
-    <div className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-3">
+    <div className={`${size.margin} flex items-start`}>
       {path.map((hop, i) => {
         const isLast = i === path.length - 1;
         const ridingLine = !isLast ? hop.rideLine : undefined;
@@ -162,10 +145,9 @@ function SubwayPathDisplay({ path }: { path: SubwayHop[] }) {
           ? busColorOf(ridingBus)
           : FALLBACK_LINE_COLOR;
 
-        // 원 테두리색 — 본인 rideLine이 있으면 그 색, 없으면 직전 hop의 색 (도착 hop용)
         const prevLine = i > 0 ? path[i - 1].rideLine : undefined;
         const prevBus = i > 0 && !path[i - 1].rideLine ? path[i - 1].note : undefined;
-        const circleColor: string = hop.rideLine
+        const dotColor: string = hop.rideLine
           ? LINE_COLOR[hop.rideLine].bg
           : prevLine
           ? LINE_COLOR[prevLine].bg
@@ -175,15 +157,71 @@ function SubwayPathDisplay({ path }: { path: SubwayHop[] }) {
 
         return (
           <div key={i} className="contents">
-            <StationBlock hop={hop} color={circleColor} />
+            {/* 역 — 점 + 이름(아래) */}
+            <div className={`flex ${size.stationW} shrink-0 flex-col items-center`}>
+              <span
+                className={`${size.dot} shrink-0 rounded-full bg-white`}
+                style={{ borderColor: dotColor }}
+              />
+              <span
+                className={`${size.nameMt} ${size.name} font-bold leading-tight text-center break-keep text-foreground`}
+              >
+                {trimStation(hop.station)}
+              </span>
+            </div>
+            {/* 연결자 — 컨테이너 높이를 점 높이와 동일하게 잡고 items-center로
+                라인·칩의 vertical center를 점 center에 정확 정렬. */}
             {!isLast ? (
-              <Connector color={segColor} ride={ridingLine} bus={ridingBus} />
+              <div
+                className={`flex flex-1 ${size.minConn} ${size.gap} items-center`}
+                style={{ height: `${size.dotPx}px` }}
+              >
+                <div className={`${size.line} flex-1 rounded-full`} style={{ background: segColor }} />
+                {ridingLine ? (
+                  <LineChip line={ridingLine} compact={size.chipCompact} />
+                ) : ridingBus ? (
+                  <BusChip busNote={ridingBus} compact={size.chipCompact} />
+                ) : null}
+                <div className={`${size.line} flex-1 rounded-full`} style={{ background: segColor }} />
+              </div>
             ) : null}
           </div>
         );
       })}
     </div>
   );
+}
+
+// ─── 메인 카드용 (큰 사이즈) ───
+function SubwayPathDisplay({ path }: DisplayProps) {
+  return buildSubwayDisplay(path, {
+    dot: 'h-4 w-4 border-[2.5px]',
+    dotPx: 16,
+    line: 'h-1',
+    name: 'text-[11px]',
+    stationW: 'w-16',
+    nameMt: 'mt-1.5',
+    minConn: 'min-w-[28px]',
+    chipCompact: false,
+    gap: 'gap-1',
+    margin: 'mt-4',
+  });
+}
+
+// ─── 보조 alt 카드용 (작은 사이즈, 노선칩 약어) ───
+function SubwayPathDisplayCompact({ path }: DisplayProps) {
+  return buildSubwayDisplay(path, {
+    dot: 'h-3 w-3 border-[2px]',
+    dotPx: 12,
+    line: 'h-[3px]',
+    name: 'text-[10px]',
+    stationW: 'w-12',
+    nameMt: 'mt-1',
+    minConn: 'min-w-[20px]',
+    chipCompact: true,
+    gap: 'gap-0.5',
+    margin: 'mt-3',
+  });
 }
 
 interface Props {
@@ -357,7 +395,7 @@ export default async function RouteOptions({
                           </div>
                         ) : null}
                         {altPath.hops.length >= 2 ? (
-                          <SubwayPathDisplay path={altPath.hops} />
+                          <SubwayPathDisplayCompact path={altPath.hops} />
                         ) : null}
                       </div>
                     );
@@ -399,7 +437,7 @@ export default async function RouteOptions({
       })()}
 
       <p className="mt-4 text-[11px] text-foreground-sub">
-        ※ 참고 수치예요. 실제 시간대·환승 대기·도로 상황에 따라 달라질 수 있어요.
+        ※ 평일 일반 시간대 기준 추정치예요. 출퇴근 시간대(7~9시)는 환승 대기·열차 혼잡으로 더 길어질 수 있어요.
       </p>
     </div>
   );
