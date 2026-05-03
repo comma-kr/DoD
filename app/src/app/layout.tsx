@@ -21,11 +21,11 @@ const APP_URL =
 
 export const metadata: Metadata = {
   metadataBase: new URL(APP_URL),
-  title: '칠래말래? — 등기 치기 전에, 한 장 펼쳐봐',
+  title: '칠래말래? — 단지 살까말까, 한 번 까봐',
   description:
-    '옆 단지랑 나란히, 시세 흐름, 인근 학교까지. 990원이면 단지 한 장. 사기 전에, 갈아타기 전에.',
+    '옆 단지랑 나란히, 시세 흐름, 인근 학교까지. 990원에 단지 한 번 까봐. 사기 전에, 갈아타기 전에.',
   openGraph: {
-    title: '칠래말래? — 등기 치기 전에, 한 장 펼쳐봐',
+    title: '칠래말래? — 단지 살까말까, 한 번 까봐',
     description: '990원이면 옆 단지랑 나란히. 사기 전에, 갈아타기 전에.',
     locale: 'ko_KR',
     type: 'website',

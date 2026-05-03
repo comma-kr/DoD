@@ -15,7 +15,7 @@ export default function LandingPage() {
             <h1 className="text-balance text-3xl font-bold leading-tight tracking-tight sm:text-5xl">
               <em className="report-highlight not-italic">칠래말래?</em>
               <br />
-              등기 치기 전에, <em className="report-highlight not-italic">한 장</em>
+              단지 살까말까, <em className="report-highlight not-italic">한 번 까봐</em>
             </h1>
             <p className="mt-4 max-w-xl text-pretty text-base text-foreground-sub sm:text-lg">
               990원이면 옆 단지랑 나란히.{' '}
@@ -77,16 +77,16 @@ export default function LandingPage() {
 
         <div className="mt-16 rounded-3xl border border-border bg-surface p-8 text-center shadow-sm">
           <h2 className="text-2xl font-bold sm:text-3xl">
-            등기 치기 전에, 한 장 펼쳐봐
+            사기 전에, 단지 한 번 까봐
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-foreground-sub">
-            매수 자문은 못 봐줘도, 칠까말까 고민은 데이터로 풀어드려요.
+            매수 자문은 못 봐줘도, 살까말까 고민은 데이터로 풀어드려요.
           </p>
           <Link
             href="/analyze"
             className="mt-6 inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 font-semibold text-white transition hover:bg-primary/90"
           >
-            지금 펼쳐보기
+            지금 한 번 까보기
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
