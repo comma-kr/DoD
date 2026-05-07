@@ -163,40 +163,50 @@ function ComparePageContent() {
           placeholder="비교할 단지를 검색해주세요"
         />
 
+        {/* 빈 슬롯도 항상 A/B 자리 시각화 — 검색바와 슬롯의 시각 연결을 강화. */}
         <div className="mt-8 space-y-3">
-          {picks.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-border bg-surface/40 p-8 text-center text-sm text-foreground-sub">
-              단지 2개를 골라주세요
-            </div>
-          ) : (
-            picks.map((p, i) => (
-              <div
-                key={p.id}
-                className="flex items-center gap-4 rounded-2xl border border-border bg-surface p-4 shadow-sm"
-              >
-                {/* A/B 라벨 (i=0→A, i=1→B). MAX_COMPARE=2 전제 — 3+로 확장 시 명시 매핑으로 교체. */}
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/15 font-bold text-primary">
-                  {String.fromCharCode(65 + i)}
-                </div>
-                <div className="flex-1">
-                  <div className="font-semibold">{p.name}</div>
-                  <div className="text-xs text-foreground-sub">{p.address}</div>
-                </div>
-                <button
-                  onClick={() => handleRemove(p.id)}
-                  className="rounded-full p-2 text-foreground-sub hover:bg-background hover:text-foreground"
-                  aria-label="제거"
+          {Array.from({ length: MAX_COMPARE }).map((_, i) => {
+            const p = picks[i];
+            const letter = String.fromCharCode(65 + i); // i=0→A, i=1→B (MAX_COMPARE=2 전제)
+            if (p) {
+              return (
+                <div
+                  key={p.id}
+                  className="flex items-center gap-4 rounded-2xl border border-border bg-surface p-4 shadow-sm"
                 >
-                  <X className="h-4 w-4" />
-                </button>
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/15 font-bold text-primary">
+                    {letter}
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-semibold">{p.name}</div>
+                    <div className="text-xs text-foreground-sub">{p.address}</div>
+                  </div>
+                  <button
+                    onClick={() => handleRemove(p.id)}
+                    className="rounded-full p-2 text-foreground-sub hover:bg-background hover:text-foreground"
+                    aria-label="제거"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              );
+            }
+            return (
+              <div
+                key={`slot-${letter}`}
+                className="flex items-center gap-4 rounded-2xl border-2 border-dashed border-border bg-surface-soft p-4"
+              >
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-dashed border-border font-bold text-foreground-sub">
+                  {letter}
+                </div>
+                <div className="flex-1 text-sm text-foreground-sub">
+                  <span className="font-semibold text-foreground">{letter}</span>
+                  <span className="ml-1.5">단지를 위 검색바에서 골라주세요</span>
+                </div>
+                <Plus className="h-4 w-4 text-foreground-sub" />
               </div>
-            ))
-          )}
-          {picks.length > 0 && picks.length < MAX_COMPARE ? (
-            <div className="flex items-center justify-center gap-2 rounded-2xl border border-dashed border-border bg-surface-soft p-4 text-xs text-foreground-sub">
-              <Plus className="h-4 w-4" />한 단지 더 추가할 수 있어요
-            </div>
-          ) : null}
+            );
+          })}
         </div>
 
         <div className="mt-10 rounded-3xl border border-border bg-surface p-6 shadow-sm">

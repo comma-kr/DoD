@@ -59,10 +59,10 @@ export default function ReportTocBar({ headings }: Props) {
 
   return (
     <>
-      {/* 모바일·데스크탑 공통 — 상단 진행 바 (헤더 바로 아래) */}
+      {/* 상단 진행 바 — 모바일은 3px + 트랙 배경(가독성 ↑), sm+은 2px (덜 거슬림) */}
       <div
         aria-hidden
-        className="fixed left-0 right-0 top-14 z-30 h-[2px] bg-transparent"
+        className="fixed left-0 right-0 top-14 z-30 h-[3px] bg-foreground/5 sm:h-[2px]"
       >
         <div
           className="h-full bg-primary transition-[width] duration-100"

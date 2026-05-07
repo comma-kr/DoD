@@ -215,10 +215,10 @@ export default function LifeScenario({
     <section className="rounded-3xl border border-border bg-surface p-6 shadow-sm">
       <div className="flex items-center gap-2">
         <h3 className="text-base font-bold">🌅 이 단지 살면 일상이 어떨까</h3>
-        <span className="text-[11px] text-foreground-sub">· 데이터로 그려본 하루</span>
+        <span className="text-[11px] text-foreground-sub">· 데이터로 그려본 하루 · 직선거리 기준</span>
       </div>
       <p className="mt-1 text-xs text-foreground-sub">
-        실제 입주 전에 직접 답사해보시는 걸 추천드려요. 참고용 시뮬레이션이에요.
+        실제 입주 전에는 직접 한 번 가보시는 게 좋아요. 참고용 시뮬레이션이에요.
       </p>
 
       <div className="mt-5 grid auto-rows-fr gap-3 break-keep sm:grid-cols-2 lg:grid-cols-4">

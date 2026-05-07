@@ -116,9 +116,9 @@ export default function SearchBar({
             </ul>
           ) : !loading ? (
             <div className="px-5 py-6 text-center text-sm text-foreground-sub">
-              <div>검색 결과가 없어요</div>
+              <div>찾는 단지가 안 보이네요</div>
               <div className="mt-1 text-xs">
-                단지명 전체(예: &quot;헬리오시티&quot;)로 다시 시도해보세요
+                단지명을 다르게 입력해보거나, 자치구·동 이름으로 좁혀보세요
               </div>
             </div>
           ) : null}

@@ -200,15 +200,16 @@ export default async function ReportPage({ params }: PageProps) {
           </div>
         ) : null}
 
-        <div className="mt-10">
-          <ShareBar title={report.title} />
-        </div>
-
+        {/* 업셀(990원 BM)을 본문 바로 다음에 — 결정 근접도 우선. ShareBar는 그 아래로. */}
         <UpsellCTAs
           householdType={conditions.householdType ?? null}
           currentApartmentId={mainApt?.id ?? null}
           currentApartmentName={mainApt?.name ?? null}
         />
+
+        <div className="mt-10">
+          <ShareBar title={report.title} />
+        </div>
 
         <p className="mt-10 text-center text-xs text-foreground-sub">
           본 자료는 공공데이터 기반 참고용 정보이며, 판단의 책임은 이용자에게

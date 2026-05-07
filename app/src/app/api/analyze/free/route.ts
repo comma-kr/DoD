@@ -147,7 +147,7 @@ export async function POST(request: Request) {
     trades
   ).catch(() => null);
 
-  // 비교 추천 단지 (현 단지의 평당가 평균을 기준으로)
+  // 비교 후보 단지 (현 단지의 평당가 평균을 기준으로 비슷한 가격대)
   const myMarketTrades = trades.filter((t) => t.dealType !== '직거래');
   const myAvgPpy =
     myMarketTrades.length > 0

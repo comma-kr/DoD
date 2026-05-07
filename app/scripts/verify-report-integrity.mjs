@@ -173,6 +173,20 @@ function verifyCodeCopy() {
       // claude.ts의 TONE_GUIDE 안 "지도 앱 확인 같이 떠넘기지 말 것" 같은 가이드 메시지는 OK.
       exceptLineMarker: ['떠넘기지', '절대 금지', '같이 사용자에게'],
     },
+    // CLAUDE.md L88 — 유사투자자문 저촉 가능. "추천" 톤 잠입 차단.
+    // 가이드/프롬프트 내 '금지' 마커 같은 라인은 제외.
+    {
+      pattern: '추천드려요',
+      exceptLineMarker: ['금지', '대신', '톤 가이드'],
+    },
+    {
+      pattern: '추천드립니다',
+      exceptLineMarker: ['금지', '대신', '톤 가이드'],
+    },
+    {
+      pattern: '추천 단지',
+      exceptLineMarker: ['금지', '대신', '톤 가이드'],
+    },
   ];
 
   for (const { pattern, exceptLineMarker } of forbiddenPatterns) {

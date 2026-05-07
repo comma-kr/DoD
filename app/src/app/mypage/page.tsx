@@ -1,9 +1,10 @@
 import Link from 'next/link';
-import { FileText, Lock, UserCog } from 'lucide-react';
+import { FileText, Lock, MapPin, Train, UserCog } from 'lucide-react';
 import { getSession } from '@/lib/session';
 import { createSupabaseAdminClient } from '@/lib/supabase/server';
 import { loadProfile } from '@/lib/profile';
 import { formatDate, formatPrice, maskKoreanPhone } from '@/lib/utils';
+import { checkStation } from '@/lib/station-display';
 import { PRODUCT_NAMES, type ProductId } from '@/lib/pricing';
 import { HOUSEHOLD_LABELS, HOUSEHOLD_EMOJIS } from '@/types/profile';
 import LogoutButton from '@/components/layout/LogoutButton';
@@ -49,6 +50,62 @@ export default async function MyPage() {
 
   const maskedPhone = maskKoreanPhone(session.phone);
 
+  // 빈 보관함일 때 노출할 인기 단지 픽 (재방문 유도).
+  // 1순위: 최근 30일 reports.apartment_ids 카운트. 2순위: totalUnits 큰 단지 fallback.
+  let popularApartments: Array<{
+    id: string;
+    name: string;
+    address: string;
+    totalUnits: number | null;
+    nearestStation: string | null;
+    stationDistanceM: number | null;
+  }> = [];
+  const hasReports = reports && reports.length > 0;
+  if (!hasReports) {
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString();
+    const { data: recentReports } = await supabase
+      .from('reports')
+      .select('apartment_ids')
+      .gte('created_at', thirtyDaysAgo)
+      .limit(2000);
+    const counter = new Map<string, number>();
+    recentReports?.forEach((r) => {
+      const ids = (r.apartment_ids ?? []) as string[];
+      ids.forEach((id) => counter.set(id, (counter.get(id) ?? 0) + 1));
+    });
+    let topIds = [...counter.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3)
+      .map(([id]) => id);
+    if (topIds.length < 3) {
+      const { data: fallback } = await supabase
+        .from('apartments')
+        .select('id')
+        .not('latitude', 'is', null)
+        .order('total_units', { ascending: false })
+        .limit(6);
+      topIds = [...new Set([...topIds, ...(fallback?.map((a) => a.id) ?? [])])].slice(0, 3);
+    }
+    if (topIds.length > 0) {
+      const { data: apts } = await supabase
+        .from('apartments')
+        .select('id, name, address, total_units, nearest_station, station_distance_m')
+        .in('id', topIds);
+      // 점수순 정렬 유지
+      popularApartments = topIds
+        .map((id) => apts?.find((a) => a.id === id))
+        .filter((a): a is NonNullable<typeof a> => Boolean(a))
+        .map((a) => ({
+          id: a.id,
+          name: a.name,
+          address: a.address,
+          totalUnits: a.total_units ?? null,
+          nearestStation: a.nearest_station ?? null,
+          stationDistanceM: a.station_distance_m ?? null,
+        }));
+    }
+  }
+
   return (
     <main className="flex-1">
       <section className="mx-auto max-w-3xl px-6 pt-16 pb-20">
@@ -88,12 +145,54 @@ export default async function MyPage() {
         </Link>
 
         {!reports || reports.length === 0 ? (
-          <div className="rounded-3xl border border-dashed border-border bg-surface/40 p-10 text-center text-sm text-foreground-sub">
-            아직 펼친 단지가 없어요.
-            <br />
-            <Link href="/analyze" className="mt-4 inline-block text-primary">
-              한 장 펼쳐보기 →
-            </Link>
+          <div className="space-y-6">
+            <div className="rounded-3xl border border-dashed border-border bg-surface/40 p-10 text-center text-sm text-foreground-sub">
+              아직 펼친 단지가 없어요.
+              <br />
+              <Link href="/analyze" className="mt-4 inline-block font-semibold text-primary">
+                한 장 펼쳐보기 →
+              </Link>
+            </div>
+
+            {popularApartments.length > 0 ? (
+              <section>
+                <h2 className="text-sm font-bold text-foreground">
+                  이런 단지도 펼쳐보고 있어요
+                </h2>
+                <p className="mt-1 text-xs text-foreground-sub">
+                  요즘 사람들이 자주 까보는 단지들. 클릭하면 바로 분석 진입.
+                </p>
+                <ul className="mt-4 space-y-3">
+                  {popularApartments.map((a) => {
+                    const station = checkStation(a.nearestStation, a.stationDistanceM);
+                    return (
+                      <li key={a.id}>
+                        <Link
+                          href={`/analyze?aptId=${a.id}`}
+                          className="flex items-start gap-3 rounded-2xl border border-border bg-surface p-4 shadow-sm transition hover:border-primary/40 hover:shadow-md"
+                        >
+                          <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-foreground-sub" />
+                          <div className="flex-1">
+                            <div className="font-semibold">{a.name}</div>
+                            <div className="text-xs text-foreground-sub">
+                              {a.address}
+                              {a.totalUnits ? ` · ${a.totalUnits}세대` : ''}
+                            </div>
+                            {station.show ? (
+                              <div className="mt-1.5 inline-flex items-center gap-1 rounded-full bg-primary-soft px-2 py-0.5 text-[11px] text-primary-ink">
+                                <Train className="h-3 w-3" />
+                                {station.displayName}
+                                {station.distanceLabel ? ` · ${station.distanceLabel}` : ''}
+                              </div>
+                            ) : null}
+                          </div>
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </section>
+            ) : null}
           </div>
         ) : (
           <ul className="space-y-3">

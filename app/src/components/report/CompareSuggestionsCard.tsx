@@ -88,7 +88,7 @@ export default function CompareSuggestionsCard({
         href={compareHref}
         className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary-hover"
       >
-        {currentApartmentName} + 추천 단지 {suggestions.length}곳 나란히 보기 · 990원
+        {currentApartmentName} + 비슷한 가격대 {suggestions.length}곳 나란히 보기 · 990원
         <ArrowRight className="h-4 w-4" />
       </Link>
     </section>
