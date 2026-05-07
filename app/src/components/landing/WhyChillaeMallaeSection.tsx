@@ -329,33 +329,94 @@ function FreePreview() {
         </div>
       </div>
 
-      {/* LifeScenario 4시점 미니 — 시간축 stepper 형태 (이모지 제거, 시간 강조) */}
+      {/* LifeScenario 4시점 — 시간대를 배경 그라데이션으로 자연스럽게 표현 */}
       <h4 className="mt-6 mb-3 text-sm font-bold text-foreground">
-        단지에서 보내는 하루
+        ☀️ 단지에서 보내는 하루
       </h4>
       <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
         {[
-          { time: '07:30', t: '아침', b: '여의나루 5분, 5호선 직진 광화문' },
-          { time: '12:00', t: '점심', b: 'IFC몰·더현대 도보권' },
-          { time: '14:00', t: '주말', b: '여의도공원 5분, 한강 8분' },
-          { time: '21:00', t: '밤', b: '치안 양호, 한강 야경' },
+          {
+            time: '07:30',
+            t: '아침',
+            b: '여의나루 5분, 5호선 직진 광화문',
+            // 떠오르는 해 — 따뜻한 amber, 아래에서 위로
+            bg: 'bg-gradient-to-t from-amber-50 to-white',
+            accent: 'bg-amber-300',
+            timeColor: 'text-amber-700',
+          },
+          {
+            time: '12:00',
+            t: '점심',
+            b: 'IFC몰·더현대 도보권 점심',
+            // 한낮 정중앙 햇살 — 밝은 yellow
+            bg: 'bg-gradient-to-b from-yellow-50 to-white',
+            accent: 'bg-yellow-400',
+            timeColor: 'text-yellow-700',
+          },
+          {
+            time: '18:30',
+            t: '저녁',
+            b: '한강 노을, 여의도공원 산책',
+            // 지는 해 — orange, 우상단에서 좌하단
+            bg: 'bg-gradient-to-bl from-orange-100 to-white',
+            accent: 'bg-orange-400',
+            timeColor: 'text-orange-700',
+          },
+          {
+            time: '21:00',
+            t: '밤',
+            b: '치안 양호, 한강 야경',
+            // 밤하늘 — indigo, 위에서 어둡게
+            bg: 'bg-gradient-to-t from-indigo-50 to-white',
+            accent: 'bg-indigo-700',
+            timeColor: 'text-indigo-700',
+          },
         ].map((s) => (
-          <div key={s.t} className="rounded-xl border border-border bg-surface p-3">
-            <div className="flex items-baseline justify-between">
-              <span className="text-xs font-bold text-foreground">{s.t}</span>
-              <span className="text-[10px] font-mono text-foreground-sub">{s.time}</span>
+          <div
+            key={s.t}
+            className={`overflow-hidden rounded-xl border border-border ${s.bg}`}
+          >
+            <div className={`h-0.5 ${s.accent}`} />
+            <div className="p-3">
+              <div className="flex items-baseline justify-between">
+                <span className="text-xs font-bold text-foreground">{s.t}</span>
+                <span className={`text-[10px] font-mono font-semibold ${s.timeColor}`}>
+                  {s.time}
+                </span>
+              </div>
+              <p className="mt-2 text-[11px] leading-relaxed text-foreground/80">
+                {s.b}
+              </p>
             </div>
-            <div className="mt-2 h-px bg-border" />
-            <p className="mt-2 text-[11px] leading-relaxed text-foreground-sub">{s.b}</p>
           </div>
         ))}
       </div>
 
-      {/* 본문 마크다운 섹션 미리보기 — ## 💰 시세 헤더 + 단락 일부 (흰색 배경 + border) */}
-      <div className="mt-6 rounded-2xl border border-border bg-surface p-4">
+      {/* 본문 마크다운 섹션 미리보기 — ## 💰 시세 (primary-soft 톤 + 핵심 숫자 하이라이터) */}
+      <div className="mt-6 rounded-2xl border border-border bg-primary-soft/30 p-4">
         <h4 className="text-base font-bold text-foreground">💰 시세 — 같은 평형 기준</h4>
         <p className="mt-2 text-[13px] leading-relaxed text-foreground/85">
-          최근 1년 <strong>전용 84㎡</strong> 거래는 18건. 평균 <strong>24.5억</strong>(공급 33평형 기준 평당 7,420만원). 12개월 전 23.0억 → +6.2%, 영등포 같은 평형 단지 중 <strong>상위 4%</strong>에 해당해요…
+          최근 1년 전용{' '}
+          <mark className="rounded bg-warning-soft px-1 font-bold text-foreground">
+            84㎡
+          </mark>{' '}
+          거래는{' '}
+          <mark className="rounded bg-warning-soft px-1 font-bold text-foreground">
+            18건
+          </mark>
+          . 평균{' '}
+          <mark className="rounded bg-warning-soft px-1 font-bold text-foreground">
+            24.5억
+          </mark>{' '}
+          (공급 33평형 기준 평당 7,420만원). 12개월 전 23.0억 →{' '}
+          <mark className="rounded bg-warning-soft px-1 font-bold text-success">
+            +6.2%
+          </mark>
+          , 영등포 같은 평형 단지 중{' '}
+          <mark className="rounded bg-warning-soft px-1 font-bold text-foreground">
+            상위 4%
+          </mark>
+          에 해당해요…
         </p>
         <p className="mt-2 text-[11px] text-foreground-sub">⋯ 본문은 8섹션 약 1,200자로 이어져요</p>
       </div>
