@@ -303,7 +303,7 @@ function FreePreview() {
         {/* SubCard 3장 — 시세 / 학교 / 규모 */}
         <div className="grid grid-cols-3 gap-3">
           <SubCard
-            tone="warning"
+            tone="price"
             icon={<TrendingUp className="h-3.5 w-3.5" />}
             badge="시세"
             sub="↑ 6.2%"
@@ -311,7 +311,7 @@ function FreePreview() {
             footer="공급면적 기준"
           />
           <SubCard
-            tone="success"
+            tone="school"
             icon={<GraduationCap className="h-3.5 w-3.5" />}
             badge="학군"
             sub="도보 5분"
@@ -319,7 +319,7 @@ function FreePreview() {
             footer="반경 1km · 4개교"
           />
           <SubCard
-            tone="secondary"
+            tone="scale"
             icon={<Home className="h-3.5 w-3.5" />}
             badge="규모"
             sub="49년차"
@@ -432,32 +432,40 @@ function SubCard({
   value,
   footer,
 }: {
-  tone: 'warning' | 'success' | 'secondary';
+  tone: 'price' | 'school' | 'scale';
   icon: React.ReactNode;
   badge: string;
   sub: string;
   value: string;
   footer: string;
 }) {
-  const badgeBg = {
-    warning: 'bg-warning text-white',
-    success: 'bg-success text-white',
-    secondary: 'bg-secondary text-white',
-  }[tone];
-  const subBg = {
-    warning: 'bg-warning-soft text-warning',
-    success: 'bg-success-soft text-success',
-    secondary: 'bg-secondary/15 text-secondary',
+  // 상큼한 파스텔 그라데이션 + 비비드 배지로 톤 업.
+  const palette = {
+    price: {
+      cardBg: 'bg-gradient-to-br from-rose-50 to-white',
+      badge: 'bg-rose-500 text-white',
+      sub: 'bg-rose-100 text-rose-700',
+    },
+    school: {
+      cardBg: 'bg-gradient-to-br from-emerald-50 to-white',
+      badge: 'bg-emerald-500 text-white',
+      sub: 'bg-emerald-100 text-emerald-700',
+    },
+    scale: {
+      cardBg: 'bg-gradient-to-br from-violet-50 to-white',
+      badge: 'bg-violet-500 text-white',
+      sub: 'bg-violet-100 text-violet-700',
+    },
   }[tone];
 
   return (
-    <div className="rounded-xl border border-border bg-surface p-3">
+    <div className={`rounded-xl border border-border ${palette.cardBg} p-3`}>
       <div className="flex items-center justify-between">
-        <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold ${badgeBg}`}>
+        <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold ${palette.badge}`}>
           {icon}
           {badge}
         </span>
-        <span className={`rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${subBg}`}>
+        <span className={`rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${palette.sub}`}>
           {sub}
         </span>
       </div>
@@ -500,24 +508,24 @@ function ComparePreview() {
         </div>
       </section>
 
-      {/* 한 장 요약 박스 */}
-      <div className="mt-5 rounded-2xl border-l-4 border-primary bg-primary-soft/30 p-4">
+      {/* 한 장 요약 박스 — 코랄 그라데이션으로 살짝 상큼하게 */}
+      <div className="mt-5 rounded-2xl border-l-4 border-rose-400 bg-gradient-to-r from-rose-50 to-white p-4">
         <p className="text-sm leading-relaxed text-foreground">
-          가격 효율은 <strong>여의도삼부</strong>, 학군 폭과 커뮤니티는 <strong>시범아파트</strong>. 같은 자금이라면 평당가 차이만큼 다른 가치를 사는 셈이에요.
+          가격 효율은 <strong className="text-rose-600">여의도삼부</strong>, 학군 폭과 커뮤니티는 <strong className="text-sky-600">시범아파트</strong>. 같은 자금이라면 평당가 차이만큼 다른 가치를 사는 셈이에요.
         </p>
       </div>
 
-      {/* 비교 표 — 실제 비교 리포트의 표 패턴 */}
+      {/* 비교 표 — A는 코랄, B는 스카이로 톤 분리 (상큼하게) */}
       <div className="mt-5 overflow-hidden rounded-2xl border border-border">
         <div className="grid grid-cols-3 gap-px bg-border text-sm">
           {/* 헤더 */}
-          <div className="bg-surface-soft p-3 text-[11px] font-semibold text-foreground-sub">항목</div>
-          <div className="bg-primary-soft/60 p-3 text-center font-bold text-foreground">
-            <div className="text-[10px] font-semibold text-primary-ink">A</div>
+          <div className="bg-surface p-3 text-[11px] font-semibold text-foreground-sub">항목</div>
+          <div className="bg-gradient-to-b from-rose-100 to-rose-50 p-3 text-center font-bold text-foreground">
+            <div className="text-[10px] font-semibold text-rose-600">A</div>
             여의도삼부
           </div>
-          <div className="bg-success-soft/60 p-3 text-center font-bold text-foreground">
-            <div className="text-[10px] font-semibold text-success">B</div>
+          <div className="bg-gradient-to-b from-sky-100 to-sky-50 p-3 text-center font-bold text-foreground">
+            <div className="text-[10px] font-semibold text-sky-600">B</div>
             시범아파트
           </div>
 
@@ -533,24 +541,24 @@ function ComparePreview() {
           ))}
         </div>
 
-        {/* AI 비교 총평 */}
-        <div className="border-t border-border bg-primary-soft/30 p-4">
-          <div className="flex items-center gap-1.5 text-xs font-bold text-primary-ink">
-            <Sparkles className="h-3.5 w-3.5" />
+        {/* AI 비교 총평 — 그라데이션으로 상큼하게 */}
+        <div className="border-t border-border bg-gradient-to-br from-rose-50 via-white to-sky-50 p-4">
+          <div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
+            <Sparkles className="h-3.5 w-3.5 text-rose-500" />
             AI 비교 총평
           </div>
           <p className="mt-1.5 text-[13px] leading-relaxed text-foreground/85">
-            <strong>여의도삼부</strong>는 단위 가격이 9% 저렴하고 12개월 상승률도 1.4%p 앞서 가격 효율이 더 좋아요. 다만 세대수·학군 폭은 <strong>시범아파트</strong>가 우위라 자녀 계획이 가까우면 시범 쪽 정주성이 강합니다.
+            <strong className="text-rose-600">여의도삼부</strong>는 단위 가격이 9% 저렴하고 12개월 상승률도 1.4%p 앞서 가격 효율이 더 좋아요. 다만 세대수·학군 폭은 <strong className="text-sky-600">시범아파트</strong>가 우위라 자녀 계획이 가까우면 시범 쪽 정주성이 강합니다.
           </p>
         </div>
       </div>
 
-      {/* 시세 흐름 비교 미니 — AI 비교 총평과 동일한 톤(primary-soft) */}
-      <div className="mt-5 rounded-2xl border border-border bg-primary-soft/30 p-4">
+      {/* 시세 흐름 비교 — 코랄/스카이 그라데이션으로 상큼하게 */}
+      <div className="mt-5 rounded-2xl border border-border bg-gradient-to-br from-rose-50 via-white to-sky-50 p-4">
         <h4 className="text-base font-bold text-foreground">📈 시세 흐름 비교</h4>
         <div className="mt-3 grid grid-cols-2 gap-3">
-          <FlowMini name="여의도삼부" delta="+6.2%" tone="success" />
-          <FlowMini name="시범아파트" delta="+4.8%" tone="warning" />
+          <FlowMini name="여의도삼부" delta="+6.2%" tone="a" />
+          <FlowMini name="시범아파트" delta="+4.8%" tone="b" />
         </div>
         <p className="mt-3 text-[11px] text-foreground-sub">⋯ 같은 평형끼리만 비교, 12개월 18·22건 기준</p>
       </div>
@@ -569,14 +577,16 @@ function RowCells({
   b: string;
   winner: 'a' | 'b';
 }) {
-  const winClass = 'font-bold text-primary';
+  // 승자 강조: A는 코랄(rose), B는 스카이(sky)로 시각 분리.
+  const aWin = winner === 'a';
+  const bWin = winner === 'b';
   return (
     <>
       <div className="bg-surface p-3 text-[11px] text-foreground-sub">{label}</div>
-      <div className={`bg-surface p-3 text-center text-sm ${winner === 'a' ? winClass : ''}`}>
+      <div className={`p-3 text-center text-sm ${aWin ? 'bg-rose-50 font-bold text-rose-600' : 'bg-surface'}`}>
         {a}
       </div>
-      <div className={`bg-surface p-3 text-center text-sm ${winner === 'b' ? winClass : ''}`}>
+      <div className={`p-3 text-center text-sm ${bWin ? 'bg-sky-50 font-bold text-sky-600' : 'bg-surface'}`}>
         {b}
       </div>
     </>
@@ -590,26 +600,36 @@ function FlowMini({
 }: {
   name: string;
   delta: string;
-  tone: 'success' | 'warning';
+  tone: 'a' | 'b';
 }) {
-  const bars = tone === 'success'
+  const bars = tone === 'a'
     ? [40, 48, 52, 60, 70, 78]
     : [50, 54, 56, 60, 64, 68];
-  const barColor = tone === 'success' ? 'bg-success' : 'bg-warning';
-  const deltaColor = tone === 'success' ? 'text-success' : 'text-warning';
+  // 막대 = 상→하 그라데이션으로 상큼한 입체감.
+  const palette = tone === 'a'
+    ? {
+        cardBg: 'bg-white',
+        bar: 'bg-gradient-to-t from-rose-500 to-rose-300',
+        delta: 'text-rose-600',
+      }
+    : {
+        cardBg: 'bg-white',
+        bar: 'bg-gradient-to-t from-sky-500 to-sky-300',
+        delta: 'text-sky-600',
+      };
 
   return (
-    <div className="rounded-xl border border-border bg-surface p-3">
+    <div className={`rounded-xl border border-border ${palette.cardBg} p-3 shadow-sm`}>
       <div className="flex items-baseline justify-between">
         <span className="text-xs font-bold text-foreground">{name}</span>
-        <span className={`text-sm font-bold ${deltaColor}`}>{delta}</span>
+        <span className={`text-sm font-bold ${palette.delta}`}>{delta}</span>
       </div>
       <div className="mt-2 flex h-10 items-end gap-1">
         {bars.map((h, i) => (
           <span
             key={i}
             style={{ height: `${h}%` }}
-            className={`flex-1 rounded-sm opacity-80 ${barColor}`}
+            className={`flex-1 rounded-t-sm ${palette.bar}`}
           />
         ))}
       </div>
