@@ -155,18 +155,39 @@ async function processApartment(apt) {
 
 // ─── 메인 ───
 async function main() {
-  let query = sb
-    .from('apartments')
-    .select('id, name, address, latitude, longitude, nearest_station, station_distance_m')
-    .not('latitude', 'is', null)
-    .order('name');
+  // Supabase 기본 row 제한 1000 → range로 페이지네이션 (id 정렬로 안정).
+  // limit/apartment/where 단발 케이스는 단일 쿼리로 충분.
+  let apts = [];
 
-  if (flags.apartment) query = query.eq('id', flags.apartment);
-  if (flags.where) query = query.ilike('address', `%${flags.where}%`);
-  if (flags.limit) query = query.limit(flags.limit);
+  if (flags.apartment || flags.where || flags.limit) {
+    let query = sb
+      .from('apartments')
+      .select('id, name, address, latitude, longitude, nearest_station, station_distance_m')
+      .not('latitude', 'is', null)
+      .order('id');
 
-  const { data: apts, error } = await query;
-  if (error) throw error;
+    if (flags.apartment) query = query.eq('id', flags.apartment);
+    if (flags.where) query = query.ilike('address', `%${flags.where}%`);
+    if (flags.limit) query = query.limit(flags.limit);
+
+    const { data, error } = await query;
+    if (error) throw error;
+    apts = data ?? [];
+  } else {
+    // 전체 백필: 1000개씩 페이지네이션
+    for (let from = 0; from < 50000; from += 1000) {
+      const { data, error } = await sb
+        .from('apartments')
+        .select('id, name, address, latitude, longitude, nearest_station, station_distance_m')
+        .not('latitude', 'is', null)
+        .order('id')
+        .range(from, from + 999);
+      if (error) throw error;
+      if (!data || data.length === 0) break;
+      apts.push(...data);
+      if (data.length < 1000) break;
+    }
+  }
 
   console.log(`\n=== ${apts.length}개 단지 처리 시작${flags.dryRun ? ' (dry-run)' : ''} ===\n`);
 
