@@ -385,7 +385,7 @@ export async function fetchWalkingRoute(
 
   try {
     const res = await fetch(url, {
-      headers: { 'User-Agent': 'ipji990-app' },
+      headers: { 'User-Agent': 'chillaemallae-app' },
       next: { revalidate: 60 * 60 * 24 * 7 }, // 1주일 캐시
     });
     if (!res.ok) return null;
