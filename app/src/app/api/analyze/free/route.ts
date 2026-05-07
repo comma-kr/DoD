@@ -43,8 +43,9 @@ export async function POST(request: Request) {
 
   const quota = await checkFreeQuota(session.phone);
   if (!quota.hasQuota) {
-    // 이미 이 단지로 받은 무료 리포트가 있다면 링크 제공
     const supabase = createSupabaseAdminClient();
+
+    // 1) 이번에 시도한 단지로 받은 리포트가 있으면 같은 단지 링크 우선 제공
     const { data: existing } = await supabase
       .from('reports')
       .select('id')
@@ -55,11 +56,40 @@ export async function POST(request: Request) {
       .limit(1)
       .maybeSingle();
 
+    // 2) 무료 1회를 어떤 단지로 썼는지 단지명 join — 사용자가 까먹지 않도록.
+    //    quota.usedApartmentId는 user_free_quota.used_apartment_id 원본.
+    let usedApartmentName: string | null = null;
+    let usedReportId: string | null = null;
+    if (quota.usedApartmentId) {
+      const { data: usedApt } = await supabase
+        .from('apartments')
+        .select('name')
+        .eq('id', quota.usedApartmentId)
+        .maybeSingle();
+      usedApartmentName = usedApt?.name ?? null;
+
+      // 사용한 단지의 리포트 id (existing이 없을 때 fallback — 다른 단지로 시도한 경우)
+      if (!existing) {
+        const { data: usedReport } = await supabase
+          .from('reports')
+          .select('id')
+          .eq('phone', session.phone)
+          .eq('report_type', 'free_deep_single')
+          .contains('apartment_ids', [quota.usedApartmentId])
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        usedReportId = usedReport?.id ?? null;
+      }
+    }
+
     return NextResponse.json(
       {
         error: 'QUOTA_EXHAUSTED',
         message: '이미 무료 분석을 받으셨어요',
-        existingReportId: existing?.id ?? null,
+        existingReportId: existing?.id ?? usedReportId ?? null,
+        usedApartmentName,
+        sameApartment: !!existing,
         upsell: { productId: 'compare_report', price: 990 },
       },
       { status: 402 }

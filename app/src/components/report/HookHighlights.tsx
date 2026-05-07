@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import type { Priority, HouseholdType } from '@/types/profile';
 import { resolveHookOrder, type HookKey } from '@/lib/household-priorities';
+import { checkStation } from '@/lib/station-display';
 
 interface Props {
   pricePerPyeong?: number | null;
@@ -171,28 +172,39 @@ export default function HookHighlights({
     });
   }
 
-  // 2. TRANSIT — 가까운 역
-  if (nearestStation) {
-    const distanceText = nearestStationDistanceM
-      ? `${nearestStationDistanceM}m`
-      : '';
+  // 2. TRANSIT — 가까운 역. station-display 가드:
+  //    null = 카드 자체 생략, GTX = (예정) 라벨, 1km+ = '도보 + 버스' 톤다운.
+  const station = checkStation(nearestStation, nearestStationDistanceM);
+  if (station.show) {
+    // 1km+ 거리는 도보 분 표시가 오해를 줘서 사용 안 함 (도보 한계 초과).
+    const heroSubText = station.isFar
+      ? `단지 → ${station.displayName} (${station.distanceLabel})`
+      : walkingMin
+      ? `단지 → ${station.displayName} 도보${station.distanceLabel ? ` (${station.distanceLabel})` : ''}`
+      : '단지에서 가까운 역';
+    const subTagText = station.isFar
+      ? '도보+버스'
+      : walkingMin
+      ? `도보 ${walkingMin}분`
+      : '근처';
+
     cards.push({
       key: 'transit',
       tone: 'primary',
       icon: <Train className="h-4 w-4" />,
       heroBadge: '출퇴근',
-      heroTopRight: distanceText ? `${nearestStation} · ${distanceText}` : nearestStation,
-      heroMain: walkingMin ? (
+      heroTopRight: station.distanceLabel
+        ? `${station.displayName} · ${station.distanceLabel}`
+        : station.displayName,
+      heroMain: !station.isFar && walkingMin ? (
         <>
           {walkingMin}
           <span className="ml-1 text-2xl text-foreground-sub">분</span>
         </>
       ) : (
-        nearestStation
+        station.displayName
       ),
-      heroMainSub: walkingMin
-        ? `단지 → ${nearestStation} 도보${distanceText ? ` (${distanceText})` : ''}`
-        : `단지에서 가까운 역`,
+      heroMainSub: heroSubText,
       heroRight:
         destinationLabel && destinationTimeMin
           ? {
@@ -202,11 +214,13 @@ export default function HookHighlights({
               tone: 'success',
             }
           : undefined,
-      subTagBg: 'bg-primary-soft text-primary-ink',
-      subTag: walkingMin ? `도보 ${walkingMin}분` : '근처',
+      subTagBg: station.isFar
+        ? 'bg-warning-soft text-warning'
+        : 'bg-primary-soft text-primary-ink',
+      subTag: subTagText,
       subLabel: '가까운 역',
-      subValue: nearestStation,
-      subSub: distanceText ? `도보 ${walkingMin ?? '-'}분 · ${distanceText}` : '',
+      subValue: station.displayName,
+      subSub: station.distanceLabel ?? '',
       subFooter: destinationLabel && destinationTimeMin
         ? `${destinationLabel} ${destinationTimeMin}분`
         : undefined,

@@ -3,7 +3,7 @@
 import { Suspense, useState, useEffect, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowRight, Building2, ArrowLeft, FileText, UserCog } from 'lucide-react';
+import { ArrowRight, Building2, ArrowLeft, FileText, MapPin, UserCog } from 'lucide-react';
 import SearchBar, { type SearchResult } from '@/components/search/SearchBar';
 import PhoneAuthModal from '@/components/auth/PhoneAuthModal';
 import ProfileForm from '@/components/analyze/ProfileForm';
@@ -47,7 +47,14 @@ function AnalyzeContent() {
   const [quotaState, setQuotaState] = useState<{
     exhausted: boolean;
     existingReportId: string | null;
-  }>({ exhausted: false, existingReportId: null });
+    usedApartmentName: string | null;
+    sameApartment: boolean;
+  }>({
+    exhausted: false,
+    existingReportId: null,
+    usedApartmentName: null,
+    sameApartment: false,
+  });
 
   // 초기 부트스트랩: 인증 + 프로필 + URL param 단지
   useEffect(() => {
@@ -106,7 +113,12 @@ function AnalyzeContent() {
       if (!target) return;
       setStage('running');
       setError(null);
-      setQuotaState({ exhausted: false, existingReportId: null });
+      setQuotaState({
+        exhausted: false,
+        existingReportId: null,
+        usedApartmentName: null,
+        sameApartment: false,
+      });
       try {
         const res = await fetch('/api/analyze/free', {
           method: 'POST',
@@ -128,6 +140,8 @@ function AnalyzeContent() {
           setQuotaState({
             exhausted: true,
             existingReportId: data.existingReportId ?? null,
+            usedApartmentName: data.usedApartmentName ?? null,
+            sameApartment: !!data.sameApartment,
           });
           return;
         }
@@ -345,10 +359,19 @@ function AnalyzeContent() {
 
           {quotaState.exhausted ? (
             <div className="mt-6 rounded-2xl border border-secondary/30 bg-secondary/10 p-5">
+              {/* 어떤 단지로 무료를 썼는지 상단에 명시 — 분석가 피드백: 사용자가 까먹어서 동선 끊김 */}
+              {quotaState.usedApartmentName ? (
+                <p className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-foreground/5 px-3 py-1 text-xs font-semibold text-foreground-sub">
+                  <MapPin className="h-3 w-3" />
+                  {quotaState.usedApartmentName}로 펼치셨어요
+                </p>
+              ) : null}
               <p className="font-semibold">이미 무료 분석을 받으셨어요</p>
               <p className="mt-2 text-sm text-foreground-sub">
-                {quotaState.existingReportId
+                {quotaState.sameApartment
                   ? '이 단지로 받은 무료 리포트가 있어요. 바로 열어볼까요?'
+                  : quotaState.existingReportId
+                  ? '이전에 받은 리포트를 다시 열거나, 옆 단지랑 나란히 비교하시면 새로운 관점으로 보실 수 있어요 (딱 990원).'
                   : '다른 단지와 나란히 비교하시면 새로운 관점으로 보실 수 있어요 (딱 990원).'}
               </p>
               <div className="mt-4 flex flex-col gap-2 sm:flex-row">
@@ -358,7 +381,7 @@ function AnalyzeContent() {
                     className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white"
                   >
                     <FileText className="h-4 w-4" />
-                    이전 리포트 열기
+                    {quotaState.sameApartment ? '이전 리포트 열기' : '받았던 리포트 열기'}
                   </Link>
                 ) : null}
                 <Link
