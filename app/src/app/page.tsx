@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Building2, BarChart3, Sparkles, ArrowRight } from 'lucide-react';
+import { Building2, BarChart3, HelpCircle, ArrowRight } from 'lucide-react';
 import LandingSearch from '@/components/search/LandingSearch';
 
 export default function LandingPage() {
@@ -54,24 +54,25 @@ export default function LandingPage() {
         <div className="grid auto-rows-fr gap-5 break-keep sm:grid-cols-3">
           <FeatureCard
             icon={<Building2 className="h-5 w-5" />}
-            title="내 가족 시선으로"
-            body="1인가구·신혼·학부모 — 같은 단지도 가족 형태에 따라 다르게 풀어드려요."
+            title="혼자 살래 둘이 살래?"
+            body="1인·딩크·신혼·아이 있는 집까지, 같은 단지도 내 시선 따라 다르게 펼쳐드려요."
             badge="무료"
             badgeColor="accent"
           />
           <FeatureCard
             icon={<BarChart3 className="h-5 w-5" />}
             title="옆 단지도 칠래말래?"
-            body="2~3개 단지를 데이터로 나란히. 어떤 점이 다른지 한눈에 정리."
+            body="단지 2개를 데이터로 나란히, 뭐가 다른지 한눈에 정리."
             badge="990원"
             badgeColor="primary"
           />
           <FeatureCard
-            icon={<Sparkles className="h-5 w-5" />}
-            title="한 장 더 펼치기"
-            body="시세 흐름, 내 조건에 맞는 곳까지. 궁금증 따라 가볍게 추가로."
-            badge="1,990원~"
-            badgeColor="secondary"
+            icon={<HelpCircle className="h-5 w-5" />}
+            title="🚧 다음은 뭘 까볼까?"
+            body="갈아타기? 학군 심층? 시세 알림? 어떤 걸 풀어드릴지 고민 중이에요. 곧 픽스해서 알려드림."
+            badge="TBD"
+            badgeColor="muted"
+            placeholder
           />
         </div>
 
@@ -106,27 +107,37 @@ function FeatureCard({
   body,
   badge,
   badgeColor,
+  placeholder = false,
 }: {
   icon: React.ReactNode;
   title: string;
   body: string;
   badge: string;
-  badgeColor: 'primary' | 'secondary' | 'accent';
+  badgeColor: 'primary' | 'secondary' | 'accent' | 'muted';
+  placeholder?: boolean;
 }) {
   const badgeClass = {
     primary: 'bg-primary-soft text-primary',
     secondary: 'bg-primary-soft text-primary',
     accent: 'bg-success-soft text-success',
+    muted: 'bg-foreground/10 text-foreground-sub',
   }[badgeColor];
 
   const iconBgClass = {
     primary: 'bg-primary-soft text-primary',
     secondary: 'bg-primary-soft text-primary',
     accent: 'bg-success-soft text-success',
+    muted: 'bg-foreground/5 text-foreground-sub',
   }[badgeColor];
 
+  // placeholder는 "기능 미정" 상태 — 점선 보더 + dim 톤으로 시각 구분.
+  // 실 기능 카드와 한눈에 다르다는 신호를 줘서 본인이 메인페이지 보고 즉시 인지.
+  const containerClass = placeholder
+    ? 'group flex h-full flex-col rounded-2xl border-2 border-dashed border-border bg-surface-soft p-6 opacity-80'
+    : 'group flex h-full flex-col rounded-2xl border border-border bg-surface p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md';
+
   return (
-    <div className="group flex h-full flex-col rounded-2xl border border-border bg-surface p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+    <div className={containerClass}>
       <div className="flex items-center justify-between">
         <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${iconBgClass}`}>
           {icon}

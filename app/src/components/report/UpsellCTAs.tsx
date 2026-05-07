@@ -17,9 +17,9 @@ function compareCtaBody(
   currentName: string | null | undefined
 ): string {
   if (currentName) {
-    return `${currentName}에 옆 단지 1~2개만 더 얹어서 나란히 펼쳐드려요`;
+    return `${currentName}에 옆 단지 1개만 더 얹어서 나란히 펼쳐드려요`;
   }
-  if (!household) return '2~3개 단지를 한 장에 나란히';
+  if (!household) return '단지 2개를 한 장에 나란히';
   return HOUSEHOLD_SPEC[household].ctaSuggestion;
 }
 

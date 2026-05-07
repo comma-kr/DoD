@@ -9,7 +9,7 @@ import Button from '@/components/ui/Button';
 import { formatPrice } from '@/lib/utils';
 import { PRODUCT_PRICES } from '@/lib/pricing';
 
-const MAX_COMPARE = 3;
+const MAX_COMPARE = 2;
 
 function ComparePageContent() {
   const router = useRouter();
@@ -154,7 +154,7 @@ function ComparePageContent() {
             옆 단지도 <em className="report-highlight not-italic">칠래말래?</em>
           </h1>
           <p className="mt-4 leading-relaxed text-foreground-sub">
-            2~3개 단지를 골라주시면 데이터로 나란히 펼쳐드려요.
+            단지 2개를 골라주시면 데이터로 나란히 펼쳐드려요.
           </p>
         </div>
 
@@ -166,7 +166,7 @@ function ComparePageContent() {
         <div className="mt-8 space-y-3">
           {picks.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-border bg-surface/40 p-8 text-center text-sm text-foreground-sub">
-              단지를 최소 2개 이상 골라주세요 (최대 {MAX_COMPARE}개)
+              단지 2개를 골라주세요
             </div>
           ) : (
             picks.map((p, i) => (

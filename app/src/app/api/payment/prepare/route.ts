@@ -35,9 +35,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'INVALID_PRODUCT' }, { status: 400 });
   }
 
-  // compare_report은 2~3개, 그 외는 1개 기대
-  if (productId === 'compare_report' && (apartmentIds.length < 2 || apartmentIds.length > 3)) {
-    return NextResponse.json({ error: 'COMPARE_REQUIRES_2_TO_3' }, { status: 400 });
+  // compare_report은 2개, 그 외는 1개 기대
+  if (productId === 'compare_report' && apartmentIds.length !== 2) {
+    return NextResponse.json({ error: 'COMPARE_REQUIRES_2' }, { status: 400 });
   }
   if (productId !== 'compare_report' && apartmentIds.length !== 1) {
     return NextResponse.json({ error: 'EXPECTED_SINGLE_APT' }, { status: 400 });
