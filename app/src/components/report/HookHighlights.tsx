@@ -13,6 +13,7 @@ import {
 import type { Priority, HouseholdType } from '@/types/profile';
 import { resolveHookOrder, type HookKey } from '@/lib/household-priorities';
 import { checkStation } from '@/lib/station-display';
+import { apartmentAgeYears } from '@/lib/utils';
 
 interface Props {
   pricePerPyeong?: number | null;
@@ -253,7 +254,7 @@ export default function HookHighlights({
 
   // 4. HOUSEHOLD — 세대수·연식
   if (totalUnits || builtYear) {
-    const age = builtYear ? 2026 - builtYear : null;
+    const age = apartmentAgeYears(builtYear) || null;
     const ageLabel =
       age === null ? '연식 정보 없음' : age <= 5 ? '준신축' : age <= 10 ? '5~10년차' : age <= 20 ? '10~20년차' : '구축';
     cards.push({

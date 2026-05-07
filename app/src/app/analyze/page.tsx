@@ -275,7 +275,7 @@ function AnalyzeContent() {
         </div>
         <h1 className="mt-6 text-2xl font-bold">한 장 펼치는 중...</h1>
         <p className="mt-2 text-sm text-foreground-sub">
-          단지 데이터 정리하고 가족 시선으로 다듬고 있어요.
+          단지 데이터 정리하고 내 시선으로 다듬고 있어요.
         </p>
       </div>
     );

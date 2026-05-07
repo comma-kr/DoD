@@ -81,6 +81,19 @@ export function formatDate(iso: string): string {
   return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
 }
 
+// 단지 연식 계산 — 매년 자동 갱신. 기존 8곳 흩어진 `2026 - builtYear` 하드코딩 통합.
+export function apartmentAgeYears(builtYear: number | null | undefined): number {
+  if (!builtYear || builtYear <= 0) return 0;
+  return new Date().getFullYear() - builtYear;
+}
+
+// 한국 전화번호 마스킹 — '010-****-1234' 표기. session.phone은 보통 '01011111234'.
+export function maskKoreanPhone(phone: string): string {
+  const m = phone.match(/^(\d{3})(\d{4})(\d{4})$/);
+  if (!m) return phone;
+  return `${m[1]}-****-${m[3]}`;
+}
+
 export function normalizePhone(phone: string): string {
   return phone.replace(/[^0-9]/g, '');
 }

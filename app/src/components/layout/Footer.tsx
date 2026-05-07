@@ -1,3 +1,7 @@
+// 빌드타임 상수로 박제 — 새해 자정에 SSR/hydration mismatch 방지.
+// 모듈 로드 시 1회 평가, 빌드된 server/client 번들에 같은 값.
+const COPYRIGHT_YEAR = new Date().getFullYear();
+
 export default function Footer() {
   return (
     <footer className="mt-auto border-t border-border bg-background">
@@ -8,7 +12,7 @@ export default function Footer() {
           등)를 기반으로 한 참고용 정보이며, 부동산 투자 자문이 아닙니다. 판단의
           책임은 이용자에게 있습니다.
         </p>
-        <p className="mt-4">© {new Date().getFullYear()} 칠래말래?</p>
+        <p className="mt-4">© {COPYRIGHT_YEAR} 칠래말래?</p>
       </div>
     </footer>
   );

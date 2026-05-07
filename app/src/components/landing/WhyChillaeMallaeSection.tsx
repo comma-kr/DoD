@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   Building2,
@@ -56,6 +56,15 @@ const CARDS: CardSpec[] = [
 
 export default function WhyChillaeMallaeSection() {
   const [expanded, setExpanded] = useState<CardKey | null>(null);
+  const desktopPreviewRef = useRef<HTMLDivElement>(null);
+
+  // 데스크탑은 그리드 아래에 펼치므로 카드 클릭 시 펼침 영역으로 부드럽게 스크롤.
+  // 모바일은 카드 바로 아래에 인라인 펼침이라 viewport에 자연스럽게 보임 → 생략.
+  useEffect(() => {
+    if (!expanded || typeof window === 'undefined') return;
+    if (window.innerWidth < 640) return; // sm 미만은 모바일 인라인이라 패스
+    desktopPreviewRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, [expanded]);
 
   return (
     <section className="mx-auto max-w-5xl px-6 pt-20 pb-24 sm:pt-24">
@@ -109,6 +118,7 @@ export default function WhyChillaeMallaeSection() {
         {expanded && (
           <motion.div
             key={expanded}
+            ref={desktopPreviewRef}
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}

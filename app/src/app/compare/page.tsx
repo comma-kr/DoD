@@ -174,6 +174,7 @@ function ComparePageContent() {
                 key={p.id}
                 className="flex items-center gap-4 rounded-2xl border border-border bg-surface p-4 shadow-sm"
               >
+                {/* A/B 라벨 (i=0→A, i=1→B). MAX_COMPARE=2 전제 — 3+로 확장 시 명시 매핑으로 교체. */}
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/15 font-bold text-primary">
                   {String.fromCharCode(65 + i)}
                 </div>

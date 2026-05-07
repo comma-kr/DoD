@@ -1,5 +1,6 @@
 import { Home, Ruler, Users, Receipt, Wallet } from 'lucide-react';
 import {
+  apartmentAgeYears,
   calcPricePerPyeong,
   formatPrice10k,
   formatPricePerPyeong,
@@ -88,7 +89,7 @@ export default function ApartmentSpecs({
   jeonseRatio,
 }: Props) {
   const top = topAreaBuckets(trades);
-  const age = builtYear ? 2026 - builtYear : null;
+  const age = apartmentAgeYears(builtYear) || null;
   const hasJeonse = jeonseRatio !== null && jeonseRatio !== undefined;
 
   // 초기비용 = 취득세 + 중개수수료 (대표 평형 A 매매 평균 기준)

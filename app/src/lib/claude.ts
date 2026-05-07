@@ -13,7 +13,7 @@ import {
   PRIORITY_LABELS,
   COMMUTE_LABELS,
 } from '@/types/profile';
-import { calcPricePerPyeong, typicalPublicPyeong, standardPrivateArea } from './utils';
+import { apartmentAgeYears, calcPricePerPyeong, typicalPublicPyeong, standardPrivateArea } from './utils';
 
 // 키가 비어있을 때 모듈 로드만으로 throw되지 않도록 지연 초기화한다.
 // (dev에서 키 없이 mock으로 동작하는 경로를 import해도 안전하게 통과시킴)
@@ -163,7 +163,7 @@ export async function generateFreeDeepSingleReport(
   const priceText = apartment.latestPrice10k
     ? formatPrice10k(apartment.latestPrice10k)
     : '정보 없음';
-  const age = apartment.builtYear ? 2026 - apartment.builtYear : null;
+  const age = apartmentAgeYears(apartment.builtYear) || null;
 
   const rawArea = apartment.latestAreaM2 ?? 84.99;
   const area = standardPrivateArea(rawArea);                     // 시장 표준 전용 ㎡ (측정값 → 호칭)
@@ -316,7 +316,7 @@ export async function generateCompareReport(
   const apartmentBlocks = apartments
     .map((apt, i) => {
       const letter = String.fromCharCode(65 + i);
-      const age = apt.builtYear ? 2026 - apt.builtYear : null;
+      const age = apartmentAgeYears(apt.builtYear) || null;
       const priceText = apt.latestPrice10k
         ? formatPrice10k(apt.latestPrice10k)
         : '정보 없음';

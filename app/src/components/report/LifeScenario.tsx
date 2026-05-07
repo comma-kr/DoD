@@ -3,6 +3,7 @@
 
 import { Sunrise, Coffee, Bike, Moon } from 'lucide-react';
 import { CARD_TINT, type TintTone } from '@/lib/card-tint';
+import { apartmentAgeYears } from '@/lib/utils';
 import type { HouseholdType, Priority } from '@/types/profile';
 
 interface Props {
@@ -85,7 +86,7 @@ export default function LifeScenario({
   householdType,
   priorities = [],
 }: Props) {
-  const age = builtYear ? 2026 - builtYear : 0;
+  const age = apartmentAgeYears(builtYear);
   const isLargeScale = (totalUnits ?? 0) >= 1500;
   const stationShort = stationName?.split(' ')[0]?.replace(/역$/, '역') ?? '가까운 역';
 

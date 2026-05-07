@@ -15,6 +15,7 @@ import type {
 } from '@/types/profile';
 import { HOUSEHOLD_LABELS, COMMUTE_LABELS, PRIORITY_LABELS } from '@/types/profile';
 import {
+  apartmentAgeYears,
   calcPricePerPyeong,
   formatPricePerPyeong,
   m2ToPyeong,
@@ -63,7 +64,7 @@ interface ApartmentFacts {
 function deriveFacts(apt: ApartmentWithLatestPrice): ApartmentFacts {
   const units = apt.totalUnits ?? 0;
   const year = apt.builtYear ?? 0;
-  const age = year > 0 ? 2026 - year : 0;
+  const age = apartmentAgeYears(year);
   const stationDistM = apt.stationDistanceM ?? 0;
   const walkMin = stationDistM > 0 ? Math.max(1, Math.round(stationDistM / 70)) : 0;
   const district = apt.address.match(/서울(?:특별시)?\s+(\S+구)/)?.[1] ?? '';
@@ -950,7 +951,7 @@ export function buildMockCompareReport(
   const cards = apartments
     .map((a, i) => {
       const letter = String.fromCharCode(65 + i);
-      const age = a.builtYear ? 2026 - a.builtYear : 0;
+      const age = apartmentAgeYears(a.builtYear);
       const label =
         (a.totalUnits ?? 0) >= 2500
           ? '대단지'
@@ -1046,7 +1047,7 @@ export function buildMockCompareReport(
     .map((a, i) => {
       const letter = String.fromCharCode(65 + i);
       const units = a.totalUnits ?? 0;
-      const age = a.builtYear ? 2026 - a.builtYear : 0;
+      const age = apartmentAgeYears(a.builtYear);
       const walk = walkMin(a.stationDistanceM);
 
       const traits: string[] = [];

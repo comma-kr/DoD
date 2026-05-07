@@ -3,7 +3,7 @@ import { FileText, Lock, UserCog } from 'lucide-react';
 import { getSession } from '@/lib/session';
 import { createSupabaseAdminClient } from '@/lib/supabase/server';
 import { loadProfile } from '@/lib/profile';
-import { formatDate, formatPrice } from '@/lib/utils';
+import { formatDate, formatPrice, maskKoreanPhone } from '@/lib/utils';
 import { PRODUCT_NAMES, type ProductId } from '@/lib/pricing';
 import { HOUSEHOLD_LABELS, HOUSEHOLD_EMOJIS } from '@/types/profile';
 import LogoutButton from '@/components/layout/LogoutButton';
@@ -47,7 +47,7 @@ export default async function MyPage() {
     profile = null;
   }
 
-  const maskedPhone = session.phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2');
+  const maskedPhone = maskKoreanPhone(session.phone);
 
   return (
     <main className="flex-1">
