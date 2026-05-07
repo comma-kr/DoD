@@ -71,19 +71,38 @@ export default function WhyChillaeMallaeSection() {
         </p>
       </div>
 
+      {/* 모바일: 각 카드 바로 아래에 미리보기 펼침 (sm:contents로 데스크탑에선 wrapper 무효화 → grid-cols-3 그대로) */}
       <div className="grid auto-rows-fr gap-5 break-keep sm:grid-cols-3">
         {CARDS.map((card) => (
-          <FeatureCard
-            key={card.key}
-            spec={card}
-            active={expanded === card.key}
-            onToggle={() =>
-              setExpanded((prev) => (prev === card.key ? null : card.key))
-            }
-          />
+          <div key={card.key} className="sm:contents">
+            <FeatureCard
+              spec={card}
+              active={expanded === card.key}
+              onToggle={() =>
+                setExpanded((prev) => (prev === card.key ? null : card.key))
+              }
+            />
+            {/* 모바일 전용 inline 미리보기 — sm 이상에선 hidden */}
+            <AnimatePresence initial={false}>
+              {expanded === card.key && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.25, ease: 'easeOut' }}
+                  className="overflow-hidden sm:hidden"
+                >
+                  <div className="pt-1">
+                    <PreviewByKey k={card.key} />
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         ))}
       </div>
 
+      {/* 데스크탑 전용: 그리드 아래에 단일 펼침 영역 */}
       <AnimatePresence initial={false}>
         {expanded && (
           <motion.div
@@ -92,12 +111,10 @@ export default function WhyChillaeMallaeSection() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
-            className="overflow-hidden"
+            className="hidden overflow-hidden sm:block"
           >
             <div className="mt-6">
-              {expanded === 'free' && <FreePreview />}
-              {expanded === 'compare' && <ComparePreview />}
-              {expanded === 'tbd' && <TbdPreview />}
+              <PreviewByKey k={expanded} />
             </div>
           </motion.div>
         )}
@@ -167,6 +184,12 @@ function FeatureCard({
       </div>
     </button>
   );
+}
+
+function PreviewByKey({ k }: { k: CardKey }) {
+  if (k === 'free') return <FreePreview />;
+  if (k === 'compare') return <ComparePreview />;
+  return <TbdPreview />;
 }
 
 // ──────────────────────────────────────────────────────────
