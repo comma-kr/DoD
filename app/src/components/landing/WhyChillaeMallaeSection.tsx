@@ -329,27 +329,30 @@ function FreePreview() {
         </div>
       </div>
 
-      {/* LifeScenario 4시점 미니 */}
-      <h4 className="mt-6 mb-3 flex items-center gap-2 text-sm font-bold text-foreground">
-        <span>🌅</span> 단지에서 보내는 하루
+      {/* LifeScenario 4시점 미니 — 시간축 stepper 형태 (이모지 제거, 시간 강조) */}
+      <h4 className="mt-6 mb-3 text-sm font-bold text-foreground">
+        단지에서 보내는 하루
       </h4>
       <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
         {[
-          { emoji: '🌄', t: '아침', b: '여의나루 5분, 5호선 직진 광화문' },
-          { emoji: '☕', t: '점심', b: 'IFC몰·더현대 도보권' },
-          { emoji: '🌳', t: '주말', b: '여의도공원 5분, 한강 8분' },
-          { emoji: '🌙', t: '밤', b: '치안 양호, 한강 야경' },
+          { time: '07:30', t: '아침', b: '여의나루 5분, 5호선 직진 광화문' },
+          { time: '12:00', t: '점심', b: 'IFC몰·더현대 도보권' },
+          { time: '14:00', t: '주말', b: '여의도공원 5분, 한강 8분' },
+          { time: '21:00', t: '밤', b: '치안 양호, 한강 야경' },
         ].map((s) => (
-          <div key={s.t} className="rounded-xl border border-border bg-surface-soft p-3">
-            <div className="text-base">{s.emoji}</div>
-            <div className="mt-1 text-xs font-bold text-foreground">{s.t}</div>
-            <p className="mt-0.5 text-[11px] leading-relaxed text-foreground-sub">{s.b}</p>
+          <div key={s.t} className="rounded-xl border border-border bg-surface p-3">
+            <div className="flex items-baseline justify-between">
+              <span className="text-xs font-bold text-foreground">{s.t}</span>
+              <span className="text-[10px] font-mono text-foreground-sub">{s.time}</span>
+            </div>
+            <div className="mt-2 h-px bg-border" />
+            <p className="mt-2 text-[11px] leading-relaxed text-foreground-sub">{s.b}</p>
           </div>
         ))}
       </div>
 
-      {/* 본문 마크다운 섹션 미리보기 — ## 💰 시세 헤더 + 단락 일부 */}
-      <div className="mt-6 rounded-2xl border border-border bg-surface-soft p-4">
+      {/* 본문 마크다운 섹션 미리보기 — ## 💰 시세 헤더 + 단락 일부 (흰색 배경 + border) */}
+      <div className="mt-6 rounded-2xl border border-border bg-surface p-4">
         <h4 className="text-base font-bold text-foreground">💰 시세 — 같은 평형 기준</h4>
         <p className="mt-2 text-[13px] leading-relaxed text-foreground/85">
           최근 1년 <strong>전용 84㎡</strong> 거래는 18건. 평균 <strong>24.5억</strong>(공급 33평형 기준 평당 7,420만원). 12개월 전 23.0억 → +6.2%, 영등포 같은 평형 단지 중 <strong>상위 4%</strong>에 해당해요…
@@ -438,10 +441,7 @@ function ComparePreview() {
 
       {/* 한 장 요약 박스 */}
       <div className="mt-5 rounded-2xl border-l-4 border-primary bg-primary-soft/30 p-4">
-        <div className="text-[11px] font-semibold uppercase tracking-wider text-primary-ink">
-          TL;DR
-        </div>
-        <p className="mt-1.5 text-sm leading-relaxed text-foreground">
+        <p className="text-sm leading-relaxed text-foreground">
           가격 효율은 <strong>여의도삼부</strong>, 학군 폭과 커뮤니티는 <strong>시범아파트</strong>. 같은 자금이라면 평당가 차이만큼 다른 가치를 사는 셈이에요.
         </p>
       </div>
@@ -484,8 +484,8 @@ function ComparePreview() {
         </div>
       </div>
 
-      {/* 시세 흐름 비교 미니 */}
-      <div className="mt-5 rounded-2xl border border-border bg-surface-soft p-4">
+      {/* 시세 흐름 비교 미니 — AI 비교 총평과 동일한 톤(primary-soft) */}
+      <div className="mt-5 rounded-2xl border border-border bg-primary-soft/30 p-4">
         <h4 className="text-base font-bold text-foreground">📈 시세 흐름 비교</h4>
         <div className="mt-3 grid grid-cols-2 gap-3">
           <FlowMini name="여의도삼부" delta="+6.2%" tone="success" />
