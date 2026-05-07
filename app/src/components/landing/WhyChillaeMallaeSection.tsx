@@ -71,8 +71,10 @@ export default function WhyChillaeMallaeSection() {
         </p>
       </div>
 
-      {/* 모바일: 각 카드 바로 아래에 미리보기 펼침 (sm:contents로 데스크탑에선 wrapper 무효화 → grid-cols-3 그대로) */}
-      <div className="grid auto-rows-fr gap-5 break-keep sm:grid-cols-3">
+      {/* 모바일은 stack(space-y), sm+는 grid (auto-rows-fr 균등 높이).
+          모바일 grid + auto-rows-fr이면 wrapper 높이가 카드 기준 고정되어
+          안에서 펼치는 motion이 0으로 잘림 → iPhone 12 Pro 등에서 안 보였던 버그. */}
+      <div className="space-y-5 break-keep sm:grid sm:auto-rows-fr sm:grid-cols-3 sm:gap-5 sm:space-y-0">
         {CARDS.map((card) => (
           <div key={card.key} className="sm:contents">
             <FeatureCard
