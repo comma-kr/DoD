@@ -105,13 +105,13 @@ export default function SearchBar({
                       >
                         <MapPin className="mt-1.5 h-4 w-4 shrink-0 text-foreground-sub" />
                         <div className="flex-1">
-                          <div className="flex items-center gap-1.5 font-semibold">
+                          <div className="flex items-baseline gap-1.5 font-semibold">
                             {sgg ? (
-                              <span className="inline-flex items-center rounded-full bg-highlight px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-foreground">
+                              <span className="report-highlight text-sm font-semibold text-foreground">
                                 {sgg}
                               </span>
                             ) : null}
-                            <span className="pt-0.5">{item.name}</span>
+                            <span>{item.name}</span>
                           </div>
                         <div className="text-xs text-foreground-sub">
                           {item.address}
