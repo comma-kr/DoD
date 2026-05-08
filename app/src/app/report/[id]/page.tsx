@@ -4,6 +4,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase/server';
 import { getSession } from '@/lib/session';
 import ReportMarkdown from '@/components/report/ReportMarkdown';
 import ReportTocBar from '@/components/report/ReportTocBar';
+import ScrollToTopButton from '@/components/report/ScrollToTopButton';
 import ReportByline from '@/components/report/ReportByline';
 import UpsellCTAs from '@/components/report/UpsellCTAs';
 import ProfileBadge from '@/components/report/ProfileBadge';
@@ -98,6 +99,7 @@ export default async function ReportPage({ params }: PageProps) {
   return (
     <main className="flex-1">
       <ReportTocBar headings={headings} />
+      <ScrollToTopButton />
       <article className="mx-auto max-w-3xl px-6 pt-16 pb-20">
         <header className="mb-8">
           <div className="flex flex-wrap items-center gap-2">

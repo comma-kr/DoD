@@ -324,7 +324,7 @@ export default function HookHighlights({
           ) : null}
         </div>
         <div className="mt-4 flex items-end gap-3">
-          <div className="min-w-0">
+          <div className="mb-3.5 min-w-0">
             <div className="text-3xl font-extrabold tracking-tight leading-none break-keep sm:text-4xl">
               <span className="report-highlight">{hero.heroMain}</span>
             </div>

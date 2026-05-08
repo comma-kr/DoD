@@ -80,19 +80,24 @@ export default function UpsellCTAs({
           </div>
         </Link>
 
-        {/* 보조 — 2,990원 맞춤 추천. 시각 우선순위 2 (2/5 폭) */}
+        {/* 미구현 — 2,990원 맞춤 추천. 메인 페이지 TBD 카드와 동일 톤 (점선 보더 + dim) */}
         <Link
           href="/smart"
-          className="group flex h-full flex-col rounded-2xl border border-border bg-surface p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-foreground/30 hover:shadow-md sm:col-span-2"
+          className="group flex h-full flex-col rounded-2xl border-2 border-dashed border-border bg-surface-soft p-5 opacity-80 transition hover:opacity-100 sm:col-span-2"
         >
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-foreground/5 text-foreground-sub">
-            <Target className="h-4 w-4" />
+          <div className="flex items-center justify-between">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-foreground/5 text-foreground-sub">
+              <Target className="h-4 w-4" />
+            </div>
+            <span className="rounded-full bg-foreground/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-foreground-sub">
+              TBD
+            </span>
           </div>
           <h3 className="mt-4 text-base font-bold leading-tight text-foreground">
-            나한테 맞는 곳 찾기
+            🚧 나한테 맞는 곳 찾기
           </h3>
           <p className="mt-1 flex-1 text-xs leading-relaxed text-foreground-sub">
-            내 조건에 맞는 TOP 5, 칠 만한 곳만
+            내 조건에 맞는 TOP 5, 칠 만한 곳만. 곧 픽스해서 알려드림.
           </p>
           <div className="mt-4 flex items-center justify-between">
             <span className="text-base font-bold text-foreground-sub">2,990원</span>
