@@ -74,6 +74,22 @@ const flags = {
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
+// 사전 거리 가드 — 단지·CBD 직선거리 < N m이면 ODSay 호출 안 하고 '도보 권장' 마크로 캐시.
+// 5/9 backfill 실패 26건이 모두 권역 내 패턴(여의도→yeouido, 서초→gangnam, 성수→seongsu)이라 도입.
+// ODSay는 도보 권장 거리에 path를 비반환 → 호출 낭비 + 실패 카운트 누적.
+const WALK_THRESHOLD_M = 1000;
+
+function haversineDistanceM(a, b) {
+  const R = 6371000; // 지구 반경 (m)
+  const toRad = (deg) => (deg * Math.PI) / 180;
+  const dLat = toRad(b.lat - a.lat);
+  const dLng = toRad(b.lng - a.lng);
+  const lat1 = toRad(a.lat);
+  const lat2 = toRad(b.lat);
+  const x = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x));
+}
+
 // ─── ODSay 호출 + 파싱 (odsay-transit.ts parseOdsayPath와 동일 로직) ───
 function stripStation(name) {
   return name.endsWith('역') ? name : `${name}역`;
@@ -214,6 +230,7 @@ async function main() {
   let cached = 0;
   let failed = 0;
   let upserted = 0;
+  let walkSkipped = 0;
   const startTs = Date.now();
 
   outer: for (const apt of apts) {
@@ -232,8 +249,48 @@ async function main() {
         .maybeSingle();
       if (existing) { cached++; continue; }
 
-      // ODSay 호출
       const dest = CBD_COORDS[area];
+
+      // 권역 내 도보 가드 — ODSay 호출 안 하고 도보 마크 cache 저장.
+      // 직선거리 < 1000m이면 ODSay가 path 비반환 (도보 권장)이라 호출 낭비.
+      const directDistM = Math.round(haversineDistanceM(
+        { lat: apt.latitude, lng: apt.longitude },
+        { lat: dest.lat, lng: dest.lng }
+      ));
+      if (directDistM < WALK_THRESHOLD_M) {
+        const walkMin = Math.max(1, Math.round(directDistM / 70));
+        const { error: walkErr } = await sb.from('transit_path_cache').upsert(
+          {
+            apartment_id: apt.id,
+            commute_area: area,
+            total_time_min: walkMin,
+            total_walk_m: directDistM,
+            payment_won: 0,
+            transit_count: 0,
+            first_station: null,
+            last_station: null,
+            raw_path: {
+              walkOnly: true,
+              walkMin,
+              distanceM: directDistM,
+              hops: [],
+              walkToFirstMin: walkMin,
+              walkFromLastMin: 0,
+              alternatives: [],
+            },
+          },
+          { onConflict: 'apartment_id,commute_area' }
+        );
+        if (walkErr) {
+          console.log(`! ${apt.name} → ${area}: walk-only upsert err: ${walkErr.message}`);
+        } else {
+          walkSkipped++;
+          console.log(`🚶 ${apt.name} → ${area}: 도보 ${walkMin}분 (${directDistM}m, ODSay skip)`);
+        }
+        continue; // 다음 area로
+      }
+
+      // ODSay 호출
       let bundle;
       try {
         bundle = await fetchTransitPaths(
@@ -303,6 +360,7 @@ async function main() {
   console.log(`완료 (${elapsed}s)`);
   console.log(`  ODSay 호출:    ${calls}`);
   console.log(`  캐시 저장:     ${upserted}`);
+  console.log(`  도보 skip:     ${walkSkipped} (권역 내, < ${WALK_THRESHOLD_M}m)`);
   console.log(`  이미 캐시됨:   ${cached}`);
   console.log(`  실패:          ${failed}`);
   console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
