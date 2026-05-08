@@ -103,7 +103,7 @@ export default function SearchBar({
                         }}
                         className="flex w-full items-start gap-3 px-5 py-4 text-left transition hover:bg-background"
                       >
-                        <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-foreground-sub" />
+                        <MapPin className="mt-1 h-4 w-4 shrink-0 text-foreground-sub" />
                         <div className="flex-1">
                           <div className="flex items-center gap-1.5 font-semibold">
                             {sgg ? (
