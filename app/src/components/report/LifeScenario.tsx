@@ -139,7 +139,7 @@ export default function LifeScenario({
       : '주변 상권이 분산돼 1인 외식 동선은 다소 분산적. 배달·마켓 의존도가 높을 수 있어요.'
     : isParent
     ? commercialClusterCount >= 2
-      ? `아이 학원 픽업·주말 가족 외식 동선이 ${commercialClusterCount}개 상권 권역에 분산돼 있어 선택지가 풍부해요.`
+      ? `아이 학원 픽업·가족 외식 동선이 ${commercialClusterCount}개 상권 권역에 분산돼 있어 선택지가 풍부해요.`
       : '가족 외식·아이 학원 동선 기준에서는 상권이 다소 분산돼 있어 차량 이동이 편할 수 있어요.'
     : commercialClusterCount >= 2
     ? `걸어서 닿는 ${commercialClusterCount}개 상권 군집에 음식점·카페가 충분해요. 재택근무·점심외출에 편안한 환경이에요.`
@@ -155,23 +155,24 @@ export default function LifeScenario({
     accent: 'orange',
   };
 
-  const weekendBody = isParent
+  // '저녁 산책·운동' 시점 — 일상 시간대로 통일 ('주말'은 일상 흐름 아님 → 제거).
+  const eveningBody = isParent
     ? parks.length > 0
-      ? `${parks.slice(0, 2).join(', ')} 등은 자전거·유아차 가족 코스로 좋아요. 주말 가족 야외활동 거점.`
-      : '아이 데리고 주말 갈 만한 공원·하천은 직접 답사 권장. 차량으로 10~20분 내 큰 공원 후보를 미리 정해두면 좋아요.'
+      ? `${parks.slice(0, 2).join(', ')} 등은 자전거·유아차 가족 코스로 좋아요. 저녁 가족 야외활동 거점.`
+      : '아이 데리고 저녁 갈 만한 공원·하천은 직접 답사 권장. 차량으로 10~20분 내 큰 공원 후보를 미리 정해두면 좋아요.'
     : isRetired
     ? parks.length > 0
       ? `${parks.slice(0, 2).join(', ')} 등이 산책·체조 동선에 있어요. 매일 같은 코스를 도는 데 적합해요.`
-      : '은퇴 후 주말 산책 코스는 직접 답사해보세요. 평지 위주의 안전한 보행로가 우선이에요.'
+      : '은퇴 후 저녁 산책 코스는 직접 답사해보세요. 평지 위주의 안전한 보행로가 우선이에요.'
     : parks.length > 0
     ? `${parks.slice(0, 2).join(', ')} 등이 산책·운동 동선 안에 있어요.`
-    : '주말 산책 코스는 단지 주변을 직접 답사해보세요. 한강 또는 큰 공원까지의 거리를 확인하시면 좋아요.';
+    : '저녁 산책 코스는 단지 주변을 직접 답사해보세요. 한강 또는 큰 공원까지의 거리를 확인하시면 좋아요.';
 
-  const weekend: Scenario = {
+  const evening: Scenario = {
     icon: <Bike className="h-4 w-4" />,
-    time: '주말 오전',
-    title: isParent ? '가족 야외활동' : isRetired ? '아침 산책 루트' : '여유로운 산책',
-    body: weekendBody,
+    time: '저녁 6시',
+    title: isParent ? '가족 야외활동' : isRetired ? '저녁 산책' : '여유로운 산책',
+    body: eveningBody,
     accent: 'emerald',
   };
 
@@ -194,7 +195,7 @@ export default function LifeScenario({
     accent: 'violet',
   };
 
-  const scenarios = [morning, afternoon, weekend, night];
+  const scenarios = [morning, afternoon, evening, night];
 
   const accentMap = {
     amber: 'border-warning/30 bg-warning-soft text-warning',
@@ -213,8 +214,8 @@ export default function LifeScenario({
 
   return (
     <section className="rounded-3xl border border-border bg-surface p-6 shadow-sm">
-      <div className="flex items-center gap-2">
-        <h3 className="text-base font-bold">🌅 이 단지 살면 일상이 어떨까</h3>
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+        <h3 className="whitespace-nowrap text-base font-bold">🌅 이 단지 살면 일상이 어떨까</h3>
         <span className="text-[11px] text-foreground-sub">· 데이터로 그려본 하루 · 직선거리 기준</span>
       </div>
       <p className="mt-1 text-xs text-foreground-sub">

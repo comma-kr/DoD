@@ -312,7 +312,7 @@ export default function HookHighlights({
       <div className={`rounded-3xl border-2 ${TONE_HERO_BG[hero.tone]} p-7 shadow-sm`}>
         <div className="flex items-center justify-between gap-2">
           <span
-            className={`inline-flex items-center gap-1.5 rounded-full ${TONE_BADGE_BG[hero.tone]} px-3 py-1 text-[10px] font-bold uppercase tracking-wider`}
+            className={`inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full ${TONE_BADGE_BG[hero.tone]} px-3 py-1 text-[10px] font-bold uppercase tracking-wider`}
           >
             {hero.icon}
             <span>★ 1순위 — {hero.heroBadge}</span>
@@ -325,7 +325,7 @@ export default function HookHighlights({
         </div>
         <div className="mt-4 flex items-end gap-3">
           <div className="min-w-0">
-            <div className="text-5xl font-extrabold tracking-tight leading-none break-keep">
+            <div className="text-3xl font-extrabold tracking-tight leading-none break-keep sm:text-4xl">
               <span className="report-highlight">{hero.heroMain}</span>
             </div>
             <div className="mt-1 text-xs text-foreground-sub break-keep">{hero.heroMainSub}</div>

@@ -815,15 +815,12 @@ function buildClosing(f: ApartmentFacts, profile: UserProfile | null): string {
     ? getClosingByProfile(profile.householdType, f)
     : '옆 단지와 나란히 놓고 보면 같은 가격대 내에서 어떤 차이가 있는지 훨씬 명확하게 드러나요.';
 
+  // 마크다운 안 업셀 안내 제거 — UpsellCTAs 컴포넌트와 중복이라 본문 끝은 닫음말로만.
   return `## 🧭 한 줄 정리
 
 **${tagline}의 조합**이라는 관점에서 ${f.name}을(를) 봤어요.
 
-${profileMessage}
-
-> 💡 **아직 칠까말까 싶다면**
-> - 🔵 옆 단지도 칠래말래? → **990원**
-> - 🟣 내 조건에 맞는 곳 찾기 → **2,990원**`;
+${profileMessage}`;
 }
 
 function getClosingByProfile(h: HouseholdType, f: ApartmentFacts): string {

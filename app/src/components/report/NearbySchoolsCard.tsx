@@ -51,9 +51,11 @@ export default function NearbySchoolsCard({ schools }: Props) {
     <section
       className={`rounded-3xl border border-border bg-surface p-6 shadow-sm ${CARD_TINT.success}`}
     >
-      <div className="flex items-center gap-2">
-        <GraduationCap className="h-5 w-5 text-foreground-sub" />
-        <h3 className="text-base font-bold">🏫 주변 학교 초·중·고</h3>
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+        <div className="flex items-center gap-2 whitespace-nowrap">
+          <GraduationCap className="h-5 w-5 text-foreground-sub" />
+          <h3 className="text-base font-bold">🏫 주변 학교 초·중·고</h3>
+        </div>
         <span className="text-[11px] text-foreground-sub">· 단지 반경 2km, 직선거리</span>
       </div>
       <p className="mt-1 text-xs text-foreground-sub">

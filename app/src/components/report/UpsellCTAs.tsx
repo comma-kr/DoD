@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { BarChart3, Target, ArrowRight } from 'lucide-react';
+import { BarChart3, Target, ArrowRight, Sparkles } from 'lucide-react';
 import { HOUSEHOLD_SPEC } from '@/lib/household-priorities';
 import type { HouseholdType } from '@/types/profile';
 
@@ -34,59 +34,71 @@ export default function UpsellCTAs({
   const compareTitle = currentApartmentName
     ? `${currentApartmentName} + 옆 단지 칠래말래?`
     : '옆 단지도 칠래말래?';
-
-  const ctas = [
-    {
-      href: compareHref,
-      icon: <BarChart3 className="h-5 w-5" />,
-      title: compareTitle,
-      body: compareCtaBody(householdType, currentApartmentName),
-      price: '990원',
-      color: 'primary' as const,
-    },
-    {
-      href: '/smart',
-      icon: <Target className="h-5 w-5" />,
-      title: '나한테 맞는 곳 찾기',
-      body: '내 조건에 맞는 TOP 5, 칠 만한 곳만',
-      price: '2,990원',
-      color: 'secondary' as const,
-    },
-  ];
-
-  const colorClass = {
-    primary: 'hover:border-primary/50 text-primary',
-    secondary: 'hover:border-secondary/50 text-secondary',
-  };
+  const compareBody = compareCtaBody(householdType, currentApartmentName);
 
   return (
-    <section className="mt-12 rounded-3xl border border-border bg-surface p-6 shadow-sm">
-      <h2 className="mb-1 text-lg font-bold">아직 칠까말까 싶다면</h2>
-      <p className="mb-6 text-sm text-foreground-sub">
-        한 장씩 더 가볍게 펼쳐보세요.
-      </p>
-      <div className="grid gap-3 sm:grid-cols-2">
-        {ctas.map((cta) => (
-          <Link
-            key={cta.href}
-            href={cta.href}
-            className={`group flex h-full flex-col rounded-2xl border border-border bg-background p-5 transition ${colorClass[cta.color]}`}
-          >
-            <div
-              className={`flex h-9 w-9 items-center justify-center rounded-xl bg-surface ${colorClass[cta.color]}`}
-            >
-              {cta.icon}
+    <section className="mt-12">
+      <div className="mb-5 flex items-end justify-between">
+        <div>
+          <h2 className="text-lg font-bold">아직 칠까말까 싶다면</h2>
+          <p className="mt-0.5 text-sm text-foreground-sub">한 장씩 더 가볍게 펼쳐보세요.</p>
+        </div>
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-5">
+        {/* 주력 BM — 990원 비교. 시각 우선순위 1 (3/5 폭) */}
+        <Link
+          href={compareHref}
+          className="group relative flex h-full flex-col overflow-hidden rounded-2xl border-2 border-primary/40 bg-gradient-to-br from-primary-soft via-surface to-surface p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-primary hover:shadow-lg sm:col-span-3"
+        >
+          <span className="inline-flex w-fit items-center gap-1 self-start rounded-full bg-primary px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
+            <Sparkles className="h-3 w-3" />
+            바로 다음 단계
+          </span>
+          <div className="mt-4 flex items-center gap-3">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary text-white shadow-sm">
+              <BarChart3 className="h-5 w-5" />
             </div>
-            <h3 className="mt-4 font-semibold text-foreground">{cta.title}</h3>
-            <p className="mt-1 flex-1 text-xs text-foreground-sub">{cta.body}</p>
-            <div className="mt-4 flex items-center justify-between">
-              <span className="text-base font-bold text-foreground">
-                {cta.price}
-              </span>
-              <ArrowRight className="h-4 w-4 text-foreground-sub transition group-hover:translate-x-0.5 group-hover:text-foreground" />
+            <h3 className="text-lg font-bold leading-tight text-foreground">
+              {compareTitle}
+            </h3>
+          </div>
+          <p className="mt-3 flex-1 text-sm leading-relaxed text-foreground-sub">
+            {compareBody}
+          </p>
+          <div className="mt-5 flex items-center justify-between border-t border-primary/20 pt-3">
+            <div>
+              <div className="text-[10px] font-semibold uppercase tracking-wider text-primary-ink">
+                커피 한 입 값
+              </div>
+              <div className="text-2xl font-extrabold text-foreground">990원</div>
             </div>
-          </Link>
-        ))}
+            <span className="inline-flex items-center gap-1 rounded-full bg-primary px-3 py-2 text-xs font-bold text-white transition group-hover:gap-2">
+              나란히 보기
+              <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
+            </span>
+          </div>
+        </Link>
+
+        {/* 보조 — 2,990원 맞춤 추천. 시각 우선순위 2 (2/5 폭) */}
+        <Link
+          href="/smart"
+          className="group flex h-full flex-col rounded-2xl border border-border bg-surface p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-foreground/30 hover:shadow-md sm:col-span-2"
+        >
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-foreground/5 text-foreground-sub">
+            <Target className="h-4 w-4" />
+          </div>
+          <h3 className="mt-4 text-base font-bold leading-tight text-foreground">
+            나한테 맞는 곳 찾기
+          </h3>
+          <p className="mt-1 flex-1 text-xs leading-relaxed text-foreground-sub">
+            내 조건에 맞는 TOP 5, 칠 만한 곳만
+          </p>
+          <div className="mt-4 flex items-center justify-between">
+            <span className="text-base font-bold text-foreground-sub">2,990원</span>
+            <ArrowRight className="h-4 w-4 text-foreground-sub transition group-hover:translate-x-0.5" />
+          </div>
+        </Link>
       </div>
     </section>
   );

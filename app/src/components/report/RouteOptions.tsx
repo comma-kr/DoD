@@ -164,7 +164,7 @@ function buildSubwayDisplay(
                 style={{ borderColor: dotColor }}
               />
               <span
-                className={`${size.nameMt} ${size.name} font-bold leading-tight text-center break-keep text-foreground`}
+                className={`${size.nameMt} ${size.name} line-clamp-2 font-bold leading-tight text-center text-foreground [overflow-wrap:anywhere]`}
               >
                 {trimStation(hop.station)}
               </span>
