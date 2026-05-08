@@ -75,44 +75,67 @@ export default function SearchBar({
         <div className="absolute left-0 right-0 top-full z-20 mt-2 overflow-hidden rounded-2xl border border-border bg-surface shadow-xl">
           {items.length > 0 ? (
             <ul className="max-h-80 overflow-auto">
-              {items.map((item) => {
-                const station = checkStation(item.nearestStation, item.stationDistanceM);
-                return (
-                  <li key={item.id}>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        onSelect(item);
-                        setOpen(false);
-                        setQ('');
-                      }}
-                      className="flex w-full items-start gap-3 px-5 py-4 text-left transition hover:bg-background"
-                    >
-                      <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-foreground-sub" />
-                      <div className="flex-1">
-                        <div className="font-semibold">{item.name}</div>
+              {(() => {
+                // 동명 단지 prefix 처리 — 동일 name이 2건 이상이면 자치구를 단지명 앞에 붙임.
+                // 예: '래미안' 송파/서초 동시 노출 → '송파구 래미안 / 서초구 래미안'
+                const nameCounts = new Map<string, number>();
+                items.forEach((it) => {
+                  nameCounts.set(it.name, (nameCounts.get(it.name) ?? 0) + 1);
+                });
+                const sggOf = (address: string): string | null => {
+                  const m = address.match(
+                    /(?:서울특별시|서울|부산광역시|부산|대구광역시|대구|인천광역시|인천|광주광역시|광주|대전광역시|대전|울산광역시|울산|세종특별자치시|세종|경기도|경기|강원특별자치도|강원도|강원|충청북도|충북|충청남도|충남|전라북도|전북특별자치도|전북|전라남도|전남|경상북도|경북|경상남도|경남|제주특별자치도|제주)\s+(\S+(?:시|구|군))(?:\s+(\S+구))?/
+                  );
+                  return m ? (m[2] ?? m[1]) : null;
+                };
+                return items.map((item) => {
+                  const station = checkStation(item.nearestStation, item.stationDistanceM);
+                  const isDuplicate = (nameCounts.get(item.name) ?? 0) > 1;
+                  const sgg = isDuplicate ? sggOf(item.address) : null;
+                  return (
+                    <li key={item.id}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          onSelect(item);
+                          setOpen(false);
+                          setQ('');
+                        }}
+                        className="flex w-full items-start gap-3 px-5 py-4 text-left transition hover:bg-background"
+                      >
+                        <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-foreground-sub" />
+                        <div className="flex-1">
+                          <div className="font-semibold">
+                            {sgg ? (
+                              <span className="mr-1 rounded-md bg-foreground/5 px-1.5 py-0.5 text-[11px] font-bold text-foreground-sub">
+                                {sgg}
+                              </span>
+                            ) : null}
+                            {item.name}
+                          </div>
                         <div className="text-xs text-foreground-sub">
                           {item.address}
                           {item.totalUnits ? ` · ${item.totalUnits}세대` : ''}
                           {item.builtYear ? ` · ${item.builtYear}년` : ''}
                         </div>
-                        {/* 역 정보는 정합 가드 통과한 경우만 노출. null/GTX/원거리 케이스는 신뢰 깎이지 않게 톤다운. */}
-                        {station.show ? (
-                          <div className={`mt-1 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] ${
-                            station.isFar
-                              ? 'bg-warning-soft text-warning'
-                              : 'bg-primary-soft text-primary-ink'
-                          }`}>
-                            <Train className="h-3 w-3" />
-                            {station.displayName}
-                            {station.distanceLabel ? ` · ${station.distanceLabel}` : ''}
-                          </div>
-                        ) : null}
-                      </div>
-                    </button>
-                  </li>
-                );
-              })}
+                          {/* 역 정보는 정합 가드 통과한 경우만 노출. null/GTX/원거리 케이스는 신뢰 깎이지 않게 톤다운. */}
+                          {station.show ? (
+                            <div className={`mt-1 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] ${
+                              station.isFar
+                                ? 'bg-warning-soft text-warning'
+                                : 'bg-primary-soft text-primary-ink'
+                            }`}>
+                              <Train className="h-3 w-3" />
+                              {station.displayName}
+                              {station.distanceLabel ? ` · ${station.distanceLabel}` : ''}
+                            </div>
+                          ) : null}
+                        </div>
+                      </button>
+                    </li>
+                  );
+                });
+              })()}
             </ul>
           ) : !loading ? (
             <div className="px-5 py-6 text-center text-sm text-foreground-sub">

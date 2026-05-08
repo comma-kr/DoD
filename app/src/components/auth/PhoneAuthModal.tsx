@@ -1,23 +1,43 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { Check } from 'lucide-react';
 import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import { isValidKoreanPhone, normalizePhone } from '@/lib/utils';
+import {
+  HOUSEHOLD_LABELS,
+  HOUSEHOLD_DESCRIPTIONS,
+  HOUSEHOLD_EMOJIS,
+  type HouseholdType,
+} from '@/types/profile';
 
 interface Props {
   open: boolean;
   onClose: () => void;
-  onSuccess: (phone: string) => void;
+  // 가구형태도 함께 받음 — 분석가 §2.3 권장: 인증 모달에 Step1(가족형태) 흡수.
+  // ProfileForm 3-step 중 가장 무거운 첫 step을 인증 흐름에 합쳐 멘탈 모델 단순화.
+  onSuccess: (phone: string, householdType: HouseholdType) => void;
 }
 
-type Step = 'phone' | 'code';
+type Step = 'phone' | 'code' | 'household';
+
+const HOUSEHOLD_ORDER: HouseholdType[] = [
+  'single',
+  'couple',
+  'newlywed',
+  'family_kids',
+  'school_parent',
+  'retired',
+  'investor',
+];
 
 export default function PhoneAuthModal({ open, onClose, onSuccess }: Props) {
   const [step, setStep] = useState<Step>('phone');
   const [phone, setPhone] = useState('');
   const [code, setCode] = useState('');
+  const [household, setHousehold] = useState<HouseholdType | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [cooldown, setCooldown] = useState(0);
@@ -27,6 +47,7 @@ export default function PhoneAuthModal({ open, onClose, onSuccess }: Props) {
       setStep('phone');
       setPhone('');
       setCode('');
+      setHousehold(null);
       setError(null);
       setCooldown(0);
     }
@@ -104,7 +125,8 @@ export default function PhoneAuthModal({ open, onClose, onSuccess }: Props) {
         return;
       }
 
-      onSuccess(data.phone);
+      // 인증 성공 → 가족형태 선택으로 이동 (모달 안에서 한 번에)
+      setStep('household');
     } catch {
       setError('네트워크 오류가 발생했어요');
     } finally {
@@ -112,13 +134,29 @@ export default function PhoneAuthModal({ open, onClose, onSuccess }: Props) {
     }
   }
 
-  return (
-    <Modal open={open} onClose={onClose} title="전화번호로 시작하기">
-      <p className="mb-4 text-sm text-foreground-sub">
-        가입 절차 없이 번호 하나로 무료 분석을 받으실 수 있어요.
-      </p>
+  function handleConfirmHousehold() {
+    if (!household) return;
+    onSuccess(normalizePhone(phone), household);
+  }
 
-      {process.env.NODE_ENV === 'development' ? (
+  // 모달 타이틀은 단계별 차별화
+  const modalTitle = step === 'household'
+    ? '어떤 가족 형태이신가요?'
+    : '전화번호로 시작하기';
+
+  return (
+    <Modal open={open} onClose={onClose} title={modalTitle}>
+      {step !== 'household' ? (
+        <p className="mb-4 text-sm text-foreground-sub">
+          가입 절차 없이 번호 하나로 무료 분석을 받으실 수 있어요.
+        </p>
+      ) : (
+        <p className="mb-4 text-sm text-foreground-sub">
+          같은 단지도 가족 형태에 따라 보는 포인트가 달라져요.
+        </p>
+      )}
+
+      {process.env.NODE_ENV === 'development' && step !== 'household' ? (
         <div className="mb-4 rounded-xl border border-accent/30 bg-accent/10 p-3 text-xs text-foreground-sub">
           🧪 <span className="font-semibold text-accent">테스트 모드</span> —
           번호 <code className="mx-1 rounded bg-background px-1.5 py-0.5 text-accent">01011111234</code>
@@ -141,7 +179,9 @@ export default function PhoneAuthModal({ open, onClose, onSuccess }: Props) {
             인증번호 받기
           </Button>
         </div>
-      ) : (
+      ) : null}
+
+      {step === 'code' ? (
         <div className="flex flex-col gap-4">
           <Input
             type="text"
@@ -165,7 +205,43 @@ export default function PhoneAuthModal({ open, onClose, onSuccess }: Props) {
             {cooldown > 0 ? `재전송 ${cooldown}초` : '인증번호 다시 받기'}
           </button>
         </div>
-      )}
+      ) : null}
+
+      {step === 'household' ? (
+        <div className="flex flex-col gap-2">
+          {HOUSEHOLD_ORDER.map((h) => {
+            const active = household === h;
+            return (
+              <button
+                key={h}
+                onClick={() => setHousehold(h)}
+                className={`flex items-center gap-3 rounded-xl border p-3 text-left transition ${
+                  active
+                    ? 'border-primary bg-primary/10'
+                    : 'border-border bg-surface hover:border-foreground-sub/40'
+                }`}
+              >
+                <span className="text-xl">{HOUSEHOLD_EMOJIS[h]}</span>
+                <div className="flex-1">
+                  <div className="text-sm font-semibold">{HOUSEHOLD_LABELS[h]}</div>
+                  <div className="text-[11px] text-foreground-sub">
+                    {HOUSEHOLD_DESCRIPTIONS[h]}
+                  </div>
+                </div>
+                {active ? <Check className="h-4 w-4 text-primary" /> : null}
+              </button>
+            );
+          })}
+          <Button
+            onClick={handleConfirmHousehold}
+            disabled={!household}
+            size="lg"
+            className="mt-3"
+          >
+            확인
+          </Button>
+        </div>
+      ) : null}
     </Modal>
   );
 }

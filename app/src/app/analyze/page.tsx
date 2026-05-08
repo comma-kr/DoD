@@ -160,7 +160,9 @@ function AnalyzeContent() {
     [selected, router]
   );
 
-  function handleAuthSuccess() {
+  // 인증 모달이 가족형태까지 받아오므로 시그니처가 (phone, household).
+  // 분석가 §2.3-A: 인증+Step1 한 화면 → ProfileForm은 우선순위·출근지만 받기.
+  function handleAuthSuccess(_phone: string, householdFromAuth?: import('@/types/profile').HouseholdType) {
     setAuthOpen(false);
     setAuthenticated(true);
     fetch('/api/profile/me')
@@ -177,10 +179,27 @@ function AnalyzeContent() {
           });
           runFreeAnalyze();
         } else {
+          // 인증 모달에서 받은 가족형태를 prefill — ProfileForm은 startStep=2부터 (우선순위)
+          if (householdFromAuth) {
+            setSavedProfile((prev) => ({
+              householdType: householdFromAuth,
+              priorities: prev?.priorities ?? [],
+              commuteArea: prev?.commuteArea,
+              workplaceAddress: prev?.workplaceAddress,
+            }));
+          }
           setStage('profile');
         }
       })
       .catch(() => {
+        if (householdFromAuth) {
+          setSavedProfile((prev) => ({
+            householdType: householdFromAuth,
+            priorities: prev?.priorities ?? [],
+            commuteArea: prev?.commuteArea,
+            workplaceAddress: prev?.workplaceAddress,
+          }));
+        }
         setStage('profile');
       });
   }
@@ -249,7 +268,8 @@ function AnalyzeContent() {
         ) : null}
 
         <span className="mb-3 inline-flex items-center gap-2 rounded-full bg-warning-soft px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-warning">
-          STEP · 3단계 · 약 30초
+          {/* 인증 모달에서 가족형태를 받았으면 남은 step 2개. 아니면 3개 */}
+          STEP · {savedProfile?.householdType ? '2단계' : '3단계'} · 약 {savedProfile?.householdType ? '20' : '30'}초
         </span>
         <h1 className="mt-2 text-2xl font-bold sm:text-3xl">
           어떻게 풀어드릴지 <em className="report-highlight not-italic">정해볼까요</em>
@@ -262,6 +282,8 @@ function AnalyzeContent() {
         <ProfileForm
           onComplete={handleProfileComplete}
           initialProfile={overrideProfile ?? savedProfile ?? undefined}
+          // 인증 모달이 가족형태까지 받았으면 ProfileForm은 step 2(우선순위)부터 시작
+          startStep={savedProfile?.householdType && !overrideProfile ? 2 : 1}
         />
       </section>
     );

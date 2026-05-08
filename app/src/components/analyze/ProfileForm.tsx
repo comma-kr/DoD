@@ -28,6 +28,9 @@ interface Props {
     commuteArea?: CommuteArea;
     workplaceAddress?: string;
   };
+  // 인증 모달에서 가족형태를 이미 받은 경우 step 2(우선순위)부터 시작.
+  // 기본 1. 분석가 §2.3 권장: 인증+가족형태 한 화면 → 프로필 폼은 우선순위·출근지만.
+  startStep?: 1 | 2 | 3;
 }
 
 type Step = 1 | 2 | 3;
@@ -65,8 +68,8 @@ const COMMUTE_ORDER: CommuteArea[] = [
 
 const MAX_PRIORITIES = 3;
 
-export default function ProfileForm({ onComplete, initialProfile }: Props) {
-  const [step, setStep] = useState<Step>(1);
+export default function ProfileForm({ onComplete, initialProfile, startStep }: Props) {
+  const [step, setStep] = useState<Step>(startStep ?? 1);
   const [householdType, setHouseholdType] = useState<HouseholdType | null>(
     initialProfile?.householdType ?? null
   );
@@ -141,8 +144,8 @@ export default function ProfileForm({ onComplete, initialProfile }: Props) {
 
   return (
     <div className="mx-auto w-full max-w-xl">
-      {/* 진행 인디케이터 */}
-      <div className="mb-8 flex items-center gap-2">
+      {/* 진행 인디케이터 + 미니 라벨 — 사용자가 '지금 어디'를 즉시 인지 */}
+      <div className="mb-3 flex items-center gap-2">
         {[1, 2, 3].map((n) => (
           <div
             key={n}
@@ -151,6 +154,13 @@ export default function ProfileForm({ onComplete, initialProfile }: Props) {
             }`}
           />
         ))}
+      </div>
+      <div className="mb-8 flex items-center justify-between text-[11px] font-medium text-foreground-sub">
+        <span className={step >= 1 ? 'text-primary' : ''}>1 가족</span>
+        <span className="text-foreground-sub/40">→</span>
+        <span className={step >= 2 ? 'text-primary' : ''}>2 우선순위</span>
+        <span className="text-foreground-sub/40">→</span>
+        <span className={step >= 3 ? 'text-primary' : ''}>3 출근지</span>
       </div>
 
       {step === 1 ? (
@@ -238,6 +248,11 @@ function Step1({
           다음
           <ArrowRight className="h-4 w-4" />
         </Button>
+        {!canNext ? (
+          <p className="mt-2 text-center text-xs text-foreground-sub">
+            가족 형태를 먼저 골라주세요
+          </p>
+        ) : null}
       </div>
     </div>
   );
@@ -300,6 +315,11 @@ function Step2({
           <ArrowRight className="h-4 w-4" />
         </Button>
       </div>
+      {!canNext ? (
+        <p className="mt-2 text-center text-xs text-foreground-sub">
+          중요한 항목 1개 이상 골라주세요
+        </p>
+      ) : null}
     </div>
   );
 }
@@ -371,6 +391,15 @@ function Step3({
           <ArrowRight className="h-4 w-4" />
         </Button>
       </div>
+      {/* 명시적 skip — 출근지는 선택, 사용자가 '건너뛰면 되는지' 즉시 알도록 */}
+      <button
+        type="button"
+        onClick={onSubmit}
+        disabled={!canSubmit || submitting}
+        className="mt-3 w-full text-center text-xs text-foreground-sub underline-offset-2 hover:underline disabled:opacity-40"
+      >
+        건너뛰고 바로 펼치기
+      </button>
     </div>
   );
 }
