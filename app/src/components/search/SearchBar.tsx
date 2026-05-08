@@ -107,7 +107,7 @@ export default function SearchBar({
                         <div className="flex-1">
                           <div className="flex items-center gap-1.5 font-semibold">
                             {sgg ? (
-                              <span className="inline-flex items-center rounded-full bg-primary-soft px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-foreground">
+                              <span className="inline-flex items-center rounded-full bg-highlight px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-foreground">
                                 {sgg}
                               </span>
                             ) : null}
