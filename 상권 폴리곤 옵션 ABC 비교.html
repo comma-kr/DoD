@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>상권 폴리곤 옵션 비교 — 유승한내들와이드오션아파트 (인천 남동 논현)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif;
+    background: #F7F7F8;
+    color: #1A1A1A;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1400px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  header { margin-bottom: 32px; }
+  header .badge {
+    display: inline-block; padding: 4px 12px; border-radius: 999px;
+    background: #FCE3E3; color: #C13C3C;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  header h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 6px; }
+  header p { font-size: 14px; color: #6B7684; }
+  header .meta {
+    margin-top: 14px; padding: 12px 16px;
+    background: #FFF; border: 1px solid #E4E6EA; border-radius: 12px;
+    display: flex; gap: 20px; flex-wrap: wrap; font-size: 13px;
+  }
+  header .meta b { color: #1A1A1A; }
+
+  .grid {
+    display: grid; gap: 20px;
+    grid-template-columns: repeat(3, 1fr);
+  }
+  @media (max-width: 1100px) { .grid { grid-template-columns: 1fr; } }
+
+  .card {
+    background: #FFF; border: 1px solid #E4E6EA; border-radius: 16px;
+    overflow: hidden; display: flex; flex-direction: column;
+  }
+  .card.recommended { border: 2px solid #C13C3C; }
+  .card-tag {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 18px; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .card.opt-a .card-tag { background: #FEF5D7; color: #8A6914; }
+  .card.opt-b .card-tag { background: #FCE3E3; color: #C13C3C; }
+  .card.opt-c .card-tag { background: #EDE6D7; color: #4A3E22; }
+  .card-tag .star { background: #FFF; padding: 2px 8px; border-radius: 999px; font-size: 10px; }
+
+  .card-header { padding: 20px 22px 12px; border-bottom: 1px solid #EDEDED; }
+  .card-header h2 { font-size: 17px; font-weight: 800; margin-bottom: 4px; }
+  .card-header .work { font-size: 12px; color: #6B7684; }
+
+  .canvas {
+    aspect-ratio: 1.05;
+    background: linear-gradient(180deg, #F1F5F9 0%, #F7F7F8 100%);
+    border-bottom: 1px solid #EDEDED;
+    position: relative;
+  }
+  .canvas svg { width: 100%; height: 100%; display: block; }
+
+  .legend {
+    padding: 14px 22px;
+    display: flex; flex-direction: column; gap: 6px;
+    font-size: 12px; color: #4B5563;
+    border-bottom: 1px solid #EDEDED;
+  }
+  .legend-row { display: flex; align-items: center; gap: 8px; }
+  .legend-swatch { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
+
+  .compare {
+    padding: 16px 22px; font-size: 12px; line-height: 1.6;
+  }
+  .compare-row {
+    display: grid; grid-template-columns: 80px 1fr; gap: 10px; padding: 6px 0;
+    border-bottom: 1px dashed #EDEDED;
+  }
+  .compare-row:last-child { border-bottom: 0; }
+  .compare-row .k { color: #6B7684; font-weight: 600; }
+  .compare-row .v { color: #1A1A1A; }
+
+  .pros-cons { padding: 14px 22px 22px; font-size: 12px; line-height: 1.7; }
+  .pros-cons .pros { color: #2D7A45; margin-bottom: 6px; }
+  .pros-cons .cons { color: #B45A3A; }
+  .pros-cons strong { font-weight: 700; }
+
+  /* 공통 SVG 색 */
+  .road { stroke: #CBD5E1; stroke-width: 1.5; fill: none; }
+  .road-major { stroke: #94A3B8; stroke-width: 2.5; fill: none; }
+  .building { fill: #E5E7EB; stroke: #CBD5E1; stroke-width: 0.4; }
+  .apt {
+    fill: #C13C3C; stroke: #FFF; stroke-width: 2;
+  }
+  .apt-label {
+    font-size: 11px; font-weight: 700; fill: #C13C3C;
+    text-anchor: middle; paint-order: stroke; stroke: #FFF; stroke-width: 3;
+  }
+  .pos {
+    fill: rgba(255, 200, 80, 0.85); stroke: #C49A2A; stroke-width: 0.5;
+  }
+
+  .footer-note {
+    margin-top: 32px; padding: 18px 22px;
+    background: #FFF; border: 1px dashed #E4E6EA; border-radius: 12px;
+    font-size: 13px; color: #4B5563; line-height: 1.7;
+  }
+  .footer-note strong { color: #1A1A1A; }
+
+  .summary-table {
+    margin-top: 24px;
+    width: 100%; background: #FFF;
+    border: 1px solid #E4E6EA; border-radius: 12px; overflow: hidden;
+    border-collapse: separate; border-spacing: 0;
+    font-size: 13px;
+  }
+  .summary-table th, .summary-table td {
+    padding: 12px 14px; text-align: left;
+    border-bottom: 1px solid #EDEDED;
+  }
+  .summary-table th { background: #F7F7F8; font-weight: 700; font-size: 12px; color: #4B5563; }
+  .summary-table tr:last-child td { border-bottom: 0; }
+  .grade { display: inline-block; padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 11px; }
+  .g-low    { background: #FEE2E2; color: #B91C1C; }
+  .g-mid    { background: #FEF5D7; color: #8A6914; }
+  .g-high   { background: #DCFCE7; color: #166534; }
+  .g-best   { background: #C13C3C; color: #FFF; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <span class="badge">Polygon Comparison · Mock Simulation</span>
+  <h1>상권 폴리곤 옵션 A · B · C 예상 결과 비교</h1>
+  <p>유승한내들와이드오션아파트 (인천광역시 남동구 논현동 764-4) 한 단지에 대해 같은 지도, 같은 시점에서 어떻게 다르게 그려질지 mock으로 시뮬레이션.</p>
+  <div class="meta">
+    <span><b>좌표</b> lat 37.3849, lng 126.7180</span>
+    <span><b>800m 반경 점포</b> FD6 10건 + CE7 5건 = 15건</span>
+    <span><b>1500m 반경</b> FD6 160건 + CE7 54건 = 214건</span>
+    <span><b>SBA 공식 폴리곤</b> 0건 (서울만 커버)</span>
+  </div>
+</header>
+
+<div class="grid">
+
+  <!-- ============================================================ -->
+  <!-- A. Concave Hull -->
+  <!-- ============================================================ -->
+  <div class="card opt-a">
+    <div class="card-tag">
+      <span>옵션 A · Concave Hull</span>
+      <span class="star">15~30분</span>
+    </div>
+    <div class="card-header">
+      <h2>점 군집 외곽을 오목하게 둘러쌈</h2>
+      <p class="work">기존 Convex Hull → concaveman 또는 @turf/concave 교체</p>
+    </div>
+    <div class="canvas">
+      <svg viewBox="0 0 400 380" preserveAspectRatio="xMidYMid meet">
+        <!-- 배경 도로 격자 (mock) -->
+        <line class="road" x1="0" y1="80" x2="400" y2="80" />
+        <line class="road" x1="0" y1="160" x2="400" y2="160" />
+        <line class="road-major" x1="0" y1="240" x2="400" y2="240" />
+        <line class="road" x1="0" y1="320" x2="400" y2="320" />
+        <line class="road" x1="80" y1="0" x2="80" y2="380" />
+        <line class="road-major" x1="180" y1="0" x2="180" y2="380" />
+        <line class="road" x1="280" y1="0" x2="280" y2="380" />
+        <line class="road" x1="350" y1="0" x2="350" y2="380" />
+
+        <!-- 건물 mock (회색) -->
+        <rect class="building" x="20" y="20" width="50" height="50"/>
+        <rect class="building" x="100" y="20" width="60" height="40"/>
+        <rect class="building" x="200" y="30" width="60" height="40"/>
+        <rect class="building" x="300" y="20" width="40" height="40"/>
+        <rect class="building" x="20" y="100" width="40" height="40"/>
+        <rect class="building" x="200" y="100" width="60" height="40"/>
+        <rect class="building" x="300" y="100" width="40" height="40"/>
+        <rect class="building" x="20" y="180" width="50" height="40"/>
+        <rect class="building" x="100" y="180" width="60" height="40"/>
+        <rect class="building" x="200" y="180" width="40" height="40"/>
+        <rect class="building" x="300" y="180" width="40" height="40"/>
+        <rect class="building" x="20" y="260" width="50" height="40"/>
+        <rect class="building" x="200" y="260" width="60" height="40"/>
+        <rect class="building" x="300" y="260" width="40" height="40"/>
+        <rect class="building" x="100" y="340" width="60" height="30"/>
+        <rect class="building" x="200" y="340" width="60" height="30"/>
+
+        <!-- 점포 좌표들 (mock) -->
+        <g fill="#F59E0B" opacity="0.7">
+          <circle cx="105" cy="190" r="2.5"/><circle cx="120" cy="195" r="2.5"/>
+          <circle cx="130" cy="200" r="2.5"/><circle cx="145" cy="205" r="2.5"/>
+          <circle cx="115" cy="215" r="2.5"/><circle cx="135" cy="220" r="2.5"/>
+          <circle cx="125" cy="195" r="2.5"/><circle cx="155" cy="195" r="2.5"/>
+
+          <circle cx="210" cy="195" r="2.5"/><circle cx="230" cy="200" r="2.5"/>
+          <circle cx="245" cy="195" r="2.5"/><circle cx="220" cy="205" r="2.5"/>
+          <circle cx="240" cy="210" r="2.5"/>
+
+          <circle cx="35" cy="195" r="2.5"/><circle cx="45" cy="200" r="2.5"/>
+          <circle cx="55" cy="205" r="2.5"/>
+        </g>
+
+        <!-- A. Concave Hull — 점들 따라 오목한 외곽선 (정밀 ↑) -->
+        <path d="M 100 185 L 130 195 L 160 195 L 158 215 L 130 222 L 110 218 L 100 200 Z"
+              fill="rgba(255, 200, 80, 0.35)" stroke="#C49A2A" stroke-width="1.5" stroke-dasharray="4,2"/>
+        <path d="M 205 192 L 250 195 L 245 213 L 215 210 L 208 200 Z"
+              fill="rgba(255, 200, 80, 0.35)" stroke="#C49A2A" stroke-width="1.5" stroke-dasharray="4,2"/>
+        <path d="M 30 192 L 60 200 L 55 210 L 30 205 Z"
+              fill="rgba(255, 200, 80, 0.35)" stroke="#C49A2A" stroke-width="1.5" stroke-dasharray="4,2"/>
+
+        <!-- 단지 마커 -->
+        <circle class="apt" cx="180" cy="240" r="9"/>
+        <text class="apt-label" x="180" y="262">유승한내들</text>
+      </svg>
+    </div>
+    <div class="legend">
+      <div class="legend-row"><span class="legend-swatch" style="background:#F59E0B; opacity:0.7;"></span>카카오 FD6/CE7 점포 좌표</div>
+      <div class="legend-row"><span class="legend-swatch" style="background:rgba(255,200,80,0.35); border:1.5px dashed #C49A2A;"></span>Concave Hull 폴리곤 (점 군집 외곽)</div>
+      <div class="legend-row"><span class="legend-swatch" style="background:#C13C3C;"></span>단지 위치</div>
+    </div>
+    <div class="compare">
+      <div class="compare-row"><span class="k">정확도</span><span class="v"><span class="grade g-mid">중</span> 기존(Convex)보다 정밀, 건물 단위 X</span></div>
+      <div class="compare-row"><span class="k">데이터</span><span class="v">카카오 FD6+CE7 좌표 (이미 사용 중)</span></div>
+      <div class="compare-row"><span class="k">건물 결</span><span class="v">❌ 점 군집 둘러싸기. 건물·도로 무시</span></div>
+      <div class="compare-row"><span class="k">호출</span><span class="v">매 리포트당 카카오 6회 (현재와 동일)</span></div>
+    </div>
+    <div class="pros-cons">
+      <div class="pros">✓ 코드 10줄. 외곽선 한 단계 정밀화. 즉시 효과.</div>
+      <div class="cons">✗ 본질은 점 군집 — 건물 한 채 단위로는 절대 안 됨. SBA 결과 시각적 차이 여전.</div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- B. 행정동 SHP + 점포 카운트 (RECOMMENDED) -->
+  <!-- ============================================================ -->
+  <div class="card opt-b recommended">
+    <div class="card-tag">
+      <span>옵션 B · 행정동 SHP + 점포 카운트 ⭐ 추천</span>
+      <span class="star">0.5~1d</span>
+    </div>
+    <div class="card-header">
+      <h2>행정동 단위 자연스러운 폴리곤</h2>
+      <p class="work">공공 행정동 SHP + 카카오 점포 카운트 임계 N+ 행정동 = 상권</p>
+    </div>
+    <div class="canvas">
+      <svg viewBox="0 0 400 380" preserveAspectRatio="xMidYMid meet">
+        <!-- 배경 도로 -->
+        <line class="road" x1="0" y1="80" x2="400" y2="80" />
+        <line class="road" x1="0" y1="160" x2="400" y2="160" />
+        <line class="road-major" x1="0" y1="240" x2="400" y2="240" />
+        <line class="road" x1="0" y1="320" x2="400" y2="320" />
+        <line class="road" x1="80" y1="0" x2="80" y2="380" />
+        <line class="road-major" x1="180" y1="0" x2="180" y2="380" />
+        <line class="road" x1="280" y1="0" x2="280" y2="380" />
+        <line class="road" x1="350" y1="0" x2="350" y2="380" />
+
+        <!-- 건물 mock -->
+        <rect class="building" x="20" y="20" width="50" height="50"/>
+        <rect class="building" x="100" y="20" width="60" height="40"/>
+        <rect class="building" x="200" y="30" width="60" height="40"/>
+        <rect class="building" x="300" y="20" width="40" height="40"/>
+        <rect class="building" x="20" y="100" width="40" height="40"/>
+        <rect class="building" x="200" y="100" width="60" height="40"/>
+        <rect class="building" x="300" y="100" width="40" height="40"/>
+        <rect class="building" x="20" y="180" width="50" height="40"/>
+        <rect class="building" x="100" y="180" width="60" height="40"/>
+        <rect class="building" x="200" y="180" width="40" height="40"/>
+        <rect class="building" x="300" y="180" width="40" height="40"/>
+        <rect class="building" x="20" y="260" width="50" height="40"/>
+        <rect class="building" x="200" y="260" width="60" height="40"/>
+        <rect class="building" x="300" y="260" width="40" height="40"/>
+        <rect class="building" x="100" y="340" width="60" height="30"/>
+        <rect class="building" x="200" y="340" width="60" height="30"/>
+
+        <!-- B. 행정동 경계 폴리곤 (큰 단위, 자연스러운 곡선) -->
+        <!-- 논현1동 (단지 포함, 임계 통과 → 강조) -->
+        <path d="M 80 80 Q 140 60 180 70 Q 200 90 220 80 L 280 80 L 280 240 Q 230 250 180 245 L 80 240 Z"
+              fill="rgba(255, 200, 80, 0.4)" stroke="#C49A2A" stroke-width="2"/>
+        <text x="180" y="155" text-anchor="middle" font-size="13" font-weight="700" fill="#8A6914">논현1동 상권</text>
+        <text x="180" y="172" text-anchor="middle" font-size="10" fill="#8A6914">점포 184개 · 임계 ✓</text>
+
+        <!-- 도림동 (서쪽, 임계 미통과 → 옅게) -->
+        <path d="M 0 80 L 80 80 L 80 240 L 0 230 Z"
+              fill="rgba(180, 180, 180, 0.15)" stroke="#9CA3AF" stroke-width="1" stroke-dasharray="3,3"/>
+        <text x="40" y="160" text-anchor="middle" font-size="10" fill="#6B7280">도림동</text>
+
+        <!-- 단지 마커 -->
+        <circle class="apt" cx="180" cy="240" r="9"/>
+        <text class="apt-label" x="180" y="262">유승한내들</text>
+      </svg>
+    </div>
+    <div class="legend">
+      <div class="legend-row"><span class="legend-swatch" style="background:rgba(255,200,80,0.4); border:2px solid #C49A2A;"></span>임계 점포 N+ 행정동 = 상권</div>
+      <div class="legend-row"><span class="legend-swatch" style="background:rgba(180,180,180,0.15); border:1px dashed #9CA3AF;"></span>임계 미통과 행정동 (옅게)</div>
+      <div class="legend-row"><span class="legend-swatch" style="background:#C13C3C;"></span>단지 위치</div>
+    </div>
+    <div class="compare">
+      <div class="compare-row"><span class="k">정확도</span><span class="v"><span class="grade g-high">상</span> 행정동 SHP는 도로·하천 따라 자연 결</span></div>
+      <div class="compare-row"><span class="k">데이터</span><span class="v">행정동 SHP (공공 무료) + 카카오 점포 카운트</span></div>
+      <div class="compare-row"><span class="k">건물 결</span><span class="v">⭕ 행정동 경계 자체가 도로·건물 따라 그어짐</span></div>
+      <div class="compare-row"><span class="k">호출</span><span class="v">한 번 빌드 후 zones.geojson 영구 — 런타임 0회</span></div>
+    </div>
+    <div class="pros-cons">
+      <div class="pros">✓ 빌드 1회로 영구 폴리곤. 자연스러운 행정 단위. 카카오 한도 부담 0. 서울 SBA와 톤 통일.</div>
+      <div class="cons">✗ 골목상권(블록 단위) 단위는 X. 행정동 단위(보통 수백m~1km).</div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- C. VWorld 건물 폴리곤 -->
+  <!-- ============================================================ -->
+  <div class="card opt-c">
+    <div class="card-tag">
+      <span>옵션 C · VWorld 건물 폴리곤</span>
+      <span class="star">3~5d</span>
+    </div>
+    <div class="card-header">
+      <h2>진짜 건물 한 채 단위 폴리곤</h2>
+      <p class="work">VWorld 건축물 polygon + 카카오 점포 좌표 spatial 매칭</p>
+    </div>
+    <div class="canvas">
+      <svg viewBox="0 0 400 380" preserveAspectRatio="xMidYMid meet">
+        <!-- 배경 도로 -->
+        <line class="road" x1="0" y1="80" x2="400" y2="80" />
+        <line class="road" x1="0" y1="160" x2="400" y2="160" />
+        <line class="road-major" x1="0" y1="240" x2="400" y2="240" />
+        <line class="road" x1="0" y1="320" x2="400" y2="320" />
+        <line class="road" x1="80" y1="0" x2="80" y2="380" />
+        <line class="road-major" x1="180" y1="0" x2="180" y2="380" />
+        <line class="road" x1="280" y1="0" x2="280" y2="380" />
+        <line class="road" x1="350" y1="0" x2="350" y2="380" />
+
+        <!-- 건물 mock (배경) -->
+        <rect class="building" x="20" y="20" width="50" height="50"/>
+        <rect class="building" x="100" y="20" width="60" height="40"/>
+        <rect class="building" x="200" y="30" width="60" height="40"/>
+        <rect class="building" x="300" y="20" width="40" height="40"/>
+        <rect class="building" x="20" y="100" width="40" height="40"/>
+        <rect class="building" x="200" y="100" width="60" height="40"/>
+        <rect class="building" x="300" y="100" width="40" height="40"/>
+        <rect class="building" x="20" y="180" width="50" height="40"/>
+        <rect class="building" x="20" y="260" width="50" height="40"/>
+        <rect class="building" x="300" y="260" width="40" height="40"/>
+
+        <!-- C. 점포 N+ 매칭된 건물만 색칠 (정밀) -->
+        <rect x="100" y="180" width="60" height="40" fill="rgba(255,200,80,0.7)" stroke="#C49A2A" stroke-width="1.5"/>
+        <text x="130" y="205" font-size="9" font-weight="700" fill="#8A6914" text-anchor="middle">12 점포</text>
+
+        <rect x="200" y="180" width="40" height="40" fill="rgba(255,200,80,0.7)" stroke="#C49A2A" stroke-width="1.5"/>
+        <text x="220" y="205" font-size="9" font-weight="700" fill="#8A6914" text-anchor="middle">8</text>
+
+        <rect x="100" y="340" width="60" height="30" fill="rgba(255,200,80,0.7)" stroke="#C49A2A" stroke-width="1.5"/>
+        <text x="130" y="360" font-size="9" font-weight="700" fill="#8A6914" text-anchor="middle">6 점포</text>
+
+        <rect x="200" y="340" width="60" height="30" fill="rgba(255,200,80,0.7)" stroke="#C49A2A" stroke-width="1.5"/>
+        <text x="230" y="360" font-size="9" font-weight="700" fill="#8A6914" text-anchor="middle">9 점포</text>
+
+        <rect x="200" y="260" width="60" height="40" fill="rgba(255,200,80,0.7)" stroke="#C49A2A" stroke-width="1.5"/>
+        <text x="230" y="285" font-size="9" font-weight="700" fill="#8A6914" text-anchor="middle">15 점포</text>
+
+        <!-- 단지 마커 -->
+        <circle class="apt" cx="180" cy="240" r="9"/>
+        <text class="apt-label" x="180" y="262">유승한내들</text>
+      </svg>
+    </div>
+    <div class="legend">
+      <div class="legend-row"><span class="legend-swatch" style="background:rgba(255,200,80,0.7); border:1.5px solid #C49A2A;"></span>점포 임계 통과 건물</div>
+      <div class="legend-row"><span class="legend-swatch" style="background:#E5E7EB;"></span>일반 건물 (점포 X 또는 임계 미만)</div>
+      <div class="legend-row"><span class="legend-swatch" style="background:#C13C3C;"></span>단지 위치</div>
+    </div>
+    <div class="compare">
+      <div class="compare-row"><span class="k">정확도</span><span class="v"><span class="grade g-best">최고</span> 진짜 건물 한 채 단위</span></div>
+      <div class="compare-row"><span class="k">데이터</span><span class="v">VWorld 건축물 polygon + 카카오 점포 spatial join</span></div>
+      <div class="compare-row"><span class="k">건물 결</span><span class="v">⭕⭕ 건물 외곽선 그대로</span></div>
+      <div class="compare-row"><span class="k">호출</span><span class="v">VWorld bulk + spatial query 비용 큼</span></div>
+    </div>
+    <div class="pros-cons">
+      <div class="pros">✓ 시각적 정확도 최고. 건물 한 채 단위로 어디 상권인지 명확.</div>
+      <div class="cons">✗ 작업량 3~5d. spatial join 무거움. 건물이 너무 작아 지도 줌아웃 시 안 보일 수 있음. ROI 낮음.</div>
+    </div>
+  </div>
+
+</div><!-- .grid -->
+
+<!-- ============================================================ -->
+<!-- 한 눈에 비교 -->
+<!-- ============================================================ -->
+<table class="summary-table">
+  <thead>
+    <tr>
+      <th>항목</th>
+      <th>A · Concave Hull</th>
+      <th>B · 행정동 SHP <span class="grade g-best">⭐</span></th>
+      <th>C · VWorld 건물</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>정확도</td>
+      <td><span class="grade g-mid">중</span></td>
+      <td><span class="grade g-high">상</span></td>
+      <td><span class="grade g-best">최고</span></td>
+    </tr>
+    <tr>
+      <td>건물 결 매칭</td>
+      <td>X (점 군집)</td>
+      <td>O (행정동 경계)</td>
+      <td>OO (건물 외곽선)</td>
+    </tr>
+    <tr>
+      <td>작업량</td>
+      <td>15~30분</td>
+      <td>0.5~1d</td>
+      <td>3~5d</td>
+    </tr>
+    <tr>
+      <td>런타임 비용</td>
+      <td>매 리포트 카카오 6회</td>
+      <td>0회 (영구 캐시)</td>
+      <td>VWorld + spatial query</td>
+    </tr>
+    <tr>
+      <td>서울 SBA와 톤 통일</td>
+      <td>X (점 군집은 다른 결)</td>
+      <td>O (행정 단위 비슷)</td>
+      <td>O (정밀 단위)</td>
+    </tr>
+    <tr>
+      <td>유지보수</td>
+      <td>API 의존</td>
+      <td>SHP 갱신만 (반기·연 1회)</td>
+      <td>VWorld API 의존</td>
+    </tr>
+    <tr>
+      <td>ROI</td>
+      <td>중간 (즉시지만 한계 명확)</td>
+      <td><b>최고</b> (작업량/효과)</td>
+      <td>낮음 (작업 큼, 시각 차이 크지 않음)</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="footer-note">
+  <strong>⚠ 본 시뮬레이션은 mock</strong> — 실제 행정동 경계·점포 분포·건물 폴리곤은 데이터 받아 빌드해야 정확합니다.
+  하지만 <strong>각 옵션의 시각적 결</strong>은 실제로도 위와 비슷하게 그려집니다.
+  <br><br>
+  <strong>추천</strong>: <b>옵션 B (행정동 SHP + 점포 카운트)</b>. 작업량 0.5~1d로 SBA 톤에 가장 가까운 자연스러운 폴리곤을 영구 캐시. C는 ROI 낮고, A는 본질 한계로 사용자 신뢰 회복 어려움.
+</div>
+
+</div>
+</body>
+</html>

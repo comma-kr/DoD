@@ -61,8 +61,9 @@ export default async function LocationSection({
   const hasCoord = primary.latitude !== null && primary.longitude !== null;
 
   // 1단계: 단지 주변 데이터 + 가까운 역 좌표를 병렬로
-  // 상권은 SBA 공식 폴리곤(서울만) 우선 사용. 비서울(인천/경기/지방)은 0개라 카카오 동적 fallback.
-  const [nearby, sbaZones, nearbySchools, stationCoord] = hasCoord
+  // 상권은 zones.geojson(서울 SBA + 인천·경기 행정동 단위 빌드) point-in-polygon 우선 매칭.
+  // 데이터에 없는 단지 케이스만 카카오 DBSCAN fallback.
+  const [nearby, officialZones, nearbySchools, stationCoord] = hasCoord
     ? await Promise.all([
         findNearbyLargeApartments(primary.id, primary.latitude!, primary.longitude!),
         getNearbyOfficialZones(primary.latitude!, primary.longitude!),
@@ -71,12 +72,11 @@ export default async function LocationSection({
       ])
     : [[], [], [], null];
 
-  // SBA 결과 0개면 카카오 음식점·카페 DBSCAN 클러스터로 fallback (비서울 단지 폴리곤 0 상태 해소).
-  // 외곽 단지(인천 남동 등)는 800m 반경 점포 밀도 낮음(15건 정도) → 기본값(minPts=5, epsM=60)으론 클러스터 0.
-  // 반경 1500m + 완화된 파라미터로 fallback 호출. 작은 군집도 폴리곤화.
-  // OfficialZone 타입에 맞춰 변환 — name='인근 상권', seName='골목상권' 기본값.
-  let commercialClusters = sbaZones;
-  if (hasCoord && sbaZones.length === 0) {
+  // 공식 폴리곤(zones.geojson) 0개면 카카오 음식점·카페 DBSCAN 클러스터로 fallback.
+  // 인천·경기는 행정동 단위 시드된 zones에서 거의 매칭됨 → fallback 호출 거의 안 함.
+  // 시드 안 된 광역(부산/대구/지방)이나 외곽 단지에서만 fallback.
+  let commercialClusters = officialZones;
+  if (hasCoord && officialZones.length === 0) {
     const kakaoClusters = await fetchCommercialClusters(
       primary.latitude!,
       primary.longitude!,

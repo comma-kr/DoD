@@ -73,3 +73,8 @@ app/data/seoul-commercial-zones/*.json
 app/data/seoul-commercial-zones/*.geojson
 !app/data/seoul-commercial-zones/zones.geojson
 app/data/seoul-commercial-zones/*.csv
+
+# vuski/admdongkor 행정동 raw 데이터 (34MB, 빌드 시 다운로드).
+# zones.geojson에 빌드 결과만 git 포함 — raw는 ignore.
+# 라이선스: 자유 (vuski/admdongkor 출처 표시 권장)
+app/data/admdong-kor/

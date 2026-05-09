@@ -63,6 +63,32 @@ function firstRing(geom: ZoneFeature['geometry']): number[][] {
   return geom.type === 'Polygon' ? geom.coordinates[0] : geom.coordinates[0][0];
 }
 
+// Ray-casting point-in-polygon (단일 ring). 좌표는 [lng, lat] 순서.
+function pointInRing(point: [number, number], ring: number[][]): boolean {
+  const [px, py] = point;
+  let inside = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const [xi, yi] = ring[i];
+    const [xj, yj] = ring[j];
+    if (yi > py !== yj > py && px < ((xj - xi) * (py - yi)) / (yj - yi) + xi) {
+      inside = !inside;
+    }
+  }
+  return inside;
+}
+
+// Polygon/MultiPolygon 모두 처리. 한 ring이라도 안에 있으면 true.
+function pointInGeom(point: [number, number], geom: ZoneFeature['geometry']): boolean {
+  if (!geom) return false;
+  if (geom.type === 'Polygon') {
+    return pointInRing(point, geom.coordinates[0]);
+  }
+  if (geom.type === 'MultiPolygon') {
+    return geom.coordinates.some((poly) => pointInRing(point, poly[0]));
+  }
+  return false;
+}
+
 export interface OfficialZone extends CommercialClusterPoint {
   name: string;
   seName: string; // 골목상권 / 발달상권 / 전통시장 / 관광특구
@@ -71,33 +97,46 @@ export interface OfficialZone extends CommercialClusterPoint {
 
 /**
  * 단지 좌표 기준 인근 공식 상권 폴리곤을 반환.
- * centroid 거리순으로 정렬, 발달상권 우선, 너무 작은(골목) 상권은 거리에 패널티.
+ * 1) point-in-polygon 검사 — 단지 점이 어떤 폴리곤 안이면 distanceM=0으로 무조건 매칭
+ *    (서울 SBA 발달상권은 작아 centroid가 멀어도 단지가 그 안일 수 있음. 인천/경기 행정동
+ *     폴리곤은 큰 영역이라 centroid가 단지에서 3~5km 떨어져도 단지는 그 안일 수 있음)
+ * 2) centroid radius 내 인접 폴리곤도 함께
  *
  * @param lat 단지 위도
  * @param lng 단지 경도
- * @param radiusM 반경 (기본 1500m)
+ * @param radiusM centroid 매칭 반경 (기본 3000m — 행정동 단위 cover)
  * @param limit 최대 개수 (기본 6)
  */
 export async function getNearbyOfficialZones(
   lat: number,
   lng: number,
-  radiusM = 1500,
+  radiusM = 3000,
   limit = 6
 ): Promise<OfficialZone[]> {
   const zones = await loadZones();
 
-  type Cand = ZoneFeature & { _dist: number };
+  type Cand = ZoneFeature & { _dist: number; _inside: boolean };
   const candidates: Cand[] = [];
+  const aptPoint: [number, number] = [lng, lat];
+  // 인접(non-inside) 매칭 시 점포 임계 — 행정동 시드는 storeCount=0인 외곽 동도 포함.
+  // 단지가 그 안일 땐 무조건 표시(inside), 인접에선 임계 통과(>=30) 행정동만 표시.
+  const NEIGHBOR_STORE_MIN = 30;
   for (const f of zones.features) {
     const c = f.properties.centroid;
     if (!c) continue;
     const [zLng, zLat] = c;
     const d = distM(lat, lng, zLat, zLng);
-    if (d > radiusM) continue;
-    candidates.push(Object.assign({}, f, { _dist: d }));
+    const inside = pointInGeom(aptPoint, f.geometry);
+    if (!inside) {
+      if (d > radiusM) continue;
+      // 인접 행정동은 점포 임계 통과해야 표시 (외곽 동 노이즈 차단)
+      const sc = f.properties.storeCount ?? 0;
+      if (sc < NEIGHBOR_STORE_MIN) continue;
+    }
+    candidates.push(Object.assign({}, f, { _dist: inside ? 0 : d, _inside: inside }));
   }
 
-  // 발달상권/관광특구 우선, 그다음 전통시장, 마지막 골목상권 (다양성 확보)
+  // 단지 점이 안에 있는 폴리곤 우선, 그다음 발달상권/관광특구/전통시장, 마지막 골목상권
   const tierOf = (seName: string | null) => {
     if (seName === '발달상권') return 0;
     if (seName === '관광특구') return 1;
@@ -105,6 +144,7 @@ export async function getNearbyOfficialZones(
     return 3; // 골목 + 미분류
   };
   candidates.sort((a, b) => {
+    if (a._inside !== b._inside) return a._inside ? -1 : 1; // inside 우선
     const ta = tierOf(a.properties.seName);
     const tb = tierOf(b.properties.seName);
     if (ta !== tb) return ta - tb;
