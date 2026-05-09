@@ -17,7 +17,9 @@ import { HOUSEHOLD_LABELS, COMMUTE_LABELS, PRIORITY_LABELS } from '@/types/profi
 import {
   apartmentAgeYears,
   calcPricePerPyeong,
+  extractRegion,
   formatPricePerPyeong,
+  josa,
   m2ToPyeong,
   typicalPublicPyeong,
   standardPrivateArea,
@@ -178,8 +180,13 @@ function deriveFacts(apt: ApartmentWithLatestPrice): ApartmentFacts {
       ? '재건축 가능성과 현 상태 관리비를 함께 봐야 할 구간이에요'
       : '';
 
+  // walkMin === 0 (= stationDistanceM null) 케이스가 walkMin <= 10에 통과되어
+  // '역세권 범위'로 잘못 표기되던 버그. 첫 분기에서 0/음수를 명시 차단.
+  // memory: report_body_guards 1 — nearestStation null이면 '역세권' 단어 사용 금지.
   const walkComment =
-    walkMin > 0 && walkMin <= 5
+    walkMin <= 0
+      ? ''
+      : walkMin <= 5
       ? '초역세권으로 분류되는 거리'
       : walkMin <= 10
       ? '역세권 범위'
@@ -415,7 +422,7 @@ function buildIntro(f: ApartmentFacts, profile: UserProfile | null): string {
 
 ${firstImpression}${positioning ? ` — "${positioning}"이라는 키워드로 압축되는 단지예요.` : ''}
 
-**${f.name}은(는) ${f.district ? f.district + ' ' : ''}${f.dong ? f.dong + ' 일대에서 ' : ''}${f.scaleLabel || '한'}의 정체성을 가진 단지**로, 숫자만 봐도 포지션이 명확하게 드러나요.${greeting}`;
+**${f.name}${josa(f.name, '은/는')} ${f.district ? f.district + ' ' : ''}${f.dong ? f.dong + ' 일대에서 ' : ''}${f.scaleLabel || '한'}의 정체성을 가진 단지**로, 숫자만 봐도 포지션이 명확하게 드러나요.${greeting}`;
 }
 
 function buildStrengths(f: ApartmentFacts, profile: UserProfile | null): string {
@@ -560,7 +567,20 @@ function buildSchool(
     profile?.householdType === 'school_parent' ||
     profile?.householdType === 'newlywed';
 
-  const heading = '## 🏫 아이 키우기엔';
+  // 가구별 H2 헤더 차별화 — newlywed에 '아이 키우기엔'은 톤 미스매치.
+  // memory: report_body_guards 3.
+  const SCHOOL_H2: Record<HouseholdType, string> = {
+    single: '## 🏫 학군·교육 환경',
+    couple: '## 🏫 학군·교육 환경',
+    newlywed: '## 🏫 학군 미리 본다면',
+    family_kids: '## 🏫 아이 키우기엔',
+    school_parent: '## 🏫 학군 핵심 체크',
+    retired: '## 🏫 주변 학교 분포',
+    investor: '## 🏫 학군 가치 (참고)',
+  };
+  const heading = profile?.householdType
+    ? SCHOOL_H2[profile.householdType]
+    : '## 🏫 학군·교육 환경';
 
   if (!isParent && profile) {
     // 자녀 없는 케이스는 짧게
@@ -608,11 +628,12 @@ function buildSchool(
     }
   }
 
+  // 학교알리미 떠넘김 제거 (memory: report_body_guards 4).
+  // 자체 데이터(NearbySchoolsCard·반경 1.5km 분포 + 카카오 PS3 어린이집)만 사용.
   const block = `${heading}
 
 ${f.district || '해당 지역'}${f.dong ? ' ' + f.dong : ''} 일대의 학군 정보를 모았어요.
 
-- **배정 초등학교**: 학교알리미(schoolinfo.go.kr)에서 단지 주소 기준 배정 확인 (배정만 정확)
 ${schoolCountLine ? schoolCountLine + '\n' : ''}- **학원가 밀집도**: ${academyClusterFromDb || getAcademyCluster(f.district)}
 ${
   f.units >= 1500
@@ -677,13 +698,19 @@ function buildPrice(f: ApartmentFacts, _profile: UserProfile | null): string {
   }
 
   const positionLabel =
-    f.price10k && f.price10k >= 300000
-      ? '서울 최상급지 가격대'
-      : f.price10k && f.price10k >= 200000
-      ? '서울 주요 상급지 가격대'
-      : f.price10k && f.price10k >= 100000
-      ? '서울 중상위권 가격대'
-      : '서울 평균 수준 가격대';
+    // 권역별 비교 톤 분기 — '서울 평균' 하드코딩 차단 (memory: report_body_guards 2).
+    (() => {
+      const region = extractRegion(f.address);
+      const regionLabel =
+        region === '서울' ? '서울'
+        : region === '경기' || region === '인천' ? '수도권'
+        : region ? region
+        : '권역';
+      if (f.price10k && f.price10k >= 300000) return `${regionLabel} 최상급지 가격대`;
+      if (f.price10k && f.price10k >= 200000) return `${regionLabel} 주요 상급지 가격대`;
+      if (f.price10k && f.price10k >= 100000) return `${regionLabel} 중상위권 가격대`;
+      return `${regionLabel} 평균 수준 가격대`;
+    })();
 
   // 평당가는 시장 표준인 공급면적 기준 (호갱노노/네이버부동산/아실 동일).
   // 라벨에 "공급면적 기준" 명시해서 25.7평(전용)·34평(공급) 헷갈리는 모순 제거.
@@ -719,8 +746,11 @@ function buildTrend(f: ApartmentFacts, _profile: UserProfile | null): string {
   const deltaLine: string[] = [];
   if (f.priceDelta12m !== null) {
     const sign = f.priceDelta12m > 0 ? '📈' : f.priceDelta12m < 0 ? '📉' : '➡️';
+    // 라벨 동기화 — observationMonths < 12면 '최근 N개월'로 정직 표기.
+    // memory: report_body_guards 6 (거래 기간 ↔ 상승률 라벨 동기화).
+    const period12Label = f.observationMonths >= 12 ? '최근 1년' : `최근 ${f.observationMonths}개월`;
     deltaLine.push(
-      `${sign} **최근 1년** ${f.priceDelta12m > 0 ? '+' : ''}${f.priceDelta12m}%`
+      `${sign} **${period12Label}** ${f.priceDelta12m > 0 ? '+' : ''}${f.priceDelta12m}%`
     );
   }
   if (f.priceDelta6m !== null) {
@@ -818,7 +848,7 @@ function buildClosing(f: ApartmentFacts, profile: UserProfile | null): string {
   // 마크다운 안 업셀 안내 제거 — UpsellCTAs 컴포넌트와 중복이라 본문 끝은 닫음말로만.
   return `## 🧭 한 줄 정리
 
-**${tagline}의 조합**이라는 관점에서 ${f.name}을(를) 봤어요.
+**${tagline}의 조합**이라는 관점에서 ${f.name}${josa(f.name, '을/를')} 봤어요.
 
 ${profileMessage}`;
 }

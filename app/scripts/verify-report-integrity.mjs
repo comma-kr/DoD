@@ -141,6 +141,37 @@ async function verifyNewReport(reportId) {
   check('학교 분포 카운트 ("초등학교 N곳") 표기', /초등학교 \d+곳|학군 정보/.test(schoolSection));
   check('학교 섹션에 "지도 앱" 떠넘김 없음', !schoolSection.includes('지도 앱'),
     schoolSection.includes('지도 앱') ? '"지도 앱" 텍스트 잔존 — 데이터로 풀어줘야' : '');
+  // memory: report_body_guards 4 — '학교알리미' 외부 사이트 떠넘김 차단
+  check('학교 섹션에 "학교알리미" 떠넘김 없음', !schoolSection.includes('학교알리미'),
+    schoolSection.includes('학교알리미') ? '"학교알리미" 외부 사이트 안내 잔존 — 우리 데이터로 풀어줘야' : '');
+
+  // memory: report_body_guards 1 — nearestStation null이면 본문에 '역세권' 단어 사용 금지
+  // content.apartments[0].nearestStation 확인
+  const apartments = (await sb.from('reports').select('content').eq('id', reportId).single()).data?.content?.apartments ?? [];
+  const apt = apartments[0];
+  if (apt && (apt.nearestStation === null || apt.nearestStation === '')) {
+    check('nearestStation null인데 본문에 "역세권" 단어 없음', !md.includes('역세권'),
+      md.includes('역세권') ? `nearestStation null인데 '역세권' 단어 발견 — 모순 (memory: report_body_guards 1)` : '');
+  }
+
+  // memory: report_body_guards 2 — 비서울 단지에 "서울 평균"/"서울 중상위권" 등 서울 비교 X
+  if (apt && apt.address && !apt.address.startsWith('서울')) {
+    const seoulCompareMatches = md.match(/서울\s*(평균|중상위권|상급지|최상급지)/);
+    check('비서울 단지에 "서울 평균" 등 서울 기준 비교 없음', !seoulCompareMatches,
+      seoulCompareMatches ? `'${seoulCompareMatches[0]}' 잔존 — 권역 평균으로 (memory: report_body_guards 2)` : '');
+  }
+
+  // memory: report_body_guards 5 — 한국어 조사 raw 표기(은(는)/이(가)/을(를)/과(와)) 차단
+  const josaPatterns = ['은(는)', '는(은)', '이(가)', '가(이)', '을(를)', '를(을)', '과(와)', '와(과)'];
+  for (const p of josaPatterns) {
+    if (md.includes(p)) {
+      check(`본문에 한국어 조사 raw '${p}' 없음`, false,
+        `'${p}' 잔존 — josa() 헬퍼 사용 (memory: report_body_guards 5)`);
+    }
+  }
+  if (!josaPatterns.some((p) => md.includes(p))) {
+    check('본문에 한국어 조사 raw "(은/는)" 등 표기 없음', true);
+  }
 
   // 카드 섹션 (LifeScenario) — 면책 멘트 제거 확인
   // 마크다운 본문 외 컴포넌트 검사는 별도 — 일단 마크다운 면책만

@@ -94,6 +94,50 @@ export function maskKoreanPhone(phone: string): string {
   return `${m[1]}-****-${m[3]}`;
 }
 
+// 한글 마지막 음절의 받침 유무 판별. (한글 외 문자는 false 반환)
+function hasJongsung(ch: string): boolean {
+  if (!ch) return false;
+  const code = ch.charCodeAt(0);
+  if (code < 0xac00 || code > 0xd7a3) return false;
+  return (code - 0xac00) % 28 !== 0;
+}
+
+// 한국어 조사 자동 처리. `${apt.name}${josa(apt.name, '은/는')}` 식.
+// 본문에 '(은/는)', '(을/를)' 등 raw 패턴 노출 금지 (memory: report_body_guards 5).
+export function josa(
+  word: string,
+  pair: '은/는' | '이/가' | '을/를' | '과/와' | '으로/로'
+): string {
+  if (!word) return pair.split('/')[0];
+  const lastCh = word[word.length - 1];
+  const has = hasJongsung(lastCh);
+  if (pair === '으로/로') {
+    if (!has) return '로';
+    // 'ㄹ' 받침은 '로' 사용 (예: '서울로')
+    if ((lastCh.charCodeAt(0) - 0xac00) % 28 === 8) return '로';
+    return '으로';
+  }
+  const [withJongsung, withoutJongsung] = pair.split('/');
+  return has ? withJongsung : withoutJongsung;
+}
+
+// 광역단위 추출 — '서울특별시 영등포구...' / '인천광역시 남동구...' / '경기도 성남시...'
+// 비서울 단지에서 '서울 평균' 비교 표현 차단용 (memory: report_body_guards 2).
+export function extractRegion(address: string | null | undefined): string | null {
+  if (!address) return null;
+  const m = address.match(/^(서울|부산|대구|인천|광주|대전|울산|세종|경기|강원|충(?:청)?[북남]|전(?:라)?[북남]|경(?:상)?[북남]|제주)/);
+  if (!m) return null;
+  // 정규형으로 매핑 (충청북도 → 충북 등 전체 일치 시 약식 반환)
+  const raw = m[1];
+  if (raw === '충청북') return '충북';
+  if (raw === '충청남') return '충남';
+  if (raw === '전라북') return '전북';
+  if (raw === '전라남') return '전남';
+  if (raw === '경상북') return '경북';
+  if (raw === '경상남') return '경남';
+  return raw;
+}
+
 export function normalizePhone(phone: string): string {
   return phone.replace(/[^0-9]/g, '');
 }

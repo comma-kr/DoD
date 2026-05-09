@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>UX 진단 — iPhone 12 Pro 모바일 검토 · 칠래말래?</title>
+<style>
+  :root {
+    --bg: #fafafa;
+    --surface: #ffffff;
+    --surface-soft: #f4f4f5;
+    --border: #e4e4e7;
+    --border-soft: #f1f1f3;
+    --fg: #18181b;
+    --fg-sub: #71717a;
+    --fg-mute: #a1a1aa;
+    --accent: #3b82f6;
+    --accent-soft: #eff6ff;
+    --critical: #dc2626;
+    --critical-soft: #fef2f2;
+    --high: #ea580c;
+    --high-soft: #fff7ed;
+    --medium: #ca8a04;
+    --medium-soft: #fefce8;
+    --low: #16a34a;
+    --low-soft: #f0fdf4;
+    --code-bg: #f4f4f5;
+    --code-fg: #18181b;
+    --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 16px -8px rgba(0,0,0,0.06);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", "Segoe UI", system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    letter-spacing: -0.005em;
+    word-break: keep-all;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .page { max-width: 880px; margin: 0 auto; padding: 56px 28px 96px; }
+
+  /* ─── Header ─── */
+  .doc-header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 28px;
+    margin-bottom: 40px;
+  }
+  .doc-eyebrow {
+    display: inline-block;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+  }
+  .doc-title {
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    margin: 0 0 14px;
+  }
+  .doc-meta {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px 24px;
+    color: var(--fg-sub);
+    font-size: 13px;
+    margin-top: 18px;
+  }
+  .doc-meta dt {
+    display: inline;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--fg-mute);
+    margin-right: 10px;
+  }
+  .doc-meta dd { display: inline; margin: 0; color: var(--fg); font-weight: 600; }
+
+  /* ─── Sections ─── */
+  h2 {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.015em;
+    margin: 56px 0 8px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-soft);
+    line-height: 1.35;
+  }
+  h2:first-of-type { border-top: 0; padding-top: 0; }
+  h3 {
+    font-size: 17px;
+    font-weight: 700;
+    margin: 32px 0 6px;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+  }
+  h3 .num {
+    display: inline-block;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--fg-mute);
+    margin-right: 8px;
+    letter-spacing: 0.04em;
+  }
+  p { margin: 10px 0; }
+  ul, ol { padding-left: 22px; margin: 10px 0; }
+  li { margin: 4px 0; }
+
+  /* ─── Severity badges ─── */
+  .sev {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 999px;
+    margin-right: 8px;
+    vertical-align: 1px;
+  }
+  .sev::before {
+    content: "";
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+  }
+  .sev.critical { background: var(--critical-soft); color: var(--critical); }
+  .sev.critical::before { background: var(--critical); }
+  .sev.high { background: var(--high-soft); color: var(--high); }
+  .sev.high::before { background: var(--high); }
+  .sev.medium { background: var(--medium-soft); color: var(--medium); }
+  .sev.medium::before { background: var(--medium); }
+  .sev.low { background: var(--low-soft); color: var(--low); }
+  .sev.low::before { background: var(--low); }
+
+  /* ─── Code & path ─── */
+  code, .path {
+    font-family: ui-monospace, SFMono-Regular, "JetBrains Mono", Menlo, monospace;
+    font-size: 0.88em;
+    background: var(--code-bg);
+    color: var(--code-fg);
+    padding: 1px 6px;
+    border-radius: 4px;
+    border: 1px solid var(--border-soft);
+  }
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    font-size: 12.5px;
+    line-height: 1.6;
+    margin: 12px 0;
+    font-family: ui-monospace, SFMono-Regular, "JetBrains Mono", Menlo, monospace;
+  }
+  pre code {
+    background: none;
+    border: 0;
+    padding: 0;
+    font-size: inherit;
+    color: inherit;
+  }
+
+  /* ─── Cards ─── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 22px;
+    box-shadow: var(--shadow);
+    margin: 16px 0;
+  }
+  .card.summary {
+    border-left: 4px solid var(--accent);
+    background: linear-gradient(180deg, var(--accent-soft), #fff 70%);
+  }
+  .card.note {
+    background: var(--surface-soft);
+    border-style: dashed;
+    box-shadow: none;
+  }
+  .card .card-label {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--fg-mute);
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  /* ─── Tables ─── */
+  .table-wrap { overflow-x: auto; margin: 16px 0; border: 1px solid var(--border); border-radius: 10px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border-soft);
+    vertical-align: top;
+  }
+  thead th {
+    background: var(--surface-soft);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--fg-sub);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody tr:hover { background: var(--surface-soft); }
+  td.num, th.num { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; white-space: nowrap; }
+  .pill {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--surface-soft);
+    color: var(--fg-sub);
+  }
+  .pill.crit { background: var(--critical-soft); color: var(--critical); }
+  .pill.hi   { background: var(--high-soft); color: var(--high); }
+  .pill.med  { background: var(--medium-soft); color: var(--medium); }
+  .pill.low  { background: var(--low-soft); color: var(--low); }
+
+  /* ─── Misc ─── */
+  blockquote {
+    border-left: 3px solid var(--accent);
+    background: var(--accent-soft);
+    padding: 12px 18px;
+    margin: 16px 0;
+    border-radius: 0 8px 8px 0;
+    color: var(--fg);
+  }
+  blockquote p { margin: 4px 0; }
+  hr { border: 0; border-top: 1px solid var(--border-soft); margin: 40px 0; }
+
+  .doc-footer {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    color: var(--fg-mute);
+    font-size: 12px;
+  }
+
+  /* ─── Print ─── */
+  @media print {
+    body { background: #fff; }
+    .page { padding: 0; max-width: 100%; }
+    .card, pre, .table-wrap { box-shadow: none; break-inside: avoid; }
+    h2, h3 { break-after: avoid; }
+    a { color: inherit; text-decoration: none; }
+  }
+
+  /* ─── Mobile ─── */
+  @media (max-width: 560px) {
+    .page { padding: 32px 18px 64px; }
+    .doc-title { font-size: 24px; }
+    h2 { font-size: 19px; }
+    h3 { font-size: 15px; }
+    body { font-size: 15px; }
+    .doc-meta { grid-template-columns: 1fr; }
+    table { font-size: 13px; }
+    th, td { padding: 8px 10px; }
+  }
+</style>
+</head>
+<body>
+<main class="page">
+
+<header class="doc-header">
+  <span class="doc-eyebrow">📱 Mobile Audit · iPhone 12 Pro</span>
+  <h1 class="doc-title">UX 진단 — iPhone 12 Pro 모바일 검토</h1>
+  <p style="color:var(--fg-sub); margin: 0;">칠래말래? 리포트 페이지 모바일 전용 검토 보충본</p>
+
+  <dl class="doc-meta">
+    <div><dt>Date</dt><dd>2026-05-09</dd></div>
+    <div><dt>Target</dt><dd>/report/b22a6634-…</dd></div>
+    <div><dt>Viewport</dt><dd>390 × 844 px (DPR 3)</dd></div>
+    <div><dt>Method</dt><dd>코드 직독 + Tailwind 분기 분석</dd></div>
+    <div><dt>Auditor</dt><dd>외부 UX 평가자 시점</dd></div>
+    <div><dt>Scope</dt><dd>리포트 컴포넌트 13개</dd></div>
+  </dl>
+</header>
+
+<section>
+  <div class="card summary">
+    <span class="card-label">한 줄 요약</span>
+    <p style="margin:0; font-size:15.5px;">
+      모바일에서 <strong>화면의 절반 이상을 지도가 점유</strong>하고, <strong>네이티브 공유 버튼이 모바일에서 숨겨져 있어 카톡 공유 채널이 막힘</strong>이 가장 큰 회복 포인트.
+      나머지는 폰트 사이즈·그리드 분기·터치 타겟 등 디테일 정정이며, 한 번 정리하면 모바일 가독성이 한 단계 올라간다.
+    </p>
+  </div>
+
+  <div class="card note">
+    <span class="card-label">검토 한계</span>
+    <p style="margin:0;">
+      <code>/report/[id]</code>는 세션 인증이 필요해 <strong>라이브 렌더링 화면을 직접 캡처하지 못했다.</strong>
+      본 검토는 13개 컴포넌트 소스 코드와 Tailwind 클래스의 모바일(<code>&lt;640px</code>) 분기를 정밀 분석한 결과이며,
+      Recharts 차트의 X축 tick 겹침·카카오맵 마커 충돌·framer-motion 애니메이션 끊김 등 동적 동작은
+      <strong>실 디바이스 또는 Chrome DevTools 디바이스 모드 후속 QA가 권장</strong>된다.
+    </p>
+  </div>
+</section>
+
+<!-- ───────────── 1 Critical ───────────── -->
+<h2><span class="sev critical">Critical</span> 1. 즉시 수정</h2>
+
+<h3><span class="num">1.1</span> ShareBar 네이티브 공유 버튼이 모바일에서 숨겨져 있다 (역설)</h3>
+<p><strong>위치</strong>: <span class="path">src/components/report/ShareBar.tsx:81-87</span></p>
+<pre><code>&lt;button onClick={handleNativeShare}
+  className="hidden ... sm:flex"&gt;  ← sm 이상에서만 보임
+  &lt;Share2 /&gt; 공유
+&lt;/button&gt;</code></pre>
+<ul>
+  <li><code>handleNativeShare</code>는 <code>navigator.share</code>를 호출하는데 이 API는 모바일(iOS Safari·Android)에서만 의미가 있다.</li>
+  <li>데스크탑은 native share가 어색해 안 쓰는 게 맞는데, <strong>현재는 정반대 — 모바일에서 버튼이 숨겨져 있고 데스크탑에서만 보인다.</strong></li>
+  <li>결과: 카카오톡·메시지 앱 같은 <strong>모바일 핵심 공유 채널이 모두 막힘.</strong> 990원 결제 후 가족에게 카톡 공유로 보여주는 자연스러운 바이럴 시나리오가 죽음.</li>
+</ul>
+<p><strong>해결</strong>: <code>hidden sm:flex</code> → <code>flex</code> (또는 환경 감지로 분기). 단일 버튼이 모바일에서 native share, 데스크탑에서 fallback copy로 자연 분기되게.</p>
+
+<h3><span class="num">1.2</span> LifeScenario — 모바일에서 4 카드가 세로 1열, 본문 11px</h3>
+<p><strong>위치</strong>: <span class="path">src/components/report/LifeScenario.tsx:223</span></p>
+<pre><code>className="mt-5 grid auto-rows-fr gap-3 break-keep sm:grid-cols-2 lg:grid-cols-4"</code></pre>
+<ul>
+  <li>베이스 columns 미정의 → <strong>모바일 = 1열</strong>. 4개 카드가 세로로 쌓여 스크롤 길이 폭증.</li>
+  <li>카드 본문 <code>text-[11px]</code> → iPhone 12 Pro에서 권장 최소(14px) 미달. 한국어는 자형이 복잡해 더 작게 느껴짐.</li>
+  <li>WhyChillaeMallaeSection의 동일 미리보기는 <code>grid-cols-2 sm:grid-cols-4</code>로 모바일에서 <strong>2열</strong>. <strong>랜딩 미리보기와 실제 리포트의 그리드가 일치하지 않음</strong> → 사용자 기대치 깨짐.</li>
+</ul>
+<p><strong>해결</strong>: 베이스 <code>grid-cols-2</code> 명시 + 본문 <code>text-xs</code>(12px) 이상 상향.</p>
+
+<h3><span class="num">1.3</span> NeighborhoodMap — 화면의 54%가 지도</h3>
+<p><strong>위치</strong>: <span class="path">src/components/report/NeighborhoodMap.tsx:178</span></p>
+<pre><code>className="map-frame-wrap relative h-[460px] w-full"</code></pre>
+<ul>
+  <li>iPhone 12 Pro 뷰포트 844px 중 <strong>460px = 54%를 지도가 점유</strong>.</li>
+  <li>좌측 하단 범례 <code>max-w-[340px]</code> → 390px 화면에서 폭 거의 전부, 지도 좌측 절반을 가림.</li>
+  <li>마커 라벨이 학교 4-5개 + 주변단지 5개 + 폴리곤 라벨이면 <strong>가독성 급락</strong> (anti-collision 로직 없음).</li>
+  <li>줌 컨트롤 미장착 → <strong>핀치 줌만 가능</strong>. 한 손 사용 시 어렵다.</li>
+</ul>
+<p><strong>해결</strong></p>
+<ol>
+  <li>모바일 높이 <code>h-[360px]</code> 또는 <code>h-[50vh]</code>로 축소</li>
+  <li>범례를 우상단 토글 버튼(<code>범례 ▼</code>)으로 접어두기</li>
+  <li>카카오맵 줌 컨트롤 활성화 (<code>new kakao.maps.ZoomControl()</code>)</li>
+</ol>
+
+<h3><span class="num">1.4</span> ReportByline — 모바일 2×2 그리드에서 SUBJECT 잘림</h3>
+<p><strong>위치</strong>: <span class="path">src/components/report/ReportByline.tsx:50</span></p>
+<pre><code>className="grid grid-cols-2 ... sm:grid-cols-4"</code></pre>
+<ul>
+  <li>4개 셀(SUBJECT/PERSPECTIVE/PRIORITY/DATE) → 모바일 2×2.</li>
+  <li>SUBJECT가 비교 리포트일 때 <em>"여의도삼부 vs 시범아파트"</em> — 셀 폭 ≈ 165px에 14px 폰트로 들어가면 <code>break-keep</code> 단어 단위 줄바꿈으로 어색.</li>
+</ul>
+<p><strong>해결</strong>: 모바일은 <code>grid-cols-1 sm:grid-cols-4</code> 또는 SUBJECT만 <code>col-span-2</code>.</p>
+
+
+<!-- ───────────── 2 High ───────────── -->
+<h2><span class="sev high">High</span> 2. 전환·가독성 직격</h2>
+
+<h3><span class="num">2.1</span> HookHighlights Hero — 우측 destination 블록 압축</h3>
+<p><strong>위치</strong>: <span class="path">src/components/report/HookHighlights.tsx:296-336</span></p>
+<pre><code>&lt;div className="mt-4 flex items-end gap-3"&gt;
+  &lt;div className="min-w-0"&gt;{heroMain}&lt;/div&gt;     ← text-5xl (48px)
+  &lt;div className="ml-auto shrink-0 text-right"&gt;{heroRight}&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+<ul>
+  <li>좌측 48px + 우측 24px 한 줄. 우측 <code>shrink-0</code>이라 좌측만 압축됨.</li>
+  <li>상단 <code>heroTopRight</code>(예: "여의나루역 5호선 · 320m")는 <code>truncate text-xs</code> → 모바일에서 ellipsis 잘림 빈번.</li>
+</ul>
+<p><strong>해결</strong>: 모바일에서 좌·우를 세로 적층 (<code>flex-col sm:flex-row</code>).</p>
+
+<h3><span class="num">2.2</span> InsightCards — 모바일 1열에서 6 카드, 1순위 ★ 인지 약함</h3>
+<p><strong>위치</strong>: <span class="path">src/components/report/InsightCards.tsx:226</span></p>
+<ul>
+  <li>모바일 1열 × 6 = 매우 긴 세로 스택.</li>
+  <li>1순위 <code>ring-2</code>로 강조하지만 <strong>모바일에서 1순위에서 다른 카드로 가려면 5번 스크롤</strong> → 차별화 임팩트 약화.</li>
+</ul>
+<p><strong>해결</strong>: 모바일 1순위 카드는 <code>border-2</code> + 헤드라인 <code>text-xl</code> 상향. 또는 2~6순위를 처음 3개만 노출 + "더 보기" 토글.</p>
+
+<h3><span class="num">2.3</span> TradeFlowTabs — 표 + ▲최고 pill이 거래가 옆에 붙어 폭 부족</h3>
+<p><strong>위치</strong>: <span class="path">src/components/report/TradeFlowTabs.tsx:177-202</span></p>
+<ul>
+  <li>모바일 폭 ≈ 342px에서 4컬럼(거래월/거래가/평당가/층) + ▲최고 pill 압축.</li>
+  <li><code>overflow-x-auto</code>는 있지만 <strong>첫 진입 시 한눈에 안 보이는 게 문제</strong>.</li>
+  <li>PriceChart <code>h-56</code>(224px) — 18건 거래 시 X축 tick 겹침 (<code>interval</code> 미설정).</li>
+</ul>
+<p><strong>해결</strong>: 모바일은 표 → 카드 리스트 변환(거래월 / 거래가(평당가)). 차트는 <code>interval="preserveStartEnd"</code>.</p>
+
+<h3><span class="num">2.4</span> NeighborhoodMap 범례 토글 — 터치 타겟 작음</h3>
+<p><strong>위치</strong>: <span class="path">src/components/report/NeighborhoodMap.tsx:209-249</span></p>
+<ul>
+  <li>버튼 패딩 없음, <code>h-3</code>(12px) 색칩 + 텍스트만. 실 터치 타겟 ≈ 24px.</li>
+  <li>Apple HIG 권장 44×44pt 미달, 다섯 토글이 <code>gap-y-1.5</code>로 매우 가까이 → 잘못 누르기 쉬움.</li>
+</ul>
+<p><strong>해결</strong>: <code>py-1.5 px-2 -mx-2</code>로 클릭 영역 ≥40px 확보.</p>
+
+<h3><span class="num">2.5</span> 헤더 제목 — 모바일에서 가용 폭 322px</h3>
+<p><strong>위치</strong>: <span class="path">src/app/report/[id]/page.tsx:114</span></p>
+<pre><code>&lt;h1 className="mt-4 border-l-4 border-primary pl-5 text-3xl ... sm:text-4xl"&gt;
+  {report.title}
+&lt;/h1&gt;</code></pre>
+<ul>
+  <li>모바일: 30px + pl-5(20px) + border 4px → 가용 폭 ≈ 322px. 비교 리포트 긴 제목은 <strong>4-5줄로 깨짐</strong>.</li>
+  <li>30px × 5줄 = 150px 점유 → first paint에서 핵심 콘텐츠가 너무 아래로 밀림.</li>
+</ul>
+<p><strong>해결</strong>: 모바일 <code>text-2xl</code> 다운, <code>sm:text-3xl</code>. 또는 <code>text-balance</code>로 자동 균형.</p>
+
+
+<!-- ───────────── 3 Medium ───────────── -->
+<h2><span class="sev medium">Medium</span> 3. 일관성·디테일</h2>
+
+<h3><span class="num">3.1</span> 폰트 사이즈 일괄 점검 — 11px 미만이 너무 많다</h3>
+<p>iPhone 12 Pro 권장 최소 12px / 본문 14~16px 기준:</p>
+<div class="table-wrap">
+<table>
+<thead><tr>
+  <th>컴포넌트</th><th>위치</th><th>사이즈</th><th>평가</th>
+</tr></thead>
+<tbody>
+<tr><td>LifeScenario body</td><td><code>line 240</code></td><td class="num">11px</td><td>작음</td></tr>
+<tr><td>HookHighlights subFooter</td><td><code>line 362</code></td><td class="num">10px</td><td><strong>너무 작음</strong></td></tr>
+<tr><td>HookHighlights heroRight hint</td><td><code>line 331</code></td><td class="num">10px</td><td>너무 작음</td></tr>
+<tr><td>NearbySchoolsCard 거리 sub</td><td><code>line 84</code></td><td class="num">10px</td><td>너무 작음</td></tr>
+<tr><td>KakaoMap 마커 라벨</td><td>inline style</td><td class="num">10–13px</td><td>가변, 흐림</td></tr>
+<tr><td>ReportTocBar 진행 바</td><td><code>line 64</code></td><td class="num">2px height</td><td>거의 안 보임</td></tr>
+<tr><td>ProfileBadge body</td><td><code>line 90</code></td><td class="num">13px</td><td>살짝 작음</td></tr>
+<tr><td>카드 footer 캡션 다수</td><td>—</td><td class="num">10–11px</td><td>작음</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>해결</strong>: <code>text-[10px]</code> → <code>text-[11px]</code> 또는 <code>text-xs</code>(12px) 일괄 상향. 본문은 13px 이상 권장.</p>
+
+<h3><span class="num">3.2</span> RegionPercentileBar — wrap 시 시각 흐트러짐</h3>
+<p><strong>위치</strong>: <span class="path">src/components/report/RegionPercentileBar.tsx:25-46</span></p>
+<p>3개 노드(스코프·평당가·차이) + 아이콘이 <code>flex-wrap</code>으로 모바일 폭에서 wrap. 한 줄 안 들어가면 2-3줄로 분리되며 시선 흐름 깨짐.</p>
+<p><strong>해결</strong>: 모바일 <code>flex-col</code> 강제, <code>sm:flex-row</code>. 또는 가장 중요한 노드(평균 대비 %)만 노출.</p>
+
+<h3><span class="num">3.3</span> CompareSuggestionsCard CTA 줄바꿈</h3>
+<p><strong>위치</strong>: <span class="path">src/components/report/CompareSuggestionsCard.tsx:88-93</span></p>
+<pre><code>{currentApartmentName} + 추천 단지 {suggestions.length}곳 나란히 보기 · 990원</code></pre>
+<ul>
+  <li>모바일 폭 ≈ 290px에 14px 폰트 → <strong>줄바꿈 빈번</strong>.</li>
+  <li>"추천 단지" 카피 자체가 1차 리포트 톤 가이드 위반 지적과 겹침 — 합쳐서 수정.</li>
+</ul>
+<p><strong>해결</strong>: 카피 단축 → <code>옆 단지랑 나란히 보기 · 990원</code>.</p>
+
+<h3><span class="num">3.4</span> ApartmentSpecs — 모바일 1열에서 'A/B' 라벨 의미 약화</h3>
+<p><strong>위치</strong>: <span class="path">src/components/report/ApartmentSpecs.tsx:125, 190</span></p>
+<ul>
+  <li><code>sm:grid-cols-3</code> + <code>sm:grid-cols-2</code> → 모바일 1열, 카드 5개 누적.</li>
+  <li>A/B 라벨이 좌우 비교 의도였는데 <strong>모바일은 위아래로 쌓이니 'A','B' 의미가 약해짐</strong>.</li>
+</ul>
+<p><strong>해결</strong>: 모바일에서 A/B 대신 평형 자체를 강조 (<code>전용 84㎡ (대표 평형 1)</code>).</p>
+
+<h3><span class="num">3.5</span> ProfileBadge "관점 바꿔서 다시 보기 →" — 클릭 어포던스 약함</h3>
+<p><strong>위치</strong>: <span class="path">src/components/report/ProfileBadge.tsx:109-114</span></p>
+<pre><code>className="ml-auto rounded-full px-2 py-0.5 text-[11px] text-primary-ink hover:underline"</code></pre>
+<p>11px + 패딩 거의 없음 + <code>hover:underline</code> → 모바일은 hover 없어 평소엔 밑줄도 없음. 링크인지 텍스트인지 시각적 구분 약함.</p>
+<p><strong>해결</strong>: 모바일에서 항상 <code>underline</code> 또는 화살표 아이콘 + 약한 배경(<code>bg-primary-soft</code>)으로 버튼화.</p>
+
+<h3><span class="num">3.6</span> sticky 진행 바 위치 — Header(top-14)와의 갭 0</h3>
+<p><strong>위치</strong>: <span class="path">src/components/report/ReportTocBar.tsx:64-67</span></p>
+<p>Header 바로 밑에 붙음. 다크모드에서 <strong>2px 라인이 헤더와 분리 안 됨</strong>.</p>
+<p><strong>해결</strong>: 모바일은 Header bottom-border 자체를 진행 바로 활용. 또는 <code>h-[3px]</code> + <code>bg-foreground/5</code> 트랙.</p>
+
+
+<!-- ───────────── 4 Low ───────────── -->
+<h2><span class="sev low">Low</span> 4. 미세 디테일</h2>
+
+<div class="table-wrap">
+<table>
+<thead><tr><th class="num">#</th><th>위치</th><th>이슈</th></tr></thead>
+<tbody>
+<tr><td class="num">4.1</td><td><span class="path">CommuteGrid.tsx:103</span></td><td>모바일 2열 OK이나 <code>line-clamp-1</code>로 출발역→도착역 한 줄 자름. "여의나루 → 강남" 같은 케이스 잘릴 수 있음.</td></tr>
+<tr><td class="num">4.2</td><td><span class="path">RouteOptions.tsx:368</span></td><td>SubwayPathDisplayCompact의 <code>min-w-[20px]</code> 컨테이너에 역명 4-5개면 글자 겹침.</td></tr>
+<tr><td class="num">4.3</td><td><span class="path">PriceChart.tsx:182</span></td><td>차트 컬러가 라이트 톤(흰 배경 + 회색 stroke) — 다크 토큰화 안 됨.</td></tr>
+<tr><td class="num">4.4</td><td><span class="path">KakaoMapClient.tsx:104-119</span></td><td>맵 라벨 폰트가 모두 인라인 style — 다크모드 전환 안 됨.</td></tr>
+<tr><td class="num">4.5</td><td><span class="path">TradeFlowTabs.tsx:131-151</span></td><td>평형 칩 가로 스크롤 가능하지만 우측 fade gradient 없음 → "더 있다" 시그널 부재.</td></tr>
+<tr><td class="num">4.6</td><td><span class="path">LifeScenario.tsx:247-258</span></td><td>학교 hint 카드 strong 부분이 줄바꿈 직전에 끊기면 어색 wrap.</td></tr>
+<tr><td class="num">4.7</td><td><span class="path">LocationSection.tsx:165-173</span></td><td>"📍 위치와 주변" 헤더 sub 라인이 모바일에서 wrap 빈번.</td></tr>
+<tr><td class="num">4.8</td><td><span class="path">ReportMarkdown.tsx:111</span></td><td><code>ul pl-6</code>(24px) — 모바일 페이지 좌우 padding과 합치면 본문 폭 끝 도달.</td></tr>
+</tbody>
+</table>
+</div>
+
+
+<!-- ───────────── 5 Priority ───────────── -->
+<h2>5. 모바일 우선순위 실행 추천</h2>
+
+<div class="table-wrap">
+<table>
+<thead><tr>
+  <th class="num" style="width:48px">#</th>
+  <th>항목</th>
+  <th class="num" style="width:90px">작업량</th>
+  <th style="width:140px">임팩트</th>
+</tr></thead>
+<tbody>
+<tr><td class="num">1</td><td>ShareBar 모바일 native share 활성화 <span style="color:var(--fg-mute)">(1.1)</span></td><td class="num">5분</td><td><span class="pill crit">바이럴 채널 복구</span></td></tr>
+<tr><td class="num">2</td><td>LifeScenario 모바일 2열 + 본문 12px <span style="color:var(--fg-mute)">(1.2)</span></td><td class="num">0.5d</td><td><span class="pill crit">가독성</span></td></tr>
+<tr><td class="num">3</td><td>NeighborhoodMap 높이 50vh + 줌 컨트롤 <span style="color:var(--fg-mute)">(1.3)</span></td><td class="num">0.5d</td><td><span class="pill crit">화면 점유</span></td></tr>
+<tr><td class="num">4</td><td>ReportByline 모바일 1열 또는 col-span <span style="color:var(--fg-mute)">(1.4)</span></td><td class="num">15분</td><td><span class="pill crit">잘림 해소</span></td></tr>
+<tr><td class="num">5</td><td>HookHighlights Hero 우측 블록 모바일 세로 적층 <span style="color:var(--fg-mute)">(2.1)</span></td><td class="num">0.5d</td><td><span class="pill hi">truncate 해소</span></td></tr>
+<tr><td class="num">6</td><td>헤더 제목 모바일 <code>text-2xl</code> 다운 <span style="color:var(--fg-mute)">(2.5)</span></td><td class="num">5분</td><td><span class="pill hi">first paint</span></td></tr>
+<tr><td class="num">7</td><td>InsightCards 1순위 모바일 강조 강화 <span style="color:var(--fg-mute)">(2.2)</span></td><td class="num">0.5d</td><td><span class="pill hi">위계 회복</span></td></tr>
+<tr><td class="num">8</td><td>표·차트 모바일 카드 변환 <span style="color:var(--fg-mute)">(2.3)</span></td><td class="num">1d</td><td><span class="pill hi">스캔성</span></td></tr>
+<tr><td class="num">9</td><td>범례 토글 터치 타겟 ≥40px <span style="color:var(--fg-mute)">(2.4)</span></td><td class="num">15분</td><td><span class="pill hi">접근성</span></td></tr>
+<tr><td class="num">10</td><td>폰트 사이즈 일괄 점검 <span style="color:var(--fg-mute)">(3.1)</span></td><td class="num">0.5d</td><td><span class="pill med">일관성</span></td></tr>
+<tr><td class="num">11</td><td>RegionPercentileBar wrap 정돈 <span style="color:var(--fg-mute)">(3.2)</span></td><td class="num">15분</td><td><span class="pill med">시선 흐름</span></td></tr>
+<tr><td class="num">12</td><td>4.x 디테일 일괄 정리</td><td class="num">0.5d</td><td><span class="pill low">미세 마감</span></td></tr>
+</tbody>
+</table>
+</div>
+
+<p style="color:var(--fg-sub); font-size:13.5px; margin-top:18px;">
+  합산 약 <strong>4~5인일</strong>. 1, 4, 6번은 각 5~15분 작업이라 같은 PR에 묶어 즉시 배포 가능.
+</p>
+
+
+<!-- ───────────── 6 Limits ───────────── -->
+<h2>6. 점검 한계 및 후속 검증 권장</h2>
+<ul>
+  <li><strong>인증 세션 차단으로 라이브 화면을 직접 못 봄</strong> — Recharts 차트의 모바일 X축 tick 겹침, 카카오맵 마커 anti-collision, framer-motion 애니메이션 끊김 등은 실 디바이스 QA가 추가로 필요.</li>
+  <li>점검은 13개 리포트 컴포넌트 코드 직독 + Tailwind 클래스 모바일 분기 분석 기반.</li>
+  <li>후속 검증: 실 iPhone 12 Pro 또는 Chrome DevTools <code>Device Toolbar &gt; iPhone 12 Pro</code> 모드에서 위 시나리오로 한 번 더 확인.</li>
+</ul>
+
+<blockquote>
+  <p>이 검토는 1차 리포트(<code>UX 진단 리포트 — 20260507.md</code>)의 모바일 보충본이다.</p>
+  <p>1차에서 다룬 컨셉·funnel·카피 이슈와는 <strong>중복되지 않는 모바일 특화 발견사항</strong>만 담았다.</p>
+</blockquote>
+
+<footer class="doc-footer">
+  <p>© 2026 칠래말래? · 본 문서는 외부 UX 진단 의견이며, 최종 우선순위·실행 결정은 운영팀에 있습니다.</p>
+</footer>
+
+</main>
+</body>
+</html>
