@@ -62,27 +62,47 @@ export default async function LocationSection({
 
   // 1단계: 단지 주변 데이터 + 가까운 역 좌표를 병렬로
   // 상권은 zones.geojson(서울 SBA + 인천·경기 행정동 단위 빌드) point-in-polygon 우선 매칭.
-  // 데이터에 없는 단지 케이스만 카카오 DBSCAN fallback.
-  const [nearby, officialZones, nearbySchools, stationCoord] = hasCoord
+  const isSeoul = primary.address.startsWith('서울');
+  const [nearby, officialZones, nearbySchools, stationCoord, kakaoClustersRaw] = hasCoord
     ? await Promise.all([
         findNearbyLargeApartments(primary.id, primary.latitude!, primary.longitude!),
-        getNearbyOfficialZones(primary.latitude!, primary.longitude!),
+        // 서울은 SBA 발달상권만 (작은 단위), 비서울은 inside 행정동 1개만 (거시 컨텍스트)
+        getNearbyOfficialZones(primary.latitude!, primary.longitude!, 3000, isSeoul ? 6 : 2),
         fetchNearbySchools(primary.latitude!, primary.longitude!, { limit: 12 }),
         fetchNearestStationCoord(primary.latitude!, primary.longitude!),
+        // 비서울 단지에는 카카오 DBSCAN 클러스터로 단지 주변 작은 군집을 추가 노출.
+        // 행정동(큰 거시 컨텍스트) + DBSCAN(단지 800m 반경 진짜 군집) 동시 표시 → 사용자가
+        // "이 단지 살면 주변 상점 얼마나" 욕구 해소. 서울은 SBA 발달상권이 이미 작은 단위라 불필요.
+        isSeoul
+          ? Promise.resolve([])
+          : fetchCommercialClusters(primary.latitude!, primary.longitude!, {
+              radius: 1500,
+              minPts: 3,
+              epsM: 100,
+            }).catch(() => []),
       ])
-    : [[], [], [], null];
+    : [[], [], [], null, []];
 
-  // 공식 폴리곤(zones.geojson) 0개면 카카오 음식점·카페 DBSCAN 클러스터로 fallback.
-  // 인천·경기는 행정동 단위 시드된 zones에서 거의 매칭됨 → fallback 호출 거의 안 함.
-  // 시드 안 된 광역(부산/대구/지방)이나 외곽 단지에서만 fallback.
-  let commercialClusters = officialZones;
-  if (hasCoord && officialZones.length === 0) {
-    const kakaoClusters = await fetchCommercialClusters(
+  // 행정동(거시) + 카카오 클러스터(미시) 합침. 행정동은 단지 inside 우선 노출, 카카오는 군집별 카운트.
+  const kakaoClustersAsZones = kakaoClustersRaw.map((c) => ({
+    id: c.id,
+    centroid: c.centroid,
+    count: c.count,
+    polygon: c.polygon,
+    name: '음식·카페 군집',
+    seName: '골목상권',
+    distanceM: 0,
+  }));
+  let commercialClusters = [...officialZones, ...kakaoClustersAsZones];
+
+  // 둘 다 0개인 케이스(시드 안 된 광역 + 카카오도 0)만 마지막 fallback.
+  if (hasCoord && commercialClusters.length === 0) {
+    const fallback = await fetchCommercialClusters(
       primary.latitude!,
       primary.longitude!,
       { radius: 1500, minPts: 3, epsM: 100 }
     ).catch(() => []);
-    commercialClusters = kakaoClusters.map((c) => ({
+    commercialClusters = fallback.map((c) => ({
       id: c.id,
       centroid: c.centroid,
       count: c.count,
