@@ -72,12 +72,15 @@ export default async function LocationSection({
     : [[], [], [], null];
 
   // SBA 결과 0개면 카카오 음식점·카페 DBSCAN 클러스터로 fallback (비서울 단지 폴리곤 0 상태 해소).
+  // 외곽 단지(인천 남동 등)는 800m 반경 점포 밀도 낮음(15건 정도) → 기본값(minPts=5, epsM=60)으론 클러스터 0.
+  // 반경 1500m + 완화된 파라미터로 fallback 호출. 작은 군집도 폴리곤화.
   // OfficialZone 타입에 맞춰 변환 — name='인근 상권', seName='골목상권' 기본값.
   let commercialClusters = sbaZones;
   if (hasCoord && sbaZones.length === 0) {
     const kakaoClusters = await fetchCommercialClusters(
       primary.latitude!,
-      primary.longitude!
+      primary.longitude!,
+      { radius: 1500, minPts: 3, epsM: 100 }
     ).catch(() => []);
     commercialClusters = kakaoClusters.map((c) => ({
       id: c.id,
