@@ -224,6 +224,7 @@ export default async function LocationSection({
         }}
         insights={insights}
         nearby={nearby}
+        nearbySchools={nearbySchools}
         priorities={priorities ?? undefined}
         householdType={householdType}
       />

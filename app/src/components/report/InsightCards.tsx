@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import type { DistrictInsight } from '@/lib/district-insights';
 import type { NearbyApartment } from '@/lib/nearby-apartments';
+import type { NearbySchool } from '@/lib/kakao-local';
 import type { Priority, HouseholdType } from '@/types/profile';
 import { pickInsightCardsForHousehold } from '@/lib/household-priorities';
 
@@ -28,6 +29,9 @@ interface Props {
   };
   insights: DistrictInsight;
   nearby: NearbyApartment[];
+  // 학군 fallback용 — region_insights 큐레이션이 없는 권역(예: 인천 남동)에서도
+  // 본문 학교 섹션과 같은 카카오 SC4 데이터를 카드에 노출해 페이지 내 모순 차단.
+  nearbySchools?: NearbySchool[];
   priorities?: Priority[];
   householdType?: HouseholdType | null;
 }
@@ -73,10 +77,47 @@ interface CardSpec {
   fallback: string;
 }
 
-export default function InsightCards({ apartment, insights, nearby, priorities, householdType }: Props) {
+export default function InsightCards({
+  apartment,
+  insights,
+  nearby,
+  nearbySchools,
+  priorities,
+  householdType,
+}: Props) {
   const walkMin = apartment.stationDistanceM
     ? Math.max(1, Math.round(apartment.stationDistanceM / 70))
     : null;
+
+  // 학군 카드 fallback — region_insights에 schoolDistrictLabel/schoolNotes 없으면
+  // 본문 학교 섹션과 같은 카카오 SC4 동적 데이터로 채움. 페이지 내 모순 차단.
+  const shortenSchool = (n: string) => n.replace(/등학교$/, '').replace(/학교$/, '');
+  const schoolFromKakao = (() => {
+    if (!nearbySchools || nearbySchools.length === 0) return null;
+    const elem = nearbySchools.filter((s) => s.type === '초등학교');
+    const mid = nearbySchools.filter((s) => s.type === '중학교');
+    const high = nearbySchools.filter((s) => s.type === '고등학교');
+    const closestElem = elem[0]?.name ?? null;
+    const headline = closestElem
+      ? `${shortenSchool(closestElem)} 외 도보권`
+      : `반경 1.5km 내 ${nearbySchools.length}개교`;
+    const sub = `초${elem.length} · 중${mid.length} · 고${high.length}`;
+    const chips = [...mid.slice(0, 1), ...high.slice(0, 1)].map((s) => shortenSchool(s.name));
+    return { headline, sub, chips };
+  })();
+
+  // 카드 헤드라인 결정 — region_insights 우선, 없으면 카카오 fallback, 둘 다 없으면 fallback 카피.
+  const schoolHeadline = insights.schoolDistrictLabel ?? schoolFromKakao?.headline ?? null;
+  const schoolSub = insights.academyCluster ?? schoolFromKakao?.sub ?? null;
+  const schoolChips = insights.schoolNotes && insights.schoolNotes.length > 0
+    ? insights.schoolNotes.slice(0, 2)
+    : schoolFromKakao?.chips ?? [];
+
+  // 학원가 심화 카드도 academyCluster가 없으면 학교 chips로 fallback.
+  const academyHeadline = insights.academyCluster ?? schoolFromKakao?.headline ?? null;
+  const academyChips = insights.schoolNotes && insights.schoolNotes.length > 0
+    ? insights.schoolNotes.slice(0, 3)
+    : schoolFromKakao?.chips ?? [];
 
   // 호재 첫번째 + 그외 — sub에는 첫번째 status·note, chips에는 다른 호재 title
   const firstDev = insights.developments?.[0] ?? null;
@@ -92,10 +133,10 @@ export default function InsightCards({ apartment, insights, nearby, priorities, 
       icon: <GraduationCap className="h-4 w-4" />,
       label: '학군',
       tone: 'success',
-      headline: insights.schoolDistrictLabel ?? null,
-      sub: insights.academyCluster ?? null,
-      chips: (insights.schoolNotes ?? []).slice(0, 2),
-      fallback: '학군 데이터 준비 중',
+      headline: schoolHeadline,
+      sub: schoolSub,
+      chips: schoolChips,
+      fallback: '반경 내 매칭된 학교 없음',
     },
     {
       key: 'transport',
@@ -196,9 +237,9 @@ export default function InsightCards({ apartment, insights, nearby, priorities, 
       icon: <BookOpen className="h-4 w-4" />,
       label: '학원가 심화',
       tone: 'warning',
-      headline: insights.academyCluster ?? null,
-      sub: null,
-      chips: (insights.schoolNotes ?? []).slice(0, 3),
+      headline: academyHeadline,
+      sub: insights.academyCluster ? null : (schoolFromKakao?.sub ?? null),
+      chips: academyChips,
       fallback: '학원가 정보 준비 중',
     },
     {
