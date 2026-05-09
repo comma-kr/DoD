@@ -628,7 +628,7 @@ function buildSchool(
     }
   }
 
-  // 학교알리미 떠넘김 제거 (memory: report_body_guards 4).
+  // 외부 사이트 떠넘김 제거 (memory: report_body_guards 4).
   // 자체 데이터(NearbySchoolsCard·반경 1.5km 분포 + 카카오 PS3 어린이집)만 사용.
   const block = `${heading}
 

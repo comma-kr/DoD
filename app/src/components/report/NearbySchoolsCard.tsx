@@ -1,6 +1,6 @@
 // 주변 학교 초·중·고 (각 레벨별 가장 가까운 1곳)
 // HookHighlights의 단일 "가장 가까운 학교" 카드를 보완. 학부모/예비 학부모용.
-// 배정 학교는 우리가 책임지는 정보가 아님 — 학교알리미 안내 한 줄로 끝.
+// 배정 학교는 단지 주소 변경 시 달라질 수 있다는 톤 안내만 한 줄.
 
 import { GraduationCap } from 'lucide-react';
 import { CARD_TINT } from '@/lib/card-tint';
@@ -59,7 +59,7 @@ export default function NearbySchoolsCard({ schools }: Props) {
         <span className="text-[11px] text-foreground-sub">· 단지 반경 2km, 직선거리</span>
       </div>
       <p className="mt-1 text-xs text-foreground-sub">
-        걸어서 가까운 초·중·고 1곳씩 추려봤어요. 정확한 배정 학교는 학교알리미에서 한 번 더 확인.
+        걸어서 가까운 초·중·고 1곳씩 추려봤어요. 단지 주소 변경 시 배정이 달라질 수 있어요.
       </p>
 
       <ul className="mt-4 divide-y divide-border-soft border-y border-border-soft">

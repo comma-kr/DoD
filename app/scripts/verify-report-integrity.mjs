@@ -218,6 +218,17 @@ function verifyCodeCopy() {
       pattern: '추천 단지',
       exceptLineMarker: ['금지', '대신', '톤 가이드'],
     },
+    // memory: report_body_guards 4 — 외부 사이트 떠넘김 (학교알리미·카카오맵 등) 차단.
+    // 마크다운뿐 아니라 컴포넌트 fallback 카피·NearbySchools 보조 안내까지 포함.
+    {
+      pattern: '학교알리미',
+      // '공공데이터' 마커는 면책·출처 표기(공공데이터 출처 명시)이라 떠넘김 아님.
+      exceptLineMarker: ['금지', '대신', '톤 가이드', '떠넘기', '공공데이터'],
+    },
+    {
+      pattern: '카카오맵에서',
+      exceptLineMarker: ['금지', '대신', '톤 가이드', '떠넘기'],
+    },
   ];
 
   for (const { pattern, exceptLineMarker } of forbiddenPatterns) {
