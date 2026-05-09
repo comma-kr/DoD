@@ -9,6 +9,7 @@ import CommuteFreeCard from './CommuteFreeCard';
 import { getDistrictInsightsByCodeAsync, parseDistrictDong } from '@/lib/district-insights';
 import { findNearbyLargeApartments } from '@/lib/nearby-apartments';
 import {
+  fetchCommercialClusters,
   fetchNearbySchools,
   fetchWalkingRoute,
   fetchNearestStationCoord,
@@ -60,8 +61,8 @@ export default async function LocationSection({
   const hasCoord = primary.latitude !== null && primary.longitude !== null;
 
   // 1단계: 단지 주변 데이터 + 가까운 역 좌표를 병렬로
-  // 상권은 SBA 공식 폴리곤(서울신용보증재단) 사용 — DBSCAN 인공 폴리곤 대신.
-  const [nearby, commercialClusters, nearbySchools, stationCoord] = hasCoord
+  // 상권은 SBA 공식 폴리곤(서울만) 우선 사용. 비서울(인천/경기/지방)은 0개라 카카오 동적 fallback.
+  const [nearby, sbaZones, nearbySchools, stationCoord] = hasCoord
     ? await Promise.all([
         findNearbyLargeApartments(primary.id, primary.latitude!, primary.longitude!),
         getNearbyOfficialZones(primary.latitude!, primary.longitude!),
@@ -69,6 +70,25 @@ export default async function LocationSection({
         fetchNearestStationCoord(primary.latitude!, primary.longitude!),
       ])
     : [[], [], [], null];
+
+  // SBA 결과 0개면 카카오 음식점·카페 DBSCAN 클러스터로 fallback (비서울 단지 폴리곤 0 상태 해소).
+  // OfficialZone 타입에 맞춰 변환 — name='인근 상권', seName='골목상권' 기본값.
+  let commercialClusters = sbaZones;
+  if (hasCoord && sbaZones.length === 0) {
+    const kakaoClusters = await fetchCommercialClusters(
+      primary.latitude!,
+      primary.longitude!
+    ).catch(() => []);
+    commercialClusters = kakaoClusters.map((c) => ({
+      id: c.id,
+      centroid: c.centroid,
+      count: c.count,
+      polygon: c.polygon,
+      name: '인근 상권',
+      seName: '골목상권',
+      distanceM: 0,
+    }));
+  }
 
   // 2단계: 가까운 역 좌표를 알았으니 OSRM 도보 경로 조회 + 최근 실거래가 1건
   const sb = createSupabaseAdminClient();
