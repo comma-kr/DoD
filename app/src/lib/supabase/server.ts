@@ -9,6 +9,9 @@ export async function createSupabaseServerClient() {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
+      // 스키마 이관(2026-06-21): ChillaeMallae 테이블이 public→chillae 로 이동.
+      // env 미설정 시 public(이전 동작) 유지 — 가역.
+      db: { schema: process.env.NEXT_PUBLIC_SUPABASE_SCHEMA || 'public' },
       cookies: {
         getAll() {
           return cookieStore.getAll();
@@ -33,6 +36,7 @@ export function createSupabaseAdminClient() {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
     {
+      db: { schema: process.env.NEXT_PUBLIC_SUPABASE_SCHEMA || 'public' },
       auth: { autoRefreshToken: false, persistSession: false },
     }
   );
